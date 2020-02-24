@@ -2,37 +2,33 @@ cmake_minimum_required(VERSION 3.0.0)
 project(FrontEnd VERSION 0.1.0)
 
 find_package(OpenGL REQUIRED)
-find_package(GLEW   REQUIRED)
-find_package(imgui  REQUIRED)
+find_package(GLFW3  REQUIRED)
 
-if (UNIX)
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(GLFW REQUIRED glfw3)
-endif()
+message("CMAKE_CURRENT_LIST_DIR is ${CMAKE_CURRENT_LIST_DIR}")  
 
-set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 INCLUDE_DIRECTORIES(
-    /usr/local/include/
-    /usr/local/include/imgui)
+	/usr/local/include/
+	../vendor/imgui/
+)
 
-link_directories(/usr/local/lib/)
+link_directories(
+	/usr/local/lib/
+	../vendor/imgui/lib/
+)
 
 add_executable(FrontEnd 
                 main.cpp
-                ../../vendor/imgui/imgui.cpp
-                ../../vendor/imgui/imgui_draw.cpp
-                ../../vendor/imgui/imgui_widgets.cpp
-                ../../vendor/imgui/examples/imgui_impl_glfw.cpp
-                ../../vendor/imgui/examples/imgui_impl_opengl2.cpp)
+)
 
 target_link_libraries(FrontEnd
+    "-framework Cocoa"
+    "-framework IOKit"
+    "-framework CoreVideo"
     ${OPENGL_LIBRARY}
-    glfw
+    glfw3
     ${GLEW_LIBRARIES}
-    /usr/local/lib/libimgui.a)
+    ${CMAKE_CURRENT_LIST_DIR}/../vendor/imgui/lib/libimgui.a)
 
 target_compile_definitions(FrontEnd 
     PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW
