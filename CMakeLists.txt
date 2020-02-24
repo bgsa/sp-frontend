@@ -22,11 +22,11 @@ link_directories(/usr/local/lib/)
 
 add_executable(FrontEnd 
                 main.cpp
-                ~/Projects/imgui/imgui/imgui.cpp
-                ~/Projects/imgui/imgui/imgui_draw.cpp
-                ~/Projects/imgui/imgui/imgui_widgets.cpp
-                ~/Projects/imgui/imgui/examples/imgui_impl_glfw.cpp
-                ~/Projects/imgui/imgui/examples/imgui_impl_opengl2.cpp)
+                ../../vendor/imgui/imgui.cpp
+                ../../vendor/imgui/imgui_draw.cpp
+                ../../vendor/imgui/imgui_widgets.cpp
+                ../../vendor/imgui/examples/imgui_impl_glfw.cpp
+                ../../vendor/imgui/examples/imgui_impl_opengl2.cpp)
 
 target_link_libraries(FrontEnd
     ${OPENGL_LIBRARY}
@@ -37,7 +37,6 @@ target_link_libraries(FrontEnd
 target_compile_definitions(FrontEnd 
     PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW
 )
-
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
