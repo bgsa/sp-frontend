@@ -3,6 +3,7 @@
 bool show_another_window = false;
 
 static bool showAboutWindow = false;
+static bool a = false;
 
 void MainFrame::init(GLFWwindow* window)
 {
@@ -10,9 +11,14 @@ void MainFrame::init(GLFWwindow* window)
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    //io.Fonts->AddFontFromFileTTF("../resources/fonts/Dashboard-Regular.otf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+    io.Fonts->AddFontFromFileTTF("../resources/fonts/16x8pxl-mono.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+    //io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFRegular-Regular.otf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+    //io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFSemiBold-Regular.ttf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
@@ -27,7 +33,7 @@ void MainFrame::preRender()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-	static bool a = false;
+    ImVec2 windowSize = ImGui::GetIO().DisplaySize;
 
     if (ImGui::BeginMainMenuBar())
     {
@@ -55,8 +61,22 @@ void MainFrame::preRender()
 
     if( showAboutWindow ) 
     {
-        ImGui::Begin("About1", NULL, 1<<0);
-        ImGui::Text("teste");
+        const sp_int width = 300, height = 200;
+
+        ImGui::Begin("About Spectrum Engine", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
+        ImGui::SetWindowSize(ImVec2(width, height));
+        ImGui::SetWindowPos( ImVec2( ( (sp_int)windowSize.x >> 1) - (width >> 1) , ((sp_int)windowSize.y >> 1) - (height >> 1) ) );
+        ImVec2 itemSize = ImGui::GetItemRectSize();
+
+        ImGui::Text("Version: 0.1.0");
+        ImGui::Text("Release Date: 01/01/2020");
+
+        ImGui::Indent(((sp_int)itemSize.x >> 1) - 60);
+        ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+        if ( ImGui::Button("Close", ImVec2(100, 25)) )
+            showAboutWindow = false;
+
         ImGui::End();
     }
 
