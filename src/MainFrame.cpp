@@ -1,8 +1,6 @@
 #include "MainFrame.h"
 
 bool show_another_window = false;
-
-static bool showAboutWindow = false;
 static bool a = false;
 
 void MainFrame::init(GLFWwindow* window)
@@ -12,7 +10,7 @@ void MainFrame::init(GLFWwindow* window)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     //io.Fonts->AddFontFromFileTTF("../resources/fonts/Dashboard-Regular.otf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
@@ -51,34 +49,19 @@ void MainFrame::preRender()
         }
         if (ImGui::BeginMenu("Help"))
         {
-            if( ImGui::MenuItem("About Spectrum", NULL, &a))
-                showAboutWindow = !showAboutWindow;
+            if( ImGui::MenuItem("About Spectrum", NULL, aboutFrame.isVisible()))
+                if ( aboutFrame.isVisible() )
+                    aboutFrame.hide();
+                else
+                    aboutFrame.show();
+                    
             ImGui::EndMenu();
         }
 
         ImGui::EndMainMenuBar();
     }
 
-    if( showAboutWindow ) 
-    {
-        const sp_int width = 300, height = 200;
-
-        ImGui::Begin("About Spectrum Engine", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
-        ImGui::SetWindowSize(ImVec2(width, height));
-        ImGui::SetWindowPos( ImVec2( ( (sp_int)windowSize.x >> 1) - (width >> 1) , ((sp_int)windowSize.y >> 1) - (height >> 1) ) );
-        ImVec2 itemSize = ImGui::GetItemRectSize();
-
-        ImGui::Text("Version: 0.1.0");
-        ImGui::Text("Release Date: 01/01/2020");
-
-        ImGui::Indent(((sp_int)itemSize.x >> 1) - 60);
-        ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
-        if ( ImGui::Button("Close", ImVec2(100, 25)) )
-            showAboutWindow = false;
-
-        ImGui::End();
-    }
+    aboutFrame.render();
 
     static float f = 0.0f;
     static int counter = 0;
