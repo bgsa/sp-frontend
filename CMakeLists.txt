@@ -11,21 +11,35 @@ set (CMAKE_C_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(GLFW REQUIRED glfw3)
+
 find_package(OpenGL REQUIRED)
-find_package(GLFW3  REQUIRED)
 
 file(GLOB HEADERS "src/*.h")
 file(GLOB SOURCES "src/*.cpp")
+file(GLOB DEFINES
+	-DENV_32BITS 
+	-DGLFW 
+	-Wno-dangling-else
+)
+file(GLOB LIBRARIES
+	${OPENGL_LIBRARY}
+	${GLEW_LIBRARIES}
+	glfw3
+	${VENDOR_DIR}/imgui/lib/libimgui.a
+)
 
 INCLUDE_DIRECTORIES(
 	/usr/local/include/
-    ${VENDOR_DIR}/imgui/
-    ${SP_FOUNDATION_DIR}/src/
-    ${HEADERS}
+	${VENDOR_DIR}/imgui/
+	${SP_FOUNDATION_DIR}/src/
+	${HEADERS}
 )
 
 link_directories(
 	/usr/local/lib/
+	/usr/lib/x86_64-linux-gnu/
 	${VENDOR_DIR}/imgui/lib/
 )
 
@@ -33,16 +47,28 @@ add_executable(FrontEnd
     ${SOURCES}
 )
 
-add_definitions(-DUNIX -DENV_32BITS -DGLFW -Wno-dangling-else)
+if ( ${UNIX} )
+	list(APPEND LIBRARIES
+	    "-framework Cocoa"
+	    "-framework IOKit"
+	    "-framework CoreVideo"
+	)
+	list(APPEND DEFINES -DUNIX)
 
-target_link_libraries(FrontEnd
-    "-framework Cocoa"
-    "-framework IOKit"
-    "-framework CoreVideo"
-    ${OPENGL_LIBRARY}
-    glfw3
-    ${GLEW_LIBRARIES}
-    ${VENDOR_DIR}/imgui/lib/libimgui.a)
+elseif ( ${LINUX} )
+	list(APPEND DEFINES -DLINUX)
+
+elseif ( ${WINDOWS} )
+	list(APPEND DEFINES -DWINDOWS)
+
+else()
+	message(SEND_ERROR "Operation System not defined.")
+endif()
+
+
+add_definitions( ${DEFINES} )
+
+target_link_libraries(FrontEnd ${LIBRARIES})
 
 target_compile_definitions(FrontEnd 
     PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW
