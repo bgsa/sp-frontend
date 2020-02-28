@@ -1,23 +1,8 @@
 #include "AboutFrame.h"
 
-void AboutFrame::show()
-{
-    this->showWindow = true;
-}
-
-void AboutFrame::hide()
-{
-    this->showWindow = false;
-}
-
-sp_bool AboutFrame::isVisible()
-{
-    return this->showWindow;
-}
-
 void AboutFrame::render()
 {
-    if( ! showWindow ) 
+    if( ! isVisible() ) 
         return;
         
     const ImVec2 windowSize = ImGui::GetIO().DisplaySize;
@@ -35,10 +20,10 @@ void AboutFrame::render()
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
     if ( ImGui::Button("Close", ImVec2(100, 25)) )
-        showWindow = false;
+        hide();
 
     ImGui::End();
 
     if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
-        showWindow = false;
+        hide();
 }
