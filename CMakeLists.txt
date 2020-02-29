@@ -11,10 +11,11 @@ set (CMAKE_C_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(PkgConfig REQUIRED)
-pkg_search_module(GLFW REQUIRED glfw3)
+#find_package(PkgConfig REQUIRED)
+#pkg_search_module(GLFW REQUIRED glfw3)
 
 find_package(OpenGL REQUIRED)
+#find_package(GLFW REQUIRED)
 
 file(GLOB HEADERS "src/*.h")
 file(GLOB SOURCES "src/*.cpp")
@@ -26,7 +27,7 @@ file(GLOB DEFINES
 file(GLOB LIBRARIES
 	${OPENGL_LIBRARY}
 	${GLEW_LIBRARIES}
-	glfw3
+	/usr/local/lib/libglfw3.a
 	${VENDOR_DIR}/imgui/lib/libimgui.a
 )
 
@@ -66,7 +67,8 @@ else()
 endif()
 
 
-add_definitions( ${DEFINES} )
+#add_definitions( ${DEFINES} )
+add_definitions ( -DUNIX -DENV_32BITS -DGLFW -Wno-dangling-else)
 
 target_link_libraries(FrontEnd ${LIBRARIES})
 

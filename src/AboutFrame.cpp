@@ -1,16 +1,20 @@
 #include "AboutFrame.h"
 
+void AboutFrame::init()
+{
+    resize(300, 150);
+}
+
 void AboutFrame::render()
 {
     if( ! isVisible() ) 
         return;
-        
+
     const ImVec2 windowSize = ImGui::GetIO().DisplaySize;
-    const sp_int width = 300, height = 150;
 
     ImGui::Begin("About Spectrum Engine", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
-    ImGui::SetWindowSize(ImVec2(width, height));
-    ImGui::SetWindowPos( ImVec2( ( (sp_int)windowSize.x >> 1) - (width >> 1) , ((sp_int)windowSize.y >> 1) - (height >> 1) ) );
+    //ImGui::SetWindowSize(ImVec2(getWidth(), getHeight()));
+    //ImGui::SetWindowPos( ImVec2( ( (sp_int)getWindowSize().x >> 1) - (getWidth() >> 1) , ((sp_int)getWindowSize().y >> 1) - (getHeight() >> 1) ) );
     ImVec2 itemSize = ImGui::GetItemRectSize();
 
     ImGui::Text("Version: 0.1.0");

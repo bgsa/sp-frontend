@@ -7,12 +7,17 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl2.h"
 #include "AboutFrame.h"
+#include "ProjectExplorerFrame.h"
 
 class MainFrame
 {
     private:
         GLFWwindow* window = NULL;
+
         AboutFrame aboutFrame;
+        ProjectExplorerFrame projectExplorerFrame;
+
+        void renderMainMenuBar();
 
     public:
 

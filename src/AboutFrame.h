@@ -7,6 +7,9 @@ class AboutFrame
     : public AbstractFrame
 {
     public:
+
+        API_INTERFACE void init() override;
+
         API_INTERFACE void render() override;
 
 };
