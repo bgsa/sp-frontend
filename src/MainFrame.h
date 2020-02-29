@@ -8,6 +8,8 @@
 #include "imgui/imgui_impl_opengl2.h"
 #include "AboutFrame.h"
 #include "ProjectExplorerFrame.h"
+#include "LogFrame.h"
+#include "PropertiesFrame.h"
 
 class MainFrame
 {
@@ -16,6 +18,8 @@ class MainFrame
 
         AboutFrame aboutFrame;
         ProjectExplorerFrame projectExplorerFrame;
+        LogFrame logFrame;
+        PropertiesFrame propertiesFrame;
 
         void renderMainMenuBar();
 

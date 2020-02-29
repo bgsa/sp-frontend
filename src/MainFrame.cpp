@@ -18,14 +18,13 @@ void MainFrame::init(GLFWwindow* window)
     //io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFRegular-Regular.otf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
     //io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFSemiBold-Regular.ttf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL2_Init();
 
     aboutFrame.init();
     projectExplorerFrame.init();
+    propertiesFrame.init();
+    logFrame.init();
 }
 
 void MainFrame::preRender()
@@ -38,6 +37,8 @@ void MainFrame::preRender()
 
     aboutFrame.render();
     projectExplorerFrame.render();
+    propertiesFrame.render();
+    logFrame.render();
 
     ImGui::Render();
 }
@@ -69,7 +70,38 @@ void MainFrame::renderMainMenuBar()
                     projectExplorerFrame.hide();
                 else
                     projectExplorerFrame.show();
+
+            if( ImGui::MenuItem("Properties", NULL, propertiesFrame.isVisible()) )
+                if( propertiesFrame.isVisible() )
+                    propertiesFrame.hide();
+                else
+                    propertiesFrame.show();
+
+            if( ImGui::MenuItem("Log", NULL, logFrame.isVisible()) )
+                if( logFrame.isVisible() )
+                    logFrame.hide();
+                else
+                    logFrame.show();
                     
+            ImGui::EndMenu();
+        }
+
+        if( ImGui::BeginMenu("Settings") )
+        {
+            if( ImGui::BeginMenu("Theme") )
+            {
+                if( ImGui::MenuItem("Dark (Default)") )
+                    ImGui::StyleColorsDark();
+
+                if( ImGui::MenuItem("Light") )
+                    ImGui::StyleColorsLight();
+
+                if( ImGui::MenuItem("Classic") )
+                    ImGui::StyleColorsClassic();
+
+                ImGui::EndMenu();
+            }
+
             ImGui::EndMenu();
         }
 
