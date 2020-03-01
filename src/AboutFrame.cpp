@@ -20,7 +20,7 @@ void AboutFrame::render()
     ImGui::Text("Version: 0.1.0");
     ImGui::Text("Release Date: 01/01/2020");
 
-    ImGui::Indent(((sp_int)itemSize.x >> 1) - 60);
+    ImGui::Indent(  ((sp_int)itemSize.x >> 1) - 60.0f  );
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
     if ( ImGui::Button("Close", ImVec2(100, 25)) )

@@ -11,12 +11,12 @@ void PropertiesFrame::render()
     if ( ! isVisible() )
         return;
 
-    setHeight(getWindowSize().y - 25);
+    setHeight((sp_int)getWindowSize().y - 25);
 
 
     if ( ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoCollapse) )
     {
-        ImGui::SetWindowSize(ImVec2(getWidth(), getHeight()));
+        ImGui::SetWindowSize(ImVec2( (sp_float) getWidth(), (sp_float)getHeight()));
         ImGui::SetWindowPos(ImVec2(getWindowSize().x - getWidth() , 25.0f));
 
         ImGui::Columns(2, "Bar");

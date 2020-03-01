@@ -1,7 +1,7 @@
 #ifndef MAIN_WINDOW_HEADER
 #define MAIN_WINDOW_HEADER
 
-#include <apollo.h>
+#include <SpectrumFoundation.h>
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"

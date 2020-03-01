@@ -1,7 +1,7 @@
 #ifndef ABSTRACT_FRAME_HEADER
 #define ABSTRACT_FRAME_HEADER
 
-#include "apollo.h"
+#include <SpectrumFoundation.h>
 #include "imgui/imgui.h"
 
 class AbstractFrame
