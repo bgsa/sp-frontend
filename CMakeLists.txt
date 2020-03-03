@@ -41,9 +41,13 @@ endif()
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	set (GLFW_LIB_NAME "glfw3.lib")
 	set (IMGUI_LIB_NAME "imgui.lib")
+	set (SP_FOUNDATION_LIB_NAME "SpFoundation.lib")
+	set (CUSTOM_DEFINITIONS "-D_CRT_SECURE_NO_WARNINGS")
 elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "UNIX" )
 	set (GLFW_LIB_NAME "libglfw3.a")
 	set (IMGUI_LIB_NAME "libimgui.a")
+	set (SP_FOUNDATION_LIB_NAME "libSpFoundation.a")
+	set (CUSTOM_DEFINITIONS "-Wno-dangling-else")
 else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()
@@ -54,24 +58,28 @@ file(GLOB HEADERS "src/*.h")
 file(GLOB SOURCES "src/*.cpp")
 
 include_directories(
-	/usr/local/include
-	${VENDOR_DIR}/glfw/include
-	${VENDOR_DIR}
-	${SP_FOUNDATION_DIR}/src
 	${HEADERS}
+	${SP_FOUNDATION_DIR}/src
+	${VENDOR_DIR}/include
+	${VENDOR_DIR}/glfw/include
+	/usr/local/include
 )
 
 link_directories(
+	../sp-foundation/lib/Release
+	../sp-foundation/lib/Debug
+	#/usr/lib/i386-linux-gnu
+	/usr/bin/x86_64-linux-gnu
 	/usr/local/lib
-	/usr/lib/i386-linux-gnu/
-	${VENDOR_DIR}/lib
 )
 
 file(GLOB LIBRARIES
 	${OPENGL_LIBRARY}
-	${GLEW_LIBRARIES}
-	${VENDOR_DIR}/lib/${GLFW_LIB_NAME}
-	${VENDOR_DIR}/lib/${IMGUI_LIB_NAME}
+	#${GLEW_LIBRARIES}
+	glew32s.lib
+	../vendor/lib/${GLFW_LIB_NAME}
+	../vendor/lib/Release/${IMGUI_LIB_NAME}
+	../sp-foundation/lib/Release/${SP_FOUNDATION_LIB_NAME}
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -85,11 +93,11 @@ if ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
 endif()
 
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
-    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL -Wno-dangling-else -DWINDOWS -D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL ${CUSTOM_DEFINITIONS} -DWINDOWS)
 elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" )
-    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL -Wno-dangling-else -DLINUX)
+    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL ${CUSTOM_DEFINITIONS} -DLINUX)
 elseif ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
-    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL -Wno-dangling-else -DUNIX)
+    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL ${CUSTOM_DEFINITIONS} -DUNIX)
 else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()
