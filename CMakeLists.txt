@@ -23,6 +23,7 @@ set (SOLUTION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin)
 set (SP_FOUNDATION_DIR ${SOLUTION_DIR}/sp-foundation)
+set (SP_PHYSICS_DIR ${SOLUTION_DIR}/sp-physics)
 set (VENDOR_DIR ${SOLUTION_DIR}/vendor)
 
 set (CMAKE_C_STANDARD 11)
@@ -43,12 +44,14 @@ endif()
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	set (GLFW_LIB_NAME "glfw3.lib")
 	set (IMGUI_LIB_NAME "imgui.lib")
-	set (SP_FOUNDATION_LIB_NAME "SpFoundation.lib")
+	set (SP_FOUNDATION_LIBRARY "SpFoundation.lib")
+	set (SP_PHYSICS_LIBRARY "SpPhysics.lib")
 	set (CUSTOM_DEFINITIONS "-D_CRT_SECURE_NO_WARNINGS")
 elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "UNIX" )
 	set (GLFW_LIB_NAME "libglfw3.a")
 	set (IMGUI_LIB_NAME "libimgui.a")
-	set (SP_FOUNDATION_LIB_NAME "libSpFoundation.a")
+	set (SP_FOUNDATION_LIBRARY "libSpFoundation.a")
+	set (SP_PHYSICS_LIBRARY "libSpPhysics.a")
 	set (CUSTOM_DEFINITIONS "-Wno-dangling-else")
 
 	find_package(GLEW REQUIRED)
@@ -64,6 +67,7 @@ file(GLOB SOURCES "src/*.cpp")
 include_directories(
 	${HEADERS}
 	${SP_FOUNDATION_DIR}/src
+	${SP_PHYSICS_DIR}/src
 	${VENDOR_DIR}/include
 	${VENDOR_DIR}/glfw/include
 	${VENDOR_DIR}
@@ -75,6 +79,8 @@ link_directories(
 	${VENDOR_DIR}/lib/Release
 	${SP_FOUNDATION_DIR}/lib/Release
 	${SP_FOUNDATION_DIR}/lib/Debug
+	${SP_PHYSICS_DIR}/lib/Release
+	${SP_PHYSICS_DIR}/lib/Debug
 	/usr/bin/x86_64-linux-gnu
 	/usr/local/lib
 )
@@ -96,7 +102,8 @@ target_link_libraries(${PROJECT_NAME}
 	${GLEW_LIBRARIES}
 	${GLFW_LIB_NAME}
 	${IMGUI_LIB_NAME}
-	${SP_FOUNDATION_LIB_NAME}
+	${SP_FOUNDATION_LIBRARY}
+	${SP_PHYSICS_LIBRARY}
 )
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	target_link_libraries(${PROJECT_NAME} glew32s.lib)
