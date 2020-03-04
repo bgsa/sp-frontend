@@ -19,7 +19,9 @@ void MainFrame::init(GLFWwindow* window)
     //io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFSemiBold-Regular.ttf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init();
+
+	const char* glsl_version = "#version 130";
+    ImGui_ImplOpenGL3_Init(glsl_version);
 
     aboutFrame.init();
     projectExplorerFrame.init();

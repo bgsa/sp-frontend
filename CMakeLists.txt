@@ -18,10 +18,12 @@ option(GLFW_ENABLED     "Defined if GLFW will be used" ON)
 option(QT_ENABLED       "Defined if QT will be used"   OFF)
 option(ARCH_BITS        "Defined the compilation to 64 bits"   "64")
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
-set (RUNTIME_OUTPUT_NAME SpectrumEngine)
-set (SP_FOUNDATION_DIR "../sp-foundation")
-set (VENDOR_DIR "../vendor")
+set (PROJECT_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
+set (SOLUTION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin)
+set (SP_FOUNDATION_DIR ${SOLUTION_DIR}/sp-foundation)
+set (VENDOR_DIR ${SOLUTION_DIR}/vendor)
 
 set (CMAKE_C_STANDARD 11)
 set (CMAKE_C_STANDARD_REQUIRED ON)
@@ -48,6 +50,8 @@ elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "U
 	set (IMGUI_LIB_NAME "libimgui.a")
 	set (SP_FOUNDATION_LIB_NAME "libSpFoundation.a")
 	set (CUSTOM_DEFINITIONS "-Wno-dangling-else")
+
+	find_package(GLEW REQUIRED)
 else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()
@@ -62,49 +66,50 @@ include_directories(
 	${SP_FOUNDATION_DIR}/src
 	${VENDOR_DIR}/include
 	${VENDOR_DIR}/glfw/include
+	${VENDOR_DIR}
 	/usr/local/include
 )
 
 link_directories(
-	../sp-foundation/lib/Release
-	../sp-foundation/lib/Debug
-	#/usr/lib/i386-linux-gnu
+	${VENDOR_DIR}/lib
+	${VENDOR_DIR}/lib/Release
+	${SP_FOUNDATION_DIR}/lib/Release
+	${SP_FOUNDATION_DIR}/lib/Debug
 	/usr/bin/x86_64-linux-gnu
 	/usr/local/lib
 )
 
-file(GLOB LIBRARIES
-	${OPENGL_LIBRARY}
-	#${GLEW_LIBRARIES}
-	glew32s.lib
-	../vendor/lib/${GLFW_LIB_NAME}
-	../vendor/lib/Release/${IMGUI_LIB_NAME}
-	../sp-foundation/lib/Release/${SP_FOUNDATION_LIB_NAME}
-)
-
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-if ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
-	list(APPEND LIBRARIES
+if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
+    add_definitions(-DENV_32BITS -DAPI_EXPORT -DOPENGL -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DWINDOWS)
+elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" )
+    add_definitions(-DENV_32BITS -DAPI_EXPORT -DOPENGL -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DLINUX)
+elseif ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
+    add_definitions(-DENV_32BITS -DAPI_EXPORT -DOPENGL -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DUNIX)
+else()
+    message(FATAL_ERROR "Operating System not defined!")
+endif()
+
+target_link_libraries(${PROJECT_NAME} 
+	${OPENGL_LIBRARY}
+	${GLEW_LIBRARIES}
+	${GLFW_LIB_NAME}
+	${IMGUI_LIB_NAME}
+	${SP_FOUNDATION_LIB_NAME}
+)
+if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
+	target_link_libraries(${PROJECT_NAME} glew32s.lib)
+elseif ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
+	target_link_libraries(${PROJECT_NAME}
 	    "-framework Cocoa"
 	    "-framework IOKit"
 	    "-framework CoreVideo"
 	)
 endif()
 
-if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
-    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL ${CUSTOM_DEFINITIONS} -DWINDOWS)
-elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" )
-    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL ${CUSTOM_DEFINITIONS} -DLINUX)
-elseif ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
-    add_definitions(-DENV_32BITS -DAPI_EXPORT -DGLFW_ENABLED -DOPENGL ${CUSTOM_DEFINITIONS} -DUNIX)
-else()
-    message(FATAL_ERROR "Operating System not defined!")
-endif()
-
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
-
 target_compile_definitions(${PROJECT_NAME} 
+	PUBLIC GLEW_STATIC
     PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW
 )
 

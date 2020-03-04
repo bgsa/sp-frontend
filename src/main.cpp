@@ -24,6 +24,9 @@ int main(int, char**)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
+	if (glewInit() != GLEW_OK)
+		return -1;
+
     glfwSetWindowTitle(window, "Spectrum Engine");
 
     MainFrame mainFrame;

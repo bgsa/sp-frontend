@@ -20,4 +20,4 @@ cmake .. -G "Visual Studio 15 2017 Win64"     ^
 cmake --build . --config %BUILD_TYPE%
 
 cd ..\
-rem if exist %BUILD_DIR% ( rmdir /s/q %BUILD_DIR% )
+if exist %BUILD_DIR% ( rmdir /s/q %BUILD_DIR% )
