@@ -15,7 +15,8 @@ cmake .. -G "Visual Studio 15 2017 Win64"     ^
 	-DCMAKE_BUILD_TYPE:STRING=%BUILD_TYPE%    ^
 	-DCMAKE_ENABLE_EXPORTS:BOOL=ON            ^
 	-DGLFW_ENABLED:BOOL=ON                    ^
-	-DQT_ENABLED:BOOL=OFF
+	-DQT_ENABLED:BOOL=OFF                     ^
+	-DOPENCL_ENABLED:BOOL=ON
 
 cmake --build . --config %BUILD_TYPE%
 
