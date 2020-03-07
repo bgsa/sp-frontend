@@ -172,6 +172,14 @@
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sp-foundation\sp-foundation.vcxproj">
+      <Project>{0607c5ac-e8da-43db-a0b4-279c05ec6613}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\sp-physics\sp-physics.vcxproj">
+      <Project>{e59b16ca-ee86-41bb-b1b4-e81db09e8561}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
