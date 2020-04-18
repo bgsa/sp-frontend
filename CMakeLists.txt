@@ -16,14 +16,18 @@ project(SpEngine VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 option(OPERATING_SYSTEM "Defined which operating system will be built for" "WINDOWS")
 option(GLFW_ENABLED     "Defined if GLFW will be used" ON)
 option(QT_ENABLED       "Defined if QT will be used"   OFF)
-option(ARCH_BITS        "Defined the compilation to 64 bits"   "64")
+option(ARCH_BITS        "Defined the compilation to 64 bits"   "32")
+option(BUILD_TYPE       "Defined the build type (Debig or Release"   "Debug")
 
 set (PROJECT_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
 set (SOLUTION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+set (ENV_DEFINITION "-DENV_32BITS")
+set (ARCH_DIR "x86")
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin)
 set (SP_FOUNDATION_DIR ${SOLUTION_DIR}/sp-foundation)
 set (SP_PHYSICS_DIR ${SOLUTION_DIR}/sp-physics)
+set (SP_RENDERING_DIR ${SOLUTION_DIR}/sp-rendering)
 set (VENDOR_DIR ${SOLUTION_DIR}/vendor)
 
 set (CMAKE_C_STANDARD 11)
@@ -32,13 +36,15 @@ set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if ( ${ARCH_BITS} STREQUAL "64" )
-	set (ARCH "x86_64")
+	set (ARCH_DIR "x86_64")
 	set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -std=c11" )
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -std=c++11" )
+	set (ENV_DEFINITION "-DENV_64BITS")
 else()
-	set(ARCH "x86")	
+	set(ARCH_DIR  "x86")	
 	set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -std=c11" )
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -std=c++11" )
+	set (ENV_DEFINITION "-DENV_32BITS")
 endif()
 
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
@@ -46,12 +52,14 @@ if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	set (IMGUI_LIB_NAME "imgui.lib")
 	set (SP_FOUNDATION_LIBRARY "SpFoundation.lib")
 	set (SP_PHYSICS_LIBRARY "SpPhysics.lib")
+	set (SP_RENDERING_LIBRARY "SpRendering.lib")
 	set (CUSTOM_DEFINITIONS "-D_CRT_SECURE_NO_WARNINGS")
 elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "UNIX" )
 	set (GLFW_LIB_NAME "libglfw3.a")
 	set (IMGUI_LIB_NAME "libimgui.a")
 	set (SP_FOUNDATION_LIBRARY "libSpFoundation.a")
 	set (SP_PHYSICS_LIBRARY "libSpPhysics.a")
+	set (SP_RENDERING_LIBRARY "libSpRendering.a")
 	set (CUSTOM_DEFINITIONS "-Wno-dangling-else")
 
 	find_package(GLEW REQUIRED)
@@ -69,19 +77,16 @@ include_directories(
 	${HEADERS}
 	${SP_FOUNDATION_DIR}/src
 	${SP_PHYSICS_DIR}/src
+	${SP_RENDERING_DIR}/src
 	${VENDOR_DIR}/include
-	${VENDOR_DIR}/glfw/include
-	${VENDOR_DIR}
 	/usr/local/include
 )
 
 link_directories(
-	${VENDOR_DIR}/lib
-	${VENDOR_DIR}/lib/Release
-	${SP_FOUNDATION_DIR}/lib/Release
-	${SP_FOUNDATION_DIR}/lib/Debug
-	${SP_PHYSICS_DIR}/lib/Release
-	${SP_PHYSICS_DIR}/lib/Debug
+	${VENDOR_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
+	${SP_FOUNDATION_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
+	${SP_PHYSICS_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
+	${SP_RENDERING_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
 	/usr/bin/x86_64-linux-gnu
 	/usr/local/lib
 )
@@ -89,11 +94,11 @@ link_directories(
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
-    add_definitions(-DENV_64BITS -DAPI_EXPORT -DOPENGL -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DWINDOWS)
+    add_definitions(-DAPI_EXPORT ${ENV_DEFINITION} -DOPENGL_ENABLED -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DWINDOWS)
 elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" )
-    add_definitions(-DENV_64BITS -DAPI_EXPORT -DOPENGL -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DLINUX)
+    add_definitions(-DAPI_EXPORT ${ENV_DEFINITION} -DOPENGL_ENABLED -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DLINUX)
 elseif ( ${OPERATING_SYSTEM} STREQUAL "UNIX" )
-    add_definitions(-DENV_64BITS -DAPI_EXPORT -DOPENGL -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DUNIX)
+    add_definitions(-DAPI_EXPORT ${ENV_DEFINITION} -DOPENGL_ENABLED -DGLFW_ENABLED -DOPENCL_ENABLED ${CUSTOM_DEFINITIONS} -DUNIX)
 else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()
@@ -105,6 +110,7 @@ target_link_libraries(${PROJECT_NAME}
 	${IMGUI_LIB_NAME}
 	${SP_FOUNDATION_LIBRARY}
 	${SP_PHYSICS_LIBRARY}
+	${SP_RENDERING_LIBRARY}
 )
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	target_link_libraries(${PROJECT_NAME} glew32s.lib)
