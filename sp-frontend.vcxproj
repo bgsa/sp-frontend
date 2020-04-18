@@ -91,13 +91,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>ENV_32BITS;WINDOWS;DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\vendor\include;..\vendor\glfw\include;..\vendor;..\sp-foundation\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\vendor\lib\x86\$(Configuration);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\vendor\lib\x86\$(Configuration);$(SolutionDir)\sp-foundation\lib\x86\$(Configuration);$(SolutionDir)\sp-physics\lib\x86\$(Configuration);$(SolutionDir)\sp-rendering\lib\x86\$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew32sd.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,14 +109,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>ENV_64BITS;DEBUG;WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\vendor\include;..\vendor\glfw\include;..\vendor;..\sp-foundation\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\vendor\lib\x86_64\$(Configuration);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\vendor\lib\x86_64\$(Configuration);$(SolutionDir)\sp-foundation\lib\x86_64\$(Configuration);$(SolutionDir)\sp-physics\lib\x86_64\$(Configuration);$(SolutionDir)\sp-rendering\lib\x86_64\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew64sd.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,14 +130,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>ENV_32BITS;WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\vendor\include;..\vendor\glfw\include;..\vendor;..\sp-foundation\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\vendor\lib\x86_64\$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\vendor\lib\x86\$(Configuration);$(SolutionDir)\sp-foundation\lib\x86\$(Configuration);$(SolutionDir)\sp-physics\lib\x86\$(Configuration);$(SolutionDir)\sp-rendering\lib\x86\$(Configuration);</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -152,15 +152,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>ENV_64BITS;NDEBUG;WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\vendor\include;..\vendor\glfw\include;..\vendor;..\sp-foundation\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\vendor\lib\x86_64\$(Configuration);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\vendor\lib\x86_64\$(Configuration);$(SolutionDir)\sp-foundation\lib\x86_64\$(Configuration);$(SolutionDir)\sp-physics\lib\x86_64\$(Configuration);$(SolutionDir)\sp-rendering\lib\x86_64\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew64s.lib;glfw3.lib;imgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -178,6 +178,9 @@
     </ProjectReference>
     <ProjectReference Include="..\sp-physics\sp-physics.vcxproj">
       <Project>{e59b16ca-ee86-41bb-b1b4-e81db09e8561}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\sp-rendering\sp-rendering.vcxproj">
+      <Project>{c280ab1e-4bf1-4f80-a243-5c63f3038d8e}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
