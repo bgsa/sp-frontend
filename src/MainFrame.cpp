@@ -1,12 +1,12 @@
 #include "MainFrame.h"
 
-bool show_another_window = false;
-static bool a = false;
-
-void MainFrame::init(GLFWwindow* window)
+void MainFrame::setWindow(GLFWwindow* window)
 {
-    this->window = window;
+	this->window = window;
+}
 
+void MainFrame::init()
+{
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -27,22 +27,13 @@ void MainFrame::init(GLFWwindow* window)
     projectExplorerFrame.init();
     propertiesFrame.init();
     logFrame.init();
+
+	texture = NAMESPACE_RENDERING::OpenGLTexture::createFromFramebuffer();
 }
 
-void MainFrame::preRender()
+void MainFrame::update()
 {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
 
-    renderMainMenuBar();
-
-    aboutFrame.render();
-    projectExplorerFrame.render();
-    propertiesFrame.render();
-    logFrame.render();
-
-    ImGui::Render();
 }
 
 void MainFrame::renderMainMenuBar()
@@ -53,7 +44,7 @@ void MainFrame::renderMainMenuBar()
     {
         if (ImGui::BeginMenu("File"))
         {
-            if( ImGui::MenuItem("Quit", NULL, &a)) 
+            if( ImGui::MenuItem("Quit", NULL)) 
 	            glfwSetWindowShouldClose(window, true);
 
             ImGui::EndMenu();
@@ -61,7 +52,7 @@ void MainFrame::renderMainMenuBar()
 
         if (ImGui::BeginMenu("Edit"))
         {
-            ImGui::MenuItem("Camera", NULL, &a);
+            ImGui::MenuItem("Camera", NULL);
             ImGui::EndMenu();
         }
 
@@ -122,12 +113,38 @@ void MainFrame::renderMainMenuBar()
     }
 }
 
-void MainFrame::render()
+void MainFrame::render(const NAMESPACE_RENDERING::RenderData& renderData)
 {
+	Vec2f imageSize = NAMESPACE_RENDERING::RendererSettings::getInstance()->getSize();
+	sp_uchar* data = NAMESPACE_RENDERING::Framebuffer::getFramebuffer();
+	texture->updateData(data);
+	delete[] data;
+
+	glfwPollEvents();
+	glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	renderMainMenuBar();
+
+	aboutFrame.render();
+	projectExplorerFrame.render();
+	propertiesFrame.render();
+	logFrame.render();
+
+	ImGui::Begin("Game Framebuffer");
+	ImGui::Image((void*)(intptr_t)texture->getId(), ImVec2(imageSize.x, imageSize.y));
+	ImGui::End();
+
+	ImGui::Render();
+
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void MainFrame::release()
+void MainFrame::dispose()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

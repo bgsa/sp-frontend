@@ -2,7 +2,17 @@
     #define GL_SILENCE_DEPRECATION
 #endif
 
+#define WINDOW_TITLE "Spectrum Engine"
+
+#include "SpectrumFronend.h"
 #include "MainFrame.h"
+#include "Renderer.h"
+#include "RendererSettings.h"
+#include "DisplayDeviceGLFW.h"
+#include "KeyboardInputDeviceGLFW.h"
+#include "PointerInputDeviceGLFW.h"
+#include "WindowInputDeviceGLFW.h"
+#include "Renderer.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -11,50 +21,73 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
-    // Setup window
+	MemoryAllocatorManager::init();
+
+	DisplayDeviceGLFW* monitor = new DisplayDeviceGLFW();
+	KeyboardInputDeviceGLFW* keyboard = new KeyboardInputDeviceGLFW();
+	PointerInputDeviceGLFW* mouse = new PointerInputDeviceGLFW();
+	WindowInputDeviceGLFW* windowsDevice = WindowInputDeviceGLFW::getInstance();
+
     glfwSetErrorCallback(glfw_error_callback);
 
     if (!glfwInit())
         return 1;
 
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Spectrum Engine", NULL, NULL);
-    if (window == NULL)
-        return 1;
+#ifdef OPENGLES_ENABLED
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+#endif
+
+	Vec2i windowPosition = { 300, 300 };
+	Vec2f windowSize = { 1280, 720 };
+    GLFWwindow* window = glfwCreateWindow((sp_int) windowSize.x, (sp_int) windowSize.y, "Spectrum Engine", NULL, NULL);
+	if (window == NULL) 
+	{
+		glfwTerminate();
+		return -1;
+	}
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
-	if (glewInit() != GLEW_OK)
+	GLenum glewinit = glewInit();
+	if (glewinit != GLEW_OK)
+	{
+		std::string errorMessage = reinterpret_cast<char*>(((GLubyte*)glewGetErrorString(glewinit)));
+		Log::error(errorMessage);
 		return -1;
+	}
 
-    glfwSetWindowTitle(window, "Spectrum Engine");
+    glfwSetWindowTitle(window, WINDOW_TITLE);
 
-    MainFrame mainFrame;
-    mainFrame.init(window);
+	RendererSize::getInstance()->init();
+	RendererSize::getInstance()->resize(windowSize.x, windowSize.y);
+	NAMESPACE_RENDERING::RendererSettings::getInstance()->setRendererPosition(Vec2f((sp_float)windowPosition.x, (sp_float)windowPosition.y));
+	NAMESPACE_RENDERING::RendererSettings::getInstance()->setSize(windowSize.x, windowSize.y);
 
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	monitor->init(window);
+	keyboard->init(window);
+	mouse->init(window);
 
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
+	MainFrame engineEditor;
+	engineEditor.setWindow(window);
 
-        mainFrame.preRender();
+	NAMESPACE_RENDERING::Renderer* renderer = new NAMESPACE_RENDERING::Renderer();
+	renderer->setRendererEditor(&engineEditor);
+	renderer->init(monitor);
+	renderer->addInputDevice(mouse);
+	renderer->addInputDevice(keyboard);
+	renderer->addInputDevice(windowsDevice);
 
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
+	//keyboard->addHandler(engineEditor);
+	//mouse->addHandler(engineEditor);
+	windowsDevice->addHandler(&engineEditor);
 
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+	renderer->resize(windowSize.x, windowSize.y);
+	renderer->start();
 
-        mainFrame.render();
-
-        //glfwMakeContextCurrent(window);
-        glfwSwapBuffers(window);
-    }
-
-    mainFrame.release();
-
+	delete renderer;
     glfwDestroyWindow(window);
     glfwTerminate();
 

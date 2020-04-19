@@ -3,7 +3,7 @@
 
 #define GLEW_STATIC
 
-#include <SpectrumFoundation.h>
+#include "SpectrumFronend.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
@@ -13,11 +13,20 @@
 #include "ProjectExplorerFrame.h"
 #include "LogFrame.h"
 #include "PropertiesFrame.h"
+#include "RendererEditor.h"
+#include "RenderData.h"
+#include "Framebuffer.h"
+#include "RendererSettings.h"
+#include "OpenGLTexture.h"
+#include "WindowInputDeviceHandler.h"
 
-class MainFrame
+class MainFrame : 
+	public NAMESPACE_RENDERING::RendererEditor,
+	public WindowInputDeviceHandler
 {
     private:
         GLFWwindow* window = NULL;
+		NAMESPACE_RENDERING::OpenGLTexture* texture = NULL;
 
         AboutFrame aboutFrame;
         ProjectExplorerFrame projectExplorerFrame;
@@ -28,13 +37,30 @@ class MainFrame
 
     public:
 
-    API_INTERFACE void init(GLFWwindow* window);
+	API_INTERFACE void setWindow(GLFWwindow* window);
 
-    API_INTERFACE void preRender();
+    API_INTERFACE void init() override;
 
-    API_INTERFACE void render();
+	API_INTERFACE void update() override;
 
-    API_INTERFACE void release();
+    API_INTERFACE void render(const NAMESPACE_RENDERING::RenderData& renderData) override;
+
+	API_INTERFACE void onClose() override
+	{
+		sp_int a = 1;
+	}
+
+	API_INTERFACE inline const sp_char* toString() override
+	{
+		return "Main Frame";
+	}
+
+    API_INTERFACE void dispose() override;
+
+	~MainFrame()
+	{
+		dispose();
+	}
 
 };
 
