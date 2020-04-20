@@ -14,12 +14,14 @@
 #include "WindowInputDeviceGLFW.h"
 #include "Renderer.h"
 
-static void glfw_error_callback(int error, const char* description)
+using namespace NAMESPACE_FRONTEND;
+
+static void glfw_error_callback(sp_int error, const sp_char* description)
 {
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-int main(int, char**)
+sp_int main(sp_int, sp_char**)
 {
 	MemoryAllocatorManager::init();
 
@@ -28,10 +30,10 @@ int main(int, char**)
 	PointerInputDeviceGLFW* mouse = new PointerInputDeviceGLFW();
 	WindowInputDeviceGLFW* windowsDevice = WindowInputDeviceGLFW::getInstance();
 
-    glfwSetErrorCallback(glfw_error_callback);
+	glfwSetErrorCallback(glfw_error_callback);
 
-    if (!glfwInit())
-        return 1;
+	if (!glfwInit())
+		return 1;
 
 #ifdef OPENGLES_ENABLED
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
@@ -41,25 +43,25 @@ int main(int, char**)
 
 	Vec2i windowPosition = { 300, 300 };
 	Vec2f windowSize = { 1280, 720 };
-    GLFWwindow* window = glfwCreateWindow((sp_int) windowSize.x, (sp_int) windowSize.y, "Spectrum Engine", NULL, NULL);
-	if (window == NULL) 
+	GLFWwindow* window = glfwCreateWindow((sp_int)windowSize.x, (sp_int)windowSize.y, "Spectrum Engine", NULL, NULL);
+	if (window == NULL)
 	{
 		glfwTerminate();
 		return -1;
 	}
 
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1); // Enable vsync
 
 	GLenum glewinit = glewInit();
 	if (glewinit != GLEW_OK)
 	{
-		std::string errorMessage = reinterpret_cast<char*>(((GLubyte*)glewGetErrorString(glewinit)));
+		std::string errorMessage = reinterpret_cast<sp_char*>(((GLubyte*)glewGetErrorString(glewinit)));
 		Log::error(errorMessage);
 		return -1;
 	}
 
-    glfwSetWindowTitle(window, WINDOW_TITLE);
+	glfwSetWindowTitle(window, WINDOW_TITLE);
 
 	RendererSize::getInstance()->init();
 	RendererSize::getInstance()->resize(windowSize.x, windowSize.y);
@@ -69,6 +71,7 @@ int main(int, char**)
 	monitor->init(window);
 	keyboard->init(window);
 	mouse->init(window);
+	windowsDevice->init(window);
 
 	MainFrame engineEditor;
 	engineEditor.setWindow(window);
@@ -88,8 +91,9 @@ int main(int, char**)
 	renderer->start();
 
 	delete renderer;
-    glfwDestroyWindow(window);
-    glfwTerminate();
+	glfwDestroyWindow(window);
+	glfwTerminate();
 
-    return 0;
+	MemoryAllocatorManager::release();
+	return 0;
 }

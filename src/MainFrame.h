@@ -19,49 +19,54 @@
 #include "RendererSettings.h"
 #include "OpenGLTexture.h"
 #include "WindowInputDeviceHandler.h"
+#include "IRendererManager.h"
 
-class MainFrame : 
-	public NAMESPACE_RENDERING::RendererEditor,
-	public WindowInputDeviceHandler
+namespace NAMESPACE_FRONTEND
 {
-    private:
-        GLFWwindow* window = NULL;
+	class MainFrame :
+		public NAMESPACE_RENDERING::RendererEditor,
+		public WindowInputDeviceHandler
+	{
+	private:
+		GLFWwindow* window = NULL;
 		NAMESPACE_RENDERING::OpenGLTexture* texture = NULL;
 
-        AboutFrame aboutFrame;
-        ProjectExplorerFrame projectExplorerFrame;
-        LogFrame logFrame;
-        PropertiesFrame propertiesFrame;
+		AboutFrame aboutFrame;
+		ProjectExplorerFrame projectExplorerFrame;
+		LogFrame logFrame;
+		PropertiesFrame propertiesFrame;
 
-        void renderMainMenuBar();
+		void renderMainMenuBar();
 
-    public:
+		sp_bool isDisposed = false;
 
-	API_INTERFACE void setWindow(GLFWwindow* window);
+	public:
 
-    API_INTERFACE void init() override;
+		API_INTERFACE void setWindow(GLFWwindow* window);
 
-	API_INTERFACE void update() override;
+		API_INTERFACE void init(NAMESPACE_RENDERING::IRendererManager* renderer) override;
 
-    API_INTERFACE void render(const NAMESPACE_RENDERING::RenderData& renderData) override;
+		API_INTERFACE void update() override;
 
-	API_INTERFACE void onClose() override
-	{
-		sp_int a = 1;
-	}
+		API_INTERFACE void render(const NAMESPACE_RENDERING::RenderData& renderData) override;
 
-	API_INTERFACE inline const sp_char* toString() override
-	{
-		return "Main Frame";
-	}
+		API_INTERFACE void onClose() override;
 
-    API_INTERFACE void dispose() override;
+		API_INTERFACE void onResize(sp_int width, sp_int height) override;
 
-	~MainFrame()
-	{
-		dispose();
-	}
+		API_INTERFACE inline const sp_char* toString() override
+		{
+			return "Main Frame";
+		}
 
-};
+		API_INTERFACE void dispose() override;
+
+		~MainFrame()
+		{
+			dispose();
+		}
+
+	};
+}
 
 #endif // MAIN_WINDOW_HEADER

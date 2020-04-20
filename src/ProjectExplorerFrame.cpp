@@ -13,10 +13,9 @@ void ProjectExplorerFrame::render()
 
     setHeight((sp_int)getWindowSize().y - 25);
 
-
     ImGui::Begin("Project Explorer", NULL, ImGuiWindowFlags_NoCollapse);
-    ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectSize().x, (sp_float) getHeight()));
-    ImGui::SetWindowPos( ImVec2( 0.0f , 25.0f ));
+    //ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectSize().x, (sp_float) getHeight()));
+    //ImGui::SetWindowPos( ImVec2( 0.0f , 25.0f ));
 
     ImGui::SetNextTreeNodeOpen(true);
     if (ImGui::TreeNode("project-1"))

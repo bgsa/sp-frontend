@@ -3,6 +3,8 @@
 
 #include <SpectrumRendering.h>
 
+#define NAMESPACE_FRONTEND SpFrontEnd
+
 using namespace NAMESPACE_FOUNDATION;
 using namespace NAMESPACE_PHYSICS;
 

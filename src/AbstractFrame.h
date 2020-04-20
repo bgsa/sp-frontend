@@ -1,7 +1,8 @@
 #ifndef ABSTRACT_FRAME_HEADER
 #define ABSTRACT_FRAME_HEADER
 
-#include <SpectrumFoundation.h>
+#include <SpectrumRendering.h>
+#include "RendererSettings.h"
 #include "imgui/imgui.h"
 
 class AbstractFrame
@@ -13,9 +14,9 @@ class AbstractFrame
 
     public:
 
-        API_INTERFACE inline ImVec2 getWindowSize() noexcept
+        API_INTERFACE inline Vec2f getWindowSize() noexcept
         {
-            return ImGui::GetIO().DisplaySize;
+			return NAMESPACE_RENDERING::RendererSettings::getInstance()->getSize();
         }
 
         API_INTERFACE inline sp_bool isVisible() noexcept
