@@ -7,3 +7,4 @@ Release/
 x64/
 .vs/
 *vcxproj.user
+imgui.ini
