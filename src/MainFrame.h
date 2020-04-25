@@ -20,16 +20,17 @@
 #include "OpenGLTexture.h"
 #include "WindowInputDeviceHandler.h"
 #include "IRendererManager.h"
+#include "GridSystem.h"
 
 namespace NAMESPACE_FRONTEND
 {
 	class MainFrame :
-		public NAMESPACE_RENDERING::RendererEditor,
+		public RendererEditor,
 		public WindowInputDeviceHandler
 	{
 	private:
 		GLFWwindow* window = NULL;
-		NAMESPACE_RENDERING::OpenGLTexture* texture = NULL;
+		OpenGLTexture* texture = NULL;
 
 		AboutFrame aboutFrame;
 		ProjectExplorerFrame projectExplorerFrame;
@@ -38,17 +39,24 @@ namespace NAMESPACE_FRONTEND
 
 		void renderMainMenuBar();
 
+		GridSystem* gridSystem = NULL;
+		ImVec2 gameFrambufferSize = { 800.0f, 600.0f };
+
 		sp_bool isDisposed = false;
 
 	public:
 
 		API_INTERFACE void setWindow(GLFWwindow* window);
 
-		API_INTERFACE void init(NAMESPACE_RENDERING::IRendererManager* renderer) override;
+		API_INTERFACE void init(IRendererManager* renderer) override;
 
 		API_INTERFACE void update() override;
 
-		API_INTERFACE void render(const NAMESPACE_RENDERING::RenderData& renderData) override;
+		API_INTERFACE void preRender() override;
+
+		API_INTERFACE void render(const RenderData& renderData) override;
+
+		API_INTERFACE void postRender() override;
 
 		API_INTERFACE void onClose() override;
 

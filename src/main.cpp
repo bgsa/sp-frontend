@@ -6,13 +6,12 @@
 
 #include "SpectrumFronend.h"
 #include "MainFrame.h"
-#include "Renderer.h"
+#include "DefaultRendererManager.h"
 #include "RendererSettings.h"
 #include "DisplayDeviceGLFW.h"
 #include "KeyboardInputDeviceGLFW.h"
 #include "PointerInputDeviceGLFW.h"
 #include "WindowInputDeviceGLFW.h"
-#include "Renderer.h"
 
 using namespace NAMESPACE_FRONTEND;
 
@@ -76,7 +75,7 @@ sp_int main(sp_int, sp_char**)
 	MainFrame engineEditor;
 	engineEditor.setWindow(window);
 
-	NAMESPACE_RENDERING::Renderer* renderer = new NAMESPACE_RENDERING::Renderer();
+	NAMESPACE_RENDERING::DefaultRendererManager* renderer = new NAMESPACE_RENDERING::DefaultRendererManager();
 	renderer->setRendererEditor(&engineEditor);
 	renderer->init(monitor);
 	renderer->addInputDevice(mouse);

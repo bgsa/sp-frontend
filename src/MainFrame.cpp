@@ -7,7 +7,7 @@ namespace NAMESPACE_FRONTEND
 		this->window = window;
 	}
 
-	void MainFrame::init(NAMESPACE_RENDERING::IRendererManager* renderer)
+	void MainFrame::init(IRendererManager* renderer)
 	{
 		this->renderer = renderer;
 
@@ -32,7 +32,11 @@ namespace NAMESPACE_FRONTEND
 		propertiesFrame.init();
 		logFrame.init();
 
-		texture = NAMESPACE_RENDERING::OpenGLTexture::createFromFramebuffer();
+		gridSystem = sp_mem_new(GridSystem)();
+		gridSystem->init();
+		this->renderer->addGraphicObject(gridSystem);
+
+		texture = OpenGLTexture::createFromFramebuffer();
 	}
 
 	void MainFrame::update()
@@ -115,15 +119,26 @@ namespace NAMESPACE_FRONTEND
 		}
 	}
 
-	void MainFrame::render(const NAMESPACE_RENDERING::RenderData& renderData)
+	void MainFrame::preRender()
 	{
-		Vec2f imageSize = NAMESPACE_RENDERING::RendererSettings::getInstance()->getSize();
-		sp_uchar* data = NAMESPACE_RENDERING::Framebuffer::getFramebuffer();
+		renderer->resize(gameFrambufferSize.x, gameFrambufferSize.y);
+		texture->resize({ gameFrambufferSize.x, gameFrambufferSize.y });
+	}
+
+	void MainFrame::render(const RenderData& renderData)
+	{
+		sp_uchar* data = Framebuffer::getFramebuffer();
 		texture->updateData(data);
 		delete[] data;
 
+		sp_int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		renderer->resize(width, height);
+
 		glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glViewport(0, 0, width, height);
+		glScissor(0, 0, width, height);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -137,11 +152,16 @@ namespace NAMESPACE_FRONTEND
 		logFrame.render();
 
 		ImGui::Begin("Game Framebuffer");
-		ImGui::Image((void*)(intptr_t)texture->getId(), ImVec2(imageSize.x, imageSize.y));
+			gameFrambufferSize = ImGui::GetWindowSize();
+			ImGui::Image((void*)(intptr_t)texture->getId(), gameFrambufferSize, ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	void MainFrame::postRender()
+	{
 	}
 
 	void MainFrame::onResize(sp_int width, sp_int height)
@@ -158,6 +178,12 @@ namespace NAMESPACE_FRONTEND
 	{
 		if (!isDisposed)
 		{
+			if(gridSystem != NULL)
+			{
+				sp_mem_delete(gridSystem, GridSystem);
+				gridSystem = NULL;
+			}
+
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();
 			ImGui::DestroyContext();

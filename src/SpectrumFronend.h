@@ -1,12 +1,13 @@
 #ifndef SPECTRUM_FRONTEND_HEADER
 #define SPECTRUM_FRONTEND_HEADER
 
+#ifndef NAMESPACE_FRONTEND
+	#define NAMESPACE_FRONTEND SpFrontEnd
+#endif
+
 #include <SpectrumRendering.h>
 
-#define NAMESPACE_FRONTEND SpFrontEnd
-
-using namespace NAMESPACE_FOUNDATION;
-using namespace NAMESPACE_PHYSICS;
+using namespace NAMESPACE_RENDERING;
 
 
 #endif // SPECTRUM_FRONTEND_HEADER
