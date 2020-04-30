@@ -133,7 +133,7 @@ namespace NAMESPACE_FRONTEND
 
 		sp_int width, height;
 		glfwGetWindowSize(window, &width, &height);
-		renderer->resize(width, height);
+		renderer->resize((sp_float)width, (sp_float)height);
 
 		glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

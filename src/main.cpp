@@ -22,7 +22,7 @@ static void glfw_error_callback(sp_int error, const sp_char* description)
 
 sp_int main(sp_int, sp_char**)
 {
-	StackMemoryAllocator::init();
+	StackMemoryAllocator::main()->init();
 
 	DisplayDeviceGLFW* monitor = new DisplayDeviceGLFW();
 	KeyboardInputDeviceGLFW* keyboard = new KeyboardInputDeviceGLFW();
@@ -93,6 +93,6 @@ sp_int main(sp_int, sp_char**)
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
-	StackMemoryAllocator::release();
+	StackMemoryAllocator::main()->release();
 	return 0;
 }
