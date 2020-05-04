@@ -122,14 +122,15 @@ namespace NAMESPACE_FRONTEND
 	void MainFrame::preRender()
 	{
 		renderer->resize(gameFrambufferSize.x, gameFrambufferSize.y);
-		texture->resize({ gameFrambufferSize.x, gameFrambufferSize.y });
+		texture->resize(Vec2i((sp_int)gameFrambufferSize.x, (sp_int)gameFrambufferSize.y));
 	}
 
 	void MainFrame::render(const RenderData& renderData)
 	{
+		Vec2f size = RendererSettings::getInstance()->getSize();
 		sp_uchar* data = Framebuffer::getFramebuffer();
-		texture->updateData(data);
-		delete[] data;
+		texture->use()->setData(data, Vec2i((sp_int)size.x, (sp_int)size.y));
+		sp_mem_release(data);
 
 		sp_int width, height;
 		glfwGetWindowSize(window, &width, &height);

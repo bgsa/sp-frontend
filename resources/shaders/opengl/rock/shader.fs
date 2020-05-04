@@ -1,9 +1,18 @@
 #version 300 es
-precision mediump float;
 
-out vec4 FragColor;
+#ifdef GL_ES
+	precision mediump float;
+#endif
+
+uniform sampler2D texture2D;
+
+in  vec2 FragTextureCoordinates;
+
+out vec4 FragOutput;
 
 void main()
 {
-	FragColor = vec4(0.5, 0.5, 1.0, 1.0);
+	//FragOutput = vec4(0.5, 0.5, 1.0, 1.0);
+	
+	FragOutput = texture(texture2D, FragTextureCoordinates);
 }
