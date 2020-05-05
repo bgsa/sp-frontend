@@ -1,18 +1,14 @@
 #version 300 es
+precision mediump float;
 
-#ifdef GL_ES
-	precision mediump float;
-#endif
+uniform sampler2D tex;
 
-uniform sampler2D texture2D;
-
-in  vec2 FragTextureCoordinates;
+in  vec2 FragTexCoord;
 
 out vec4 FragOutput;
 
 void main()
 {
 	//FragOutput = vec4(0.5, 0.5, 1.0, 1.0);
-	
-	FragOutput = texture(texture2D, FragTextureCoordinates);
+	FragOutput = texture(tex, FragTexCoord);
 }

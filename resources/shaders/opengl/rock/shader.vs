@@ -5,12 +5,12 @@ uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
 in  vec3 Position;
-in  vec2 TextureCoordinates;
+in  vec2 TexCoord;
 
-out vec2 FragTextureCoordinates;
+out vec2 FragTexCoord;
 
 void main()
 {
-	FragTextureCoordinates = TextureCoordinates;
+	FragTexCoord = TexCoord;
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(Position, 1.0);
 }

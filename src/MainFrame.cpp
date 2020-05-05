@@ -129,7 +129,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		Vec2f size = RendererSettings::getInstance()->getSize();
 		sp_uchar* data = Framebuffer::getFramebuffer();
-		texture->use()->setData(data, Vec2i((sp_int)size.x, (sp_int)size.y));
+		texture->use()->setData(data, Vec2i((sp_int)size.x, (sp_int)size.y), GL_RGBA);
 		sp_mem_release(data);
 
 		sp_int width, height;
