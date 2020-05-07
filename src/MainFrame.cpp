@@ -2,7 +2,7 @@
 
 namespace NAMESPACE_FRONTEND
 {
-	void MainFrame::setWindow(GLFWwindow* window)
+	void MainFrame::setWindow(SpWindow* window)
 	{
 		this->window = window;
 	}
@@ -10,6 +10,8 @@ namespace NAMESPACE_FRONTEND
 	void MainFrame::init(IRendererManager* renderer)
 	{
 		this->renderer = renderer;
+
+		SpEventDispatcher::instance()->addWindowListener(this);
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -22,11 +24,11 @@ namespace NAMESPACE_FRONTEND
 		//io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFRegular-Regular.otf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 		//io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFSemiBold-Regular.ttf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-
-		const char* glsl_version = "#version 130";
+#ifdef OPENGL_ENABLED
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->handler(), true);
+		const sp_char* glsl_version = "#version 130";
 		ImGui_ImplOpenGL3_Init(glsl_version);
-
+#endif
 		aboutFrame.init();
 		projectExplorerFrame.init();
 		propertiesFrame.init();
@@ -51,7 +53,7 @@ namespace NAMESPACE_FRONTEND
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Quit", NULL))
-					glfwSetWindowShouldClose(window, true);
+					window->close();
 
 				ImGui::EndMenu();
 			}
@@ -132,8 +134,8 @@ namespace NAMESPACE_FRONTEND
 		texture->use()->setData(data, Vec2i((sp_int)size.x, (sp_int)size.y), GL_RGBA);
 		sp_mem_release(data);
 
-		sp_int width, height;
-		glfwGetWindowSize(window, &width, &height);
+		sp_int width = window->width();
+		sp_int height = window->height();
 		renderer->resize((sp_float)width, (sp_float)height);
 
 		glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
@@ -165,14 +167,21 @@ namespace NAMESPACE_FRONTEND
 	{
 	}
 
-	void MainFrame::onResize(sp_int width, sp_int height)
+	void MainFrame::onWindowEvent(SpWindowEvent* evt)
 	{
-		renderer->resize((sp_float) width, (sp_float)height);
-	}
+		switch (evt->type)
+		{
+		case (sp_uint)SpWindowEventType::Closed:
+			renderer->stop();
+			break;
 
-	void MainFrame::onClose()
-	{
-		renderer->stop();
+		case (sp_uint)SpWindowEventType::Resized:
+			//renderer->resize((sp_float)width, (sp_float)height);
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	void MainFrame::dispose()

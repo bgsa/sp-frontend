@@ -5,7 +5,6 @@
 
 #include "SpectrumFronend.h"
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -18,18 +17,19 @@
 #include "Framebuffer.h"
 #include "RendererSettings.h"
 #include "OpenGLTexture.h"
-#include "WindowInputDeviceHandler.h"
 #include "IRendererManager.h"
 #include "GridSystem.h"
+#include "SpEventDispatcher.h"
+#include "SpWindow.h"
 
 namespace NAMESPACE_FRONTEND
 {
 	class MainFrame :
 		public RendererEditor,
-		public WindowInputDeviceHandler
+		public SpWindowEventListener
 	{
 	private:
-		GLFWwindow* window = NULL;
+		SpWindow* window = NULL;
 		OpenGLTexture* texture = NULL;
 
 		AboutFrame aboutFrame;
@@ -46,7 +46,7 @@ namespace NAMESPACE_FRONTEND
 
 	public:
 
-		API_INTERFACE void setWindow(GLFWwindow* window);
+		API_INTERFACE void setWindow(SpWindow* window);
 
 		API_INTERFACE void init(IRendererManager* renderer) override;
 
@@ -58,9 +58,7 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE void postRender() override;
 
-		API_INTERFACE void onClose() override;
-
-		API_INTERFACE void onResize(sp_int width, sp_int height) override;
+		API_INTERFACE void onWindowEvent(SpWindowEvent* evt) override;
 
 		API_INTERFACE inline const sp_char* toString() override
 		{

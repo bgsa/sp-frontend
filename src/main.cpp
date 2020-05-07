@@ -8,49 +8,18 @@
 #include "MainFrame.h"
 #include "DefaultRendererManager.h"
 #include "RendererSettings.h"
-#include "DisplayDeviceGLFW.h"
-#include "KeyboardInputDeviceGLFW.h"
-#include "PointerInputDeviceGLFW.h"
-#include "WindowInputDeviceGLFW.h"
+#include "RendererSize.h"
+#include "SpWindowGLFW.h"
 
 using namespace NAMESPACE_FRONTEND;
-
-static void glfw_error_callback(sp_int error, const sp_char* description)
-{
-	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
 
 sp_int main(sp_int, sp_char**)
 {
 	StackMemoryAllocator::main()->init();
 
-	DisplayDeviceGLFW* monitor = new DisplayDeviceGLFW();
-	KeyboardInputDeviceGLFW* keyboard = new KeyboardInputDeviceGLFW();
-	PointerInputDeviceGLFW* mouse = new PointerInputDeviceGLFW();
-	WindowInputDeviceGLFW* windowsDevice = WindowInputDeviceGLFW::getInstance();
-
-	glfwSetErrorCallback(glfw_error_callback);
-
-	if (!glfwInit())
-		return 1;
-
-#ifdef OPENGLES_ENABLED
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-#endif
-
-	Vec2i windowPosition = { 300, 300 };
-	Vec2f windowSize = { 1280, 720 };
-	GLFWwindow* window = glfwCreateWindow((sp_int)windowSize.x, (sp_int)windowSize.y, "Spectrum Engine", NULL, NULL);
-	if (window == NULL)
-	{
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1); // Enable vsync
+	SpWindowGLFW window;
+	window.init();
+	window.setTitle(WINDOW_TITLE);
 
 	GLenum glewinit = glewInit();
 	if (glewinit != GLEW_OK)
@@ -60,38 +29,23 @@ sp_int main(sp_int, sp_char**)
 		return -1;
 	}
 
-	glfwSetWindowTitle(window, WINDOW_TITLE);
-
 	RendererSize::getInstance()->init();
-	RendererSize::getInstance()->resize(windowSize.x, windowSize.y);
-	NAMESPACE_RENDERING::RendererSettings::getInstance()->setRendererPosition(Vec2f((sp_float)windowPosition.x, (sp_float)windowPosition.y));
-	NAMESPACE_RENDERING::RendererSettings::getInstance()->setSize(windowSize.x, windowSize.y);
-
-	monitor->init(window);
-	keyboard->init(window);
-	mouse->init(window);
-	windowsDevice->init(window);
+	RendererSize::getInstance()->resize((sp_float)window.width(), (sp_float)window.height());
+	RendererSettings::getInstance()->setRendererPosition(Vec2f((sp_float)window.x(), (sp_float)window.y()));
+	RendererSettings::getInstance()->setSize((sp_float)window.width(), (sp_float)window.height());
 
 	MainFrame engineEditor;
-	engineEditor.setWindow(window);
+	engineEditor.setWindow(&window);
 
-	NAMESPACE_RENDERING::DefaultRendererManager* renderer = new NAMESPACE_RENDERING::DefaultRendererManager();
+	DefaultRendererManager* renderer = sp_mem_new(DefaultRendererManager)();
 	renderer->setRendererEditor(&engineEditor);
-	renderer->init(monitor);
-	renderer->addInputDevice(mouse);
-	renderer->addInputDevice(keyboard);
-	renderer->addInputDevice(windowsDevice);
-
-	//keyboard->addHandler(engineEditor);
-	//mouse->addHandler(engineEditor);
-	windowsDevice->addHandler(&engineEditor);
-
-	renderer->resize(windowSize.x, windowSize.y);
+	renderer->init(&window);
+	renderer->resize(window.width(), window.height());
 	renderer->start();
 
-	delete renderer;
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	sp_mem_delete(renderer, DefaultRendererManager);
+
+	window.dispose();
 
 	StackMemoryAllocator::main()->release();
 	return 0;
