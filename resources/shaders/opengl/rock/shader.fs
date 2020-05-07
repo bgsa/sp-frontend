@@ -9,6 +9,6 @@ out vec4 FragOutput;
 
 void main()
 {
-	//FragOutput = vec4(0.5, 0.5, 1.0, 1.0);
-	FragOutput = texture(tex, FragTexCoord);
+	FragOutput = vec4(0.5, 0.5, 1.0, 1.0);
+	//FragOutput = texture(tex, FragTexCoord);
 }
