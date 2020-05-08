@@ -30,9 +30,9 @@ sp_int main(sp_int, sp_char**)
 	}
 
 	RendererSize::getInstance()->init();
-	RendererSize::getInstance()->resize((sp_float)window.width(), (sp_float)window.height());
-	RendererSettings::getInstance()->setRendererPosition(Vec2f((sp_float)window.x(), (sp_float)window.y()));
-	RendererSettings::getInstance()->setSize((sp_float)window.width(), (sp_float)window.height());
+	RendererSize::getInstance()->resize((sp_float)window.state()->width, (sp_float)window.state()->height);
+	RendererSettings::getInstance()->setRendererPosition(Vec2f((sp_float)window.state()->x, (sp_float)window.state()->y));
+	RendererSettings::getInstance()->setSize((sp_float)window.state()->width, (sp_float)window.state()->height);
 
 	MainFrame engineEditor;
 	engineEditor.setWindow(&window);
@@ -40,7 +40,7 @@ sp_int main(sp_int, sp_char**)
 	DefaultRendererManager* renderer = sp_mem_new(DefaultRendererManager)();
 	renderer->setRendererEditor(&engineEditor);
 	renderer->init(&window);
-	renderer->resize(window.width(), window.height());
+	renderer->resize((sp_float)window.state()->width, (sp_float)window.state()->height);
 	renderer->start();
 
 	sp_mem_delete(renderer, DefaultRendererManager);

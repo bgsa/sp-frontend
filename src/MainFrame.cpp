@@ -17,8 +17,9 @@ namespace NAMESPACE_FRONTEND
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
+		
 		//io.Fonts->AddFontFromFileTTF("../resources/fonts/16x8pxl-mono.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 		//io.Fonts->AddFontFromFileTTF("../resources/fonts/Dashboard-Regular.otf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 		//io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFRegular-Regular.otf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
@@ -43,7 +44,6 @@ namespace NAMESPACE_FRONTEND
 
 	void MainFrame::update()
 	{
-
 	}
 
 	void MainFrame::renderMainMenuBar()
@@ -134,8 +134,8 @@ namespace NAMESPACE_FRONTEND
 		texture->use()->setData(data, Vec2i((sp_int)size.x, (sp_int)size.y), GL_RGBA);
 		sp_mem_release(data);
 
-		sp_int width = window->width();
-		sp_int height = window->height();
+		sp_int width = window->state()->width;
+		sp_int height = window->state()->height;
 		renderer->resize((sp_float)width, (sp_float)height);
 
 		glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
