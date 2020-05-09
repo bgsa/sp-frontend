@@ -5,13 +5,23 @@
 #define WINDOW_TITLE "Spectrum Engine"
 
 #include "SpectrumFronend.h"
-#include "MainFrame.h"
+#include "SpUIManager.h"
 #include "DefaultRendererManager.h"
 #include "RendererSettings.h"
 #include "RendererSize.h"
 #include "SpWindowGLFW.h"
 
 using namespace NAMESPACE_FRONTEND;
+
+static void initGlew()
+{
+	GLenum glewinit = glewInit();
+	if (glewinit != GLEW_OK)
+	{
+		std::string errorMessage = reinterpret_cast<sp_char*>(((GLubyte*)glewGetErrorString(glewinit)));
+		Log::error(errorMessage);
+	}
+}
 
 sp_int main(sp_int, sp_char**)
 {
@@ -21,20 +31,14 @@ sp_int main(sp_int, sp_char**)
 	window.init();
 	window.setTitle(WINDOW_TITLE);
 
-	GLenum glewinit = glewInit();
-	if (glewinit != GLEW_OK)
-	{
-		std::string errorMessage = reinterpret_cast<sp_char*>(((GLubyte*)glewGetErrorString(glewinit)));
-		Log::error(errorMessage);
-		return -1;
-	}
+	initGlew();
 
 	RendererSize::getInstance()->init();
 	RendererSize::getInstance()->resize((sp_float)window.state()->width, (sp_float)window.state()->height);
 	RendererSettings::getInstance()->setRendererPosition(Vec2f((sp_float)window.state()->x, (sp_float)window.state()->y));
 	RendererSettings::getInstance()->setSize((sp_float)window.state()->width, (sp_float)window.state()->height);
 
-	MainFrame engineEditor;
+	SpUIManager engineEditor;
 	engineEditor.setWindow(&window);
 
 	DefaultRendererManager* renderer = sp_mem_new(DefaultRendererManager)();
@@ -43,10 +47,9 @@ sp_int main(sp_int, sp_char**)
 	renderer->resize((sp_float)window.state()->width, (sp_float)window.state()->height);
 	renderer->start();
 
+	engineEditor.dispose();
 	sp_mem_delete(renderer, DefaultRendererManager);
-
 	window.dispose();
-
 	StackMemoryAllocator::main()->release();
 	return 0;
 }
