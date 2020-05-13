@@ -21,7 +21,11 @@ namespace NAMESPACE_FRONTEND
 		{
 		}
 
-		API_INTERFACE void render(const RenderData& renderData) override
+		API_INTERFACE void render() override
+		{
+		}
+
+		API_INTERFACE void renderGUI() override
 		{
 			if (!isVisible())
 				return;
@@ -30,6 +34,8 @@ namespace NAMESPACE_FRONTEND
 
 			if (ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoCollapse))
 			{
+				loadState();
+
 				ImGui::SetWindowSize(ImVec2((sp_float)width(), (sp_float)height()));
 				ImGui::SetWindowPos(ImVec2((sp_float)(window()->state()->width - width()), 25.0f));
 

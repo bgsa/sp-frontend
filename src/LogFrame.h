@@ -31,13 +31,20 @@ namespace NAMESPACE_FRONTEND
 		{
 		}
 
-		API_INTERFACE void render(const RenderData& renderData) override
+		API_INTERFACE void render() override
+		{
+
+		}
+
+		API_INTERFACE void renderGUI() override
 		{
 			if (!isVisible())
 				return;
 
 			if (ImGui::Begin("Log Window", NULL, ImGuiWindowFlags_NoCollapse))
 			{
+				loadState();
+
 				ImGui::SetWindowSize(ImVec2((sp_float)width(), (sp_float)height()));
 
 				for (sp_uint i = 0; i < messages.size(); i++)

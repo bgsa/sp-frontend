@@ -22,7 +22,12 @@ namespace NAMESPACE_FRONTEND
 		{
 		}
 
-		API_INTERFACE void render(const RenderData& renderData) override
+		API_INTERFACE void render() override
+		{
+
+		}
+
+		API_INTERFACE void renderGUI() override
 		{
 			if (!isVisible())
 				return;
@@ -30,6 +35,8 @@ namespace NAMESPACE_FRONTEND
 			resize(window()->state()->width, height() - 25);
 
 			ImGui::Begin("Project Explorer", NULL, ImGuiWindowFlags_NoCollapse);
+			loadState();
+
 			//ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectSize().x, (sp_float) getHeight()));
 			//ImGui::SetWindowPos( ImVec2( 0.0f , 25.0f ));
 

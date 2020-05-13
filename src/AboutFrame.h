@@ -20,7 +20,11 @@ namespace NAMESPACE_FRONTEND
 		{
 		}
 
-		API_INTERFACE void render(const RenderData& renderData) override
+		API_INTERFACE void render() override
+		{
+		}
+
+		API_INTERFACE void renderGUI() override
 		{
 			if (!isVisible())
 				return;
@@ -28,8 +32,11 @@ namespace NAMESPACE_FRONTEND
 			const ImVec2 windowSize = ImGui::GetIO().DisplaySize;
 
 			ImGui::Begin("About Spectrum Engine", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
+				loadState();
+
 			//ImGui::SetWindowSize(ImVec2(getWidth(), getHeight()));
 			//ImGui::SetWindowPos( ImVec2( ( (sp_int)getWindowSize().x >> 1) - (getWidth() >> 1) , ((sp_int)getWindowSize().y >> 1) - (getHeight() >> 1) ) );
+
 			ImVec2 itemSize = ImGui::GetItemRectSize();
 
 			ImGui::Text("Version: 0.1.0");
