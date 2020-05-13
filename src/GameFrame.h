@@ -27,7 +27,8 @@ namespace NAMESPACE_FRONTEND
 		EditorViewer viewer;
 
 		GridSystem* gridSystem = NULL;
-		Rock* rock = NULL;
+		Rock* rock1 = NULL;
+		Rock* rock2 = NULL;
 		RockRenderer* rockRenderer = NULL;
 
 	public:

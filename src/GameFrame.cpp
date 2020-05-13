@@ -18,11 +18,19 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(gridSystem);
 
 		rockRenderer = sp_mem_new(RockRenderer)();
-		rock = sp_mem_new(Rock)();
-		rock->init();
-		rock->setRenderer(rockRenderer);
-		rockRenderer->setObjects(rock, ONE_UINT);
-		renderer->addGraphicObject(rock);
+
+		rock1 = sp_mem_new(Rock)();
+		rock1->init();
+		rock1->setRenderer(rockRenderer);
+		rock1->translate(10.0f, 0.0f, 0.0f);
+		rockRenderer->setObjects(rock1, ONE_UINT);
+		renderer->addGraphicObject(rock1);
+
+		rock2 = sp_mem_new(Rock)();
+		rock2->init();
+		rock2->setRenderer(rockRenderer);
+		rockRenderer->setObjects(rock2, ONE_UINT);
+		renderer->addGraphicObject(rock2);
 
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
@@ -96,10 +104,15 @@ namespace NAMESPACE_FRONTEND
 			gridSystem = nullptr;
 		}
 
-		if (rock != nullptr)
+		if (rock1 != nullptr)
 		{
-			sp_mem_delete(rock, Rock);
-			rock = nullptr;
+			sp_mem_delete(rock1, Rock);
+			rock1 = nullptr;
+		}
+		if (rock2 != nullptr)
+		{
+			sp_mem_delete(rock2, Rock);
+			rock2 = nullptr;
 		}
 
 		if (rockRenderer != nullptr)
