@@ -4,7 +4,6 @@
 #define GLEW_STATIC
 
 #include "SpectrumFronend.h"
-#include <GL/glew.h>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -13,7 +12,6 @@
 #include "LogFrame.h"
 #include "PropertiesFrame.h"
 #include "GameFrame.h"
-#include "RendererSettings.h"
 #include "SpEventDispatcher.h"
 #include "SpWindow.h"
 #include "RendererEditor.h"
@@ -196,11 +194,6 @@ namespace NAMESPACE_FRONTEND
 		{
 			switch (evt->type)
 			{
-			case (sp_uint)SpWindowEventType::Closed:
-				//renderer->stop();
-				// app.stop();
-				break;
-
 			case (sp_uint)SpWindowEventType::Resized:
 				//renderer->resize((sp_float)width, (sp_float)height);
 				break;

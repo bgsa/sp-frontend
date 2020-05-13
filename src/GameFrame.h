@@ -9,10 +9,9 @@
 #include "Framebuffer.h"
 #include "RendererSettings.h"
 #include "OpenGLTexture.h"
-#include "IRendererManager.h"
 #include "GridSystem.h"
 #include "SpWindow.h"
-#include "DefaultRendererManager.h"
+#include "OpenGLRendererManager.h"
 #include "EditorViewer.h"
 #include "Rock.h"
 #include "RockRenderer.h"
@@ -24,7 +23,7 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		OpenGLTexture* texture = NULL;
-		IRendererManager* renderer;
+		OpenGLRendererManager* renderer;
 		EditorViewer viewer;
 
 		GridSystem* gridSystem = NULL;

@@ -2,15 +2,16 @@
 #define APPLICATION_HEADER
 
 #include "SpectrumFronend.h"
-#include "SpEventDispatcher.h"
-#include "IRendererManager.h"
 #include "RendererEditor.h" 
+#include "SpWindowEventListener.h"
+#include "SpEventDispatcher.h"
 #include "Timer.h"
 
 namespace NAMESPACE_FRONTEND
 {
-	class Application
-		: public Object
+	class Application : 
+		public Object, 
+		public SpWindowEventListener
 	{
 	private:
 		sp_bool isRunning;
@@ -41,6 +42,9 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void init(SpWindow* window)
 		{
 			this->window = window;
+
+			SpEventDispatcher::instance()->addWindowListener(this);
+
 			editor->setWindow(window);
 			editor->init();
 		}
@@ -96,10 +100,21 @@ namespace NAMESPACE_FRONTEND
 			isRunning = false;
 		}
 
+		API_INTERFACE void onWindowEvent(SpWindowEvent* evt) override
+		{
+			switch (evt->type)
+			{
+			case (sp_uint)SpWindowEventType::Closed:
+				stop();
+				break;
+
+			default:
+				break;
+			}
+		}
+
 		API_INTERFACE inline void dispose() override 
 		{
-			//renderer->dispose();
-			//sp_mem_delete(renderer, DefaultRendererManager);
 		}
 
 		API_INTERFACE inline const sp_char* toString()

@@ -9,7 +9,7 @@ namespace NAMESPACE_FRONTEND
 
 		viewer.init(this);
 
-		renderer = sp_mem_new(DefaultRendererManager)();
+		renderer = sp_mem_new(OpenGLRendererManager)();
 		renderer->init(&viewer);
 		renderer->resize((sp_float)width(), (sp_float)width());
 
@@ -34,10 +34,16 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::renderGUI()
 	{
-		ImGui::Begin("Game Framebuffer", NULL, ImGuiWindowFlags_NoScrollbar);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		
+		ImGui::Begin("Game Framebuffer", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		loadState();
 
-		ImVec2 size = ImVec2(width(), height());
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+
+		ImVec2 size = ImVec2((sp_float)width(), (sp_float)height());
 		renderer->resize(size.x, size.y);
 
 		ImGui::Image((void*)(intptr_t)texture->getId(), size, ImVec2(0, 1), ImVec2(1, 0));
@@ -52,6 +58,8 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		ImGui::End();
+
+
 	}
 
 	void GameFrame::preRender()
@@ -76,10 +84,35 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::dispose()
 	{
-		if(gridSystem != NULL)
+		if (texture != nullptr)
+		{
+			sp_mem_delete(texture, OpenGLTexture);
+			texture = nullptr;
+		}
+
+		if(gridSystem != nullptr)
 		{
 			sp_mem_delete(gridSystem, GridSystem);
-			gridSystem = NULL;
+			gridSystem = nullptr;
 		}
+
+		if (rock != nullptr)
+		{
+			sp_mem_delete(rock, Rock);
+			rock = nullptr;
+		}
+
+		if (rockRenderer != nullptr)
+		{
+			sp_mem_delete(rockRenderer, RockRenderer);
+			rockRenderer = nullptr;
+		}
+		
+		if (renderer != nullptr)
+		{
+			sp_mem_delete(renderer, OpenGLRendererManager);
+			renderer = nullptr;
+		}
+		
 	}
 }

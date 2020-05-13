@@ -7,7 +7,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		this->frame = frame;
 
-		Vec3f cameraPosition = { 0.0f, 12.0f, -17.0f };
+		Vec3f cameraPosition = { 0.0f, 30.0f, -25.0f };
 		Vec3f cameraTarget = { 0.0f, 0.0f, 0.0f };
 		initProjectionPerspective(cameraPosition, cameraTarget, frame->aspectRatio());
 
@@ -17,12 +17,10 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::lookAtHorizontal(sp_float angle)
 	{
-		Vec3f direction = target - position;
-
 		target = Vec3f(
-			position[0] + direction[0] * cos(angle) + direction[2] * sin(angle),
+			position[0] + _direction[0] * std::cosf(angle) + _direction[2] * std::sinf(angle),
 			target[1],
-			position[2] + direction[2] * cos(angle) + (position[0] - target[0]) * sin(angle)
+			position[2] + _direction[2] * std::cosf(angle) + (position[0] - target[0]) * std::sinf(angle)
 		);
 
 		updateViewMatrix();
@@ -30,13 +28,12 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::lookAtVertical(sp_float angle)
 	{
-		Vec3f direction = target - position;
-		angle *= -1.0f;
+		angle *= invertY;
 
 		target = Vec3f(
 			target[0],
-			position[1] + direction[1] * cos(angle) + (position[2] - target[2]) * sin(angle),
-			position[2] + direction[1] * sin(angle) + direction[2] * cos(angle)
+			position[1] + _direction[1] * std::cosf(angle) + (position[2] - target[2]) * std::sinf(angle),
+			position[2] + _direction[1] * std::sinf(angle) + _direction[2] * std::cosf(angle)
 		);
 
 		updateViewMatrix();
@@ -44,7 +41,7 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::zoom(sp_float scale)
 	{
-		sp_float newFieldOfView = fieldOfView + (fieldOfView * scale);
+		sp_float newFieldOfView = fieldOfView - (fieldOfView * scale * velocity);
 
 		if (newFieldOfView <= SP_MIN_FIELD_OF_VIEW || newFieldOfView >= SP_MAX_FIELD_OF_VIEW)
 			return;
@@ -55,8 +52,8 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveForward(sp_float distance)
 	{
-		Vec3f directionToMove = (position - target).normalize();
-		directionToMove *= distance;
+		Vec3f directionToMove = _direction.normalize();
+		directionToMove *= (distance * velocity);
 
 		position -= directionToMove;
 		target -= directionToMove;
@@ -66,8 +63,8 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveBackward(sp_float distance)
 	{
-		Vec3f directionToMove = (position - target).normalize();
-		directionToMove *= distance;
+		Vec3f directionToMove = _direction.normalize();
+		directionToMove *= (distance * velocity);
 
 		position += directionToMove;
 		target += directionToMove;
@@ -79,10 +76,10 @@ namespace NAMESPACE_FRONTEND
 	{
 		Vec3f directionToMove = _up.cross(_direction).normalize();
 
-		Vec3f distanceToMove = directionToMove * distance;
+		Vec3f distanceToMove = directionToMove * distance * velocity;
 
-		position -= distanceToMove;
-		target -= distanceToMove;
+		position += distanceToMove;
+		target += distanceToMove;
 
 		updateViewMatrix();
 	}
@@ -90,10 +87,10 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveRight(sp_float distance)
 	{
 		Vec3f directionToMove = _up.cross(_direction).normalize();
-		Vec3f distanceToMove = directionToMove * distance;
+		Vec3f distanceToMove = directionToMove * distance * velocity;
 
-		position += distanceToMove;
-		target += distanceToMove;
+		position -= distanceToMove;
+		target -= distanceToMove;
 
 		updateViewMatrix();
 	}
@@ -127,11 +124,32 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
+		/*
 		if (!frame->isFocused())
 			return;
 
-		sp_int key = evt->key;
-		Log::info(StringHelper::toString(key));
+		switch (evt->key)
+		{
+		case 65: // left
+			moveLeft(TWO_FLOAT);
+			break;
+
+		case 68: // right
+			moveRight(TWO_FLOAT);
+			break;
+
+		case 87: // up
+			moveForward(TWO_FLOAT);
+			break;
+
+		case 83: // down
+			moveBackward(TWO_FLOAT);
+			break;
+
+		default:
+			break;
+		}
+		*/
 	}
 
 	void EditorViewer::onMouseEvent(SpMouseEvent* evt)
@@ -147,7 +165,10 @@ namespace NAMESPACE_FRONTEND
 				rotateY(degreesToRadians(evt->state.previousX - evt->state.x));
 				rotateX(degreesToRadians(evt->state.previousY - evt->state.y));
 			}
+			break;
 
+		case SP_MOUSE_EVENT_SCROLLED:
+			zoom(evt->state.scrollDeltaY);
 			break;
 
 		default:
