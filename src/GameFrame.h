@@ -16,6 +16,9 @@
 #include "Rock.h"
 #include "RockRenderer.h"
 
+#include "RendererList.h"
+#include "kDOP18List.h"
+
 namespace NAMESPACE_FRONTEND
 {
 	class GameFrame 
@@ -30,6 +33,9 @@ namespace NAMESPACE_FRONTEND
 		Rock* rock1 = NULL;
 		Rock* rock2 = NULL;
 		RockRenderer* rockRenderer = NULL;
+
+		kDOP18List* kdops;
+		RendererList<DOP18>* boundingVolumeRenderer;
 
 	public:
 

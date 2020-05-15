@@ -9,10 +9,12 @@ namespace NAMESPACE_FRONTEND
 
 		viewer.init(this);
 
+		// init renderer 
 		renderer = sp_mem_new(OpenGLRendererManager)();
 		renderer->init(&viewer);
 		renderer->resize((sp_float)width(), (sp_float)width());
 
+		// init objects to render
 		gridSystem = sp_mem_new(GridSystem)();
 		gridSystem->init();
 		renderer->addGraphicObject(gridSystem);
@@ -32,6 +34,22 @@ namespace NAMESPACE_FRONTEND
 		rockRenderer->setObjects(rock2, ONE_UINT);
 		renderer->addGraphicObject(rock2);
 
+
+		Mat4f defaultScale = Mat4f::createScale(2.8f, 2.9f, 2.6f);
+		Mat4f defaultTranslation = Mat4f::createTranslate(0.2f, 1.0f, 1.3f);
+
+		kdops = sp_mem_new(kDOP18List)();
+		kdops->setLength(2);
+		kdops->transforms()[0] = defaultTranslation * Mat4f::createTranslate(10.0f, 0.0f, 0.0f) * defaultScale;
+		kdops->transforms()[1] = defaultTranslation * defaultScale;
+		kdops->init();
+		renderer->addGraphicObject(kdops);
+
+		boundingVolumeRenderer = sp_mem_new(RendererList<DOP18>)();
+		boundingVolumeRenderer->setList(kdops);
+		kdops->setRenderer(boundingVolumeRenderer);
+		boundingVolumeRenderer->init();
+		
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
 
