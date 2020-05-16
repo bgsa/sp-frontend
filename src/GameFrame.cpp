@@ -9,6 +9,8 @@ namespace NAMESPACE_FRONTEND
 
 		viewer.init(this);
 
+		SpEventDispatcher::instance()->addKeyboardListener(this);
+
 		// init renderer 
 		renderer = sp_mem_new(OpenGLRendererManager)();
 		renderer->init(&viewer);
@@ -24,7 +26,7 @@ namespace NAMESPACE_FRONTEND
 		rock1 = sp_mem_new(Rock)();
 		rock1->init();
 		rock1->setRenderer(rockRenderer);
-		rock1->translate(10.0f, 0.0f, 0.0f);
+		rock1->transform.positionVector.x += 10.0f;
 		rockRenderer->setObjects(rock1, ONE_UINT);
 		renderer->addGraphicObject(rock1);
 
@@ -34,18 +36,17 @@ namespace NAMESPACE_FRONTEND
 		rockRenderer->setObjects(rock2, ONE_UINT);
 		renderer->addGraphicObject(rock2);
 
-
-		Mat4f defaultScale = Mat4f::createScale(2.8f, 2.9f, 2.6f);
-		Mat4f defaultTranslation = Mat4f::createTranslate(0.2f, 1.0f, 1.3f);
+		const Vec3f defaultScale(2.8f, 2.9f, 2.6f);
+		const Vec3f defaultTranslation(0.2f, 1.0f, 1.3f);
 
 		kdops = sp_mem_new(kDOP18List)();
 		kdops->setLength(2);
-		kdops->transforms()[0] = defaultTranslation * Mat4f::createTranslate(10.0f, 0.0f, 0.0f) * defaultScale;
-		kdops->transforms()[1] = defaultTranslation * defaultScale;
+		kdops->transforms(0).translate(defaultTranslation)->scale(defaultScale)->translate(Vec3f(10.0f, 0.0f, 0.0f));
+		kdops->transforms(1).translate(defaultTranslation)->scale(defaultScale);
 		kdops->init();
 		renderer->addGraphicObject(kdops);
 
-		boundingVolumeRenderer = sp_mem_new(RendererList<DOP18>)();
+		boundingVolumeRenderer = sp_mem_new(RendererList)();
 		boundingVolumeRenderer->setList(kdops);
 		kdops->setRenderer(boundingVolumeRenderer);
 		boundingVolumeRenderer->init();
@@ -102,6 +103,33 @@ namespace NAMESPACE_FRONTEND
 		texture->use()->setData(data, Vec2i(viewport->width, viewport->height), GL_RGBA);
 		sp_mem_release(data);
 
+	}
+
+	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
+	{
+		switch (evt->key)
+		{
+		case SP_KEYBOARD_KEY_A:
+		{
+			rock2->transform.positionVector.x += 1.0f * gameVelocity;
+			kdops->transforms(1).positionVector.x += 1.0f * gameVelocity;
+			break;
+		}
+		case SP_KEYBOARD_KEY_D:
+		{
+			rock2->transform.positionVector.x -= 1.0f * gameVelocity;
+			kdops->transforms(1).positionVector.x -= 1.0f * gameVelocity;
+			break;
+		}
+		case SP_KEYBOARD_KEY_W:
+			break;
+
+		case SP_KEYBOARD_KEY_S:
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	void GameFrame::postRender()

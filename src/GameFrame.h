@@ -23,6 +23,7 @@ namespace NAMESPACE_FRONTEND
 {
 	class GameFrame 
 		: public SpFrame
+		, public SpKeyboardEventListener
 	{
 	private:
 		OpenGLTexture* texture = NULL;
@@ -35,7 +36,9 @@ namespace NAMESPACE_FRONTEND
 		RockRenderer* rockRenderer = NULL;
 
 		kDOP18List* kdops;
-		RendererList<DOP18>* boundingVolumeRenderer;
+		RendererList* boundingVolumeRenderer;
+
+		sp_float gameVelocity = 0.1f;
 
 	public:
 
@@ -50,6 +53,8 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void renderGUI() override;
 
 		API_INTERFACE void postRender() override;
+
+		API_INTERFACE void onKeyboardEvent(SpKeyboardEvent* evt) override;
 
 		API_INTERFACE inline const sp_char* toString() override
 		{

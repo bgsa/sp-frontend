@@ -26,25 +26,25 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE void init(SpFrame* frame);
 
-		API_INTERFACE virtual void zoom(sp_float scale);
+		API_INTERFACE void zoom(sp_float scale) override;
 
-		API_INTERFACE virtual void moveForward(sp_float distance);
+		API_INTERFACE void moveForward(sp_float distance) override;
 
-		API_INTERFACE virtual void moveBackward(sp_float distance);
+		API_INTERFACE void moveBackward(sp_float distance) override;
 
-		API_INTERFACE virtual void moveLeft(sp_float distance);
+		API_INTERFACE void moveLeft(sp_float distance) override;
 
-		API_INTERFACE virtual void moveRight(sp_float distance);
+		API_INTERFACE void moveRight(sp_float distance) override;
 
-		API_INTERFACE virtual void lookAtHorizontal(sp_float angleInRadians);
+		API_INTERFACE void lookAtHorizontal(sp_float angleInRadians) override;
 
-		API_INTERFACE virtual void lookAtVertical(sp_float angleInRadians);
+		API_INTERFACE void lookAtVertical(sp_float angleInRadians) override;
 
-		API_INTERFACE virtual void rotateX(sp_float angle);
+		API_INTERFACE void rotateX(sp_float angle) override;
 
-		API_INTERFACE virtual void rotateY(sp_float angle);
+		API_INTERFACE void rotateY(sp_float angle) override;
 
-		API_INTERFACE virtual void rotateZ(sp_float angle);
+		API_INTERFACE void rotateZ(sp_float angle) override;
 
 		API_INTERFACE void onKeyboardEvent(SpKeyboardEvent* evt) override;
 
