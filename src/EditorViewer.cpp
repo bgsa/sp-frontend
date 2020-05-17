@@ -7,8 +7,8 @@ namespace NAMESPACE_FRONTEND
 	{
 		this->frame = frame;
 
-		Vec3f cameraPosition = { 0.0f, 30.0f, -25.0f };
-		Vec3f cameraTarget = { 0.0f, 0.0f, 0.0f };
+		Vec3 cameraPosition = { 0.0f, 30.0f, -25.0f };
+		Vec3 cameraTarget = { 0.0f, 0.0f, 0.0f };
 		initProjectionPerspective(cameraPosition, cameraTarget, frame->aspectRatio());
 
 		SpEventDispatcher::instance()->addKeyboardListener(this);
@@ -17,7 +17,7 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::lookAtHorizontal(sp_float angle)
 	{
-		target = Vec3f(
+		target = Vec3(
 			position[0] + _direction[0] * std::cosf(angle) + _direction[2] * std::sinf(angle),
 			target[1],
 			position[2] + _direction[2] * std::cosf(angle) + (position[0] - target[0]) * std::sinf(angle)
@@ -30,7 +30,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		angle *= invertY;
 
-		target = Vec3f(
+		target = Vec3(
 			target[0],
 			position[1] + _direction[1] * std::cosf(angle) + (position[2] - target[2]) * std::sinf(angle),
 			position[2] + _direction[1] * std::sinf(angle) + _direction[2] * std::cosf(angle)
@@ -52,7 +52,7 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveForward(sp_float distance)
 	{
-		Vec3f directionToMove = _direction.normalize();
+		Vec3 directionToMove = _direction.normalize();
 		directionToMove *= (distance * velocity);
 
 		position -= directionToMove;
@@ -63,7 +63,7 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveBackward(sp_float distance)
 	{
-		Vec3f directionToMove = _direction.normalize();
+		Vec3 directionToMove = _direction.normalize();
 		directionToMove *= (distance * velocity);
 
 		position += directionToMove;
@@ -74,9 +74,9 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveLeft(sp_float distance)
 	{
-		Vec3f directionToMove = _up.cross(_direction).normalize();
+		Vec3 directionToMove = _up.cross(_direction).normalize();
 
-		Vec3f distanceToMove = directionToMove * distance * velocity;
+		Vec3 distanceToMove = directionToMove * distance * velocity;
 
 		position += distanceToMove;
 		target += distanceToMove;
@@ -86,8 +86,8 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveRight(sp_float distance)
 	{
-		Vec3f directionToMove = _up.cross(_direction).normalize();
-		Vec3f distanceToMove = directionToMove * distance * velocity;
+		Vec3 directionToMove = _up.cross(_direction).normalize();
+		Vec3 distanceToMove = directionToMove * distance * velocity;
 
 		position -= distanceToMove;
 		target -= distanceToMove;

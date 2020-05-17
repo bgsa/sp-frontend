@@ -7,6 +7,7 @@
 #include "RendererSettings.h"
 #include "RenderData.h"
 #include "imgui/imgui.h"
+#include "SpSize.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -31,7 +32,7 @@ namespace NAMESPACE_FRONTEND
 			return (sp_float)(_width / _height);
 		}
 
-		API_INTERFACE inline Vec2i size() const noexcept
+		API_INTERFACE inline SpSize<sp_int> size() const noexcept
 		{
 			return { _width, _height };
 		}

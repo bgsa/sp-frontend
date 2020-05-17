@@ -26,7 +26,7 @@ namespace NAMESPACE_FRONTEND
 		rock1 = sp_mem_new(Rock)();
 		rock1->init();
 		rock1->setRenderer(rockRenderer);
-		rock1->transform.positionVector.x += 10.0f;
+		rock1->transform.position.x += 10.0f;
 		rockRenderer->setObjects(rock1, ONE_UINT);
 		renderer->addGraphicObject(rock1);
 
@@ -36,12 +36,12 @@ namespace NAMESPACE_FRONTEND
 		rockRenderer->setObjects(rock2, ONE_UINT);
 		renderer->addGraphicObject(rock2);
 
-		const Vec3f defaultScale(2.8f, 2.9f, 2.6f);
-		const Vec3f defaultTranslation(0.2f, 1.0f, 1.3f);
+		const Vec3 defaultScale(2.8f, 2.9f, 2.6f);
+		const Vec3 defaultTranslation(0.2f, 1.0f, 1.3f);
 
 		kdops = sp_mem_new(kDOP18List)();
 		kdops->setLength(2);
-		kdops->transforms(0).translate(defaultTranslation)->scale(defaultScale)->translate(Vec3f(10.0f, 0.0f, 0.0f));
+		kdops->transforms(0).translate(defaultTranslation)->scale(defaultScale)->translate(Vec3(10.0f, 0.0f, 0.0f));
 		kdops->transforms(1).translate(defaultTranslation)->scale(defaultScale);
 		kdops->init();
 		renderer->addGraphicObject(kdops);
@@ -100,7 +100,7 @@ namespace NAMESPACE_FRONTEND
 		SpViewportData* viewport = renderer->viewport();
 
 		sp_uchar* data = Framebuffer::getFramebuffer();
-		texture->use()->setData(data, Vec2i(viewport->width, viewport->height), GL_RGBA);
+		texture->use()->setData(data, SpSize<sp_int>(viewport->width, viewport->height), GL_RGBA);
 		sp_mem_release(data);
 
 	}
@@ -111,14 +111,14 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rock2->transform.positionVector.x += 1.0f * gameVelocity;
-			kdops->transforms(1).positionVector.x += 1.0f * gameVelocity;
+			rock2->transform.position.x += 1.0f * gameVelocity;
+			kdops->transforms(1).position.x += 1.0f * gameVelocity;
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rock2->transform.positionVector.x -= 1.0f * gameVelocity;
-			kdops->transforms(1).positionVector.x -= 1.0f * gameVelocity;
+			rock2->transform.position.x -= 1.0f * gameVelocity;
+			kdops->transforms(1).position.x -= 1.0f * gameVelocity;
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
