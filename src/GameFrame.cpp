@@ -21,19 +21,15 @@ namespace NAMESPACE_FRONTEND
 		gridSystem->init();
 		renderer->addGraphicObject(gridSystem);
 
-		rockRenderer = sp_mem_new(RockRenderer)();
-
 		rock1 = sp_mem_new(Rock)();
 		rock1->init();
 		rock1->setRenderer(rockRenderer);
-		rock1->transform.position.x += 10.0f;
-		rockRenderer->setObjects(rock1, ONE_UINT);
+		rock1->translate({ 10.0f, 0.0f, 0.0f });
 		renderer->addGraphicObject(rock1);
 
 		rock2 = sp_mem_new(Rock)();
 		rock2->init();
 		rock2->setRenderer(rockRenderer);
-		rockRenderer->setObjects(rock2, ONE_UINT);
 		renderer->addGraphicObject(rock2);
 
 		const Vec3 defaultScale(2.8f, 2.9f, 2.6f);
@@ -85,8 +81,6 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		ImGui::End();
-
-
 	}
 
 	void GameFrame::preRender()
@@ -111,13 +105,13 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rock2->transform.position.x += 1.0f * gameVelocity;
+			rock2->translate({ 1.0f * gameVelocity , 0.0f, 0.0f });
 			kdops->transforms(1).position.x += 1.0f * gameVelocity;
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rock2->transform.position.x -= 1.0f * gameVelocity;
+			rock2->translate({ -1.0f * gameVelocity , 0.0f, 0.0f });
 			kdops->transforms(1).position.x -= 1.0f * gameVelocity;
 			break;
 		}
