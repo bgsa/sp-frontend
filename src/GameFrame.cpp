@@ -24,28 +24,13 @@ namespace NAMESPACE_FRONTEND
 		rock1 = sp_mem_new(Rock)();
 		rock1->init();
 		rock1->setRenderer(rockRenderer);
-		rock1->translate({ 10.0f, 0.0f, 0.0f });
+		rock1->translate({ 5.0f, 0.0f, 0.0f });
 		renderer->addGraphicObject(rock1);
 
 		rock2 = sp_mem_new(Rock)();
 		rock2->init();
 		rock2->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rock2);
-
-		const Vec3 defaultScale(2.8f, 2.9f, 2.6f);
-		const Vec3 defaultTranslation(0.2f, 1.0f, 1.3f);
-
-		kdops = sp_mem_new(kDOP18List)();
-		kdops->setLength(2);
-		kdops->transforms(0).translate(defaultTranslation)->scale(defaultScale)->translate(Vec3(10.0f, 0.0f, 0.0f));
-		kdops->transforms(1).translate(defaultTranslation)->scale(defaultScale);
-		kdops->init();
-		renderer->addGraphicObject(kdops);
-
-		boundingVolumeRenderer = sp_mem_new(RendererList)();
-		boundingVolumeRenderer->setList(kdops);
-		kdops->setRenderer(boundingVolumeRenderer);
-		boundingVolumeRenderer->init();
 		
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
@@ -96,7 +81,6 @@ namespace NAMESPACE_FRONTEND
 		sp_uchar* data = Framebuffer::getFramebuffer();
 		texture->use()->setData(data, SpSize<sp_int>(viewport->width, viewport->height), GL_RGBA);
 		sp_mem_release(data);
-
 	}
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
@@ -106,13 +90,11 @@ namespace NAMESPACE_FRONTEND
 		case SP_KEYBOARD_KEY_A:
 		{
 			rock2->translate({ 1.0f * gameVelocity , 0.0f, 0.0f });
-			kdops->transforms(1).position.x += 1.0f * gameVelocity;
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
 			rock2->translate({ -1.0f * gameVelocity , 0.0f, 0.0f });
-			kdops->transforms(1).position.x -= 1.0f * gameVelocity;
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:

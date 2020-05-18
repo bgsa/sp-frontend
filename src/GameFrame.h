@@ -35,9 +35,6 @@ namespace NAMESPACE_FRONTEND
 		Rock* rock2 = NULL;
 		RockRenderer* rockRenderer = NULL;
 
-		kDOP18List* kdops;
-		RendererList* boundingVolumeRenderer;
-
 		sp_float gameVelocity = 0.1f;
 
 	public:
