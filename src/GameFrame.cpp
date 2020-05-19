@@ -85,27 +85,35 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
+		const sp_float temp = 1.0f;
+
 		switch (evt->key)
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rock2->translate({ 1.0f * gameVelocity , 0.0f, 0.0f });
+			rock2->translate({ temp * gameVelocity , 0.0f, 0.0f });
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rock2->translate({ -1.0f * gameVelocity , 0.0f, 0.0f });
+			rock2->translate({ -temp * gameVelocity , 0.0f, 0.0f });
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
+			rock2->translate({ 0.0f , temp * gameVelocity, 0.0f });
 			break;
 
 		case SP_KEYBOARD_KEY_S:
-			break;
-
-		default:
+			rock2->translate({ 0.0f , -temp * gameVelocity, 0.0f });
 			break;
 		}
+
+		DOP18* bv1 = (DOP18*)rock1->boundingVolume();
+		DOP18* bv2 = (DOP18*)rock2->boundingVolume();
+		CollisionStatus status = bv1->collisionStatus(*bv2);
+
+		if (status != CollisionStatus::OUTSIDE)
+			Log::info("COLLISION!");
 	}
 
 	void GameFrame::postRender()
