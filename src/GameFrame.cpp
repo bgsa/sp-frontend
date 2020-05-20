@@ -21,6 +21,7 @@ namespace NAMESPACE_FRONTEND
 		gridSystem->init();
 		renderer->addGraphicObject(gridSystem);
 
+		/*
 		rock1 = sp_mem_new(Rock)();
 		rock1->init();
 		rock1->setRenderer(rockRenderer);
@@ -31,6 +32,15 @@ namespace NAMESPACE_FRONTEND
 		rock2->init();
 		rock2->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rock2);
+		*/
+
+		rockList = sp_mem_new(RockList)();
+		rockList->setLength(2u);
+		rockList->init();
+		rockList->translate(0u, { 5.0f, 3.0f, 0.0f });
+		rockList->translate(1u, { -5.0f, 0.0f, 5.0f });
+		rockList->setRenderer(rockRenderer);
+		renderer->addGraphicObject(rockList);
 		
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
@@ -91,29 +101,31 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rock2->translate({ temp * gameVelocity , 0.0f, 0.0f });
+			rockList->translate(1, { temp * gameVelocity , 0.0f, 0.0f });
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rock2->translate({ -temp * gameVelocity , 0.0f, 0.0f });
+			rockList->translate(1, { -temp * gameVelocity , 0.0f, 0.0f });
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
-			rock2->translate({ 0.0f , temp * gameVelocity, 0.0f });
+			rockList->translate(1, { 0.0f , temp * gameVelocity, 0.0f });
 			break;
 
 		case SP_KEYBOARD_KEY_S:
-			rock2->translate({ 0.0f , -temp * gameVelocity, 0.0f });
+			rockList->translate(1, { 0.0f , -temp * gameVelocity, 0.0f });
 			break;
 		}
 
+		/*
 		DOP18* bv1 = (DOP18*)rock1->boundingVolume();
 		DOP18* bv2 = (DOP18*)rock2->boundingVolume();
 		CollisionStatus status = bv1->collisionStatus(*bv2);
 
 		if (status != CollisionStatus::OUTSIDE)
 			Log::info("COLLISION!");
+			*/
 	}
 
 	void GameFrame::postRender()
@@ -149,6 +161,12 @@ namespace NAMESPACE_FRONTEND
 		{
 			sp_mem_delete(rockRenderer, RockRenderer);
 			rockRenderer = nullptr;
+		}
+
+		if (rockList != nullptr)
+		{
+			sp_mem_delete(rockList, RockList);
+			rockList = nullptr;
 		}
 		
 		if (renderer != nullptr)

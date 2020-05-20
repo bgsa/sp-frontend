@@ -13,11 +13,12 @@
 #include "SpWindow.h"
 #include "OpenGLRendererManager.h"
 #include "EditorViewer.h"
-#include "Rock.h"
-#include "RockRenderer.h"
 
 #include "RendererList.h"
-#include "kDOP18List.h"
+#include "DOP18ListRenderer.h"
+#include "Rock.h"
+#include "RockRenderer.h"
+#include "RockList.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -26,14 +27,15 @@ namespace NAMESPACE_FRONTEND
 		, public SpKeyboardEventListener
 	{
 	private:
-		OpenGLTexture* texture = NULL;
+		OpenGLTexture* texture = nullptr;
 		OpenGLRendererManager* renderer;
 		EditorViewer viewer;
 
-		GridSystem* gridSystem = NULL;
-		Rock* rock1 = NULL;
-		Rock* rock2 = NULL;
-		RockRenderer* rockRenderer = NULL;
+		GridSystem* gridSystem = nullptr;
+		Rock* rock1 = nullptr;
+		Rock* rock2 = nullptr;
+		RockRenderer* rockRenderer = nullptr;
+		RockList* rockList = nullptr;
 
 		sp_float gameVelocity = 0.1f;
 
