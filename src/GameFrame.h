@@ -19,6 +19,7 @@
 #include "Rock.h"
 #include "RockRenderer.h"
 #include "RockList.h"
+#include "Randomizer.h"
 
 namespace NAMESPACE_FRONTEND
 {

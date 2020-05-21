@@ -34,13 +34,25 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(rock2);
 		*/
 
+
+		//const sp_uint rockLength = 131072;
+		const sp_uint rockLength = 10;
+
 		rockList = sp_mem_new(RockList)();
-		rockList->setLength(2u);
+		rockList->setLength(rockLength);
 		rockList->init();
-		rockList->translate(0u, { 5.0f, 3.0f, 0.0f });
-		rockList->translate(1u, { -5.0f, 0.0f, 5.0f });
 		rockList->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rockList);
+
+		Randomizer rand(0, 10000);
+		for (sp_uint i = 0; i < rockLength; i++)
+		{
+			sp_float x = rand.rand() / 100.0f;
+			sp_float y = rand.rand() / 100.0f;
+			sp_float z = rand.rand() / 100.0f;
+
+			rockList->translate(i, { x, 0.5f, z });
+		}
 		
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
