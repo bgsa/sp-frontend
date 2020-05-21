@@ -1,16 +1,19 @@
 #version 300 es
 
-#ifndef LIST_LENGTH
-	#define LIST_LENGTH 100
-#endif
-
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform mat4 transformMatrix[ LIST_LENGTH ];
+
+uniform samplerBuffer transformMatrix;
 
 in vec3 Position;
 
 void main()
 {
-	gl_Position = projectionMatrix * viewMatrix * transformMatrix[gl_InstanceID] * vec4(Position, 1.0);
+	vec4 col1 = texelFetch(transformMatrix, gl_InstanceID * 4);
+	vec4 col2 = texelFetch(transformMatrix, gl_InstanceID * 4 + 1);
+	vec4 col3 = texelFetch(transformMatrix, gl_InstanceID * 4 + 2);
+	vec4 col4 = texelFetch(transformMatrix, gl_InstanceID * 4 + 3);
+	mat4 transform = mat4(col1, col2, col3, col4);
+
+	gl_Position = projectionMatrix * viewMatrix * transform * vec4(Position, 1.0);
 }
