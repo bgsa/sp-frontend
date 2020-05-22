@@ -6,6 +6,8 @@
 #include "SpWindowEventListener.h"
 #include "SpEventDispatcher.h"
 #include "Timer.h"
+#include "SpPhysicSimulator.h"
+#include "GpuContext.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -18,6 +20,7 @@ namespace NAMESPACE_FRONTEND
 		Timer timer;
 		SpUIManager* editor;
 		SpWindow* window;
+		GpuContext* gpuContext;
 
 		void update()
 		{
@@ -43,6 +46,9 @@ namespace NAMESPACE_FRONTEND
 		{
 			this->window = window;
 
+			gpuContext = GpuContext::init();
+			SpPhysicSimulator::init();
+
 			SpEventDispatcher::instance()->addWindowListener(this);
 
 			editor->setWindow(window);
@@ -55,7 +61,7 @@ namespace NAMESPACE_FRONTEND
 			sp_float nextTick = ZERO_FLOAT;
 			sp_bool fpsLowerThanFrameLimit = false;
 			sp_float elapsedTime = ZERO_FLOAT;
-
+			
 			timer.start();
 
 			while (isRunning)
@@ -65,6 +71,7 @@ namespace NAMESPACE_FRONTEND
 
 				do
 				{
+					SpPhysicSimulator::instance()->run();
 					SpEventDispatcher::instance()->processAllEvents();
 					update();
 
@@ -115,6 +122,11 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void dispose() override 
 		{
+			if (gpuContext != nullptr)
+			{
+				sp_mem_delete(gpuContext, GpuContext);
+				gpuContext = nullptr;
+			}
 		}
 
 		API_INTERFACE inline const sp_char* toString()

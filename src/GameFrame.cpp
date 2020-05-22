@@ -21,39 +21,28 @@ namespace NAMESPACE_FRONTEND
 		gridSystem->init();
 		renderer->addGraphicObject(gridSystem);
 
-		/*
-		rock1 = sp_mem_new(Rock)();
-		rock1->init();
-		rock1->setRenderer(rockRenderer);
-		rock1->translate({ 5.0f, 0.0f, 0.0f });
-		renderer->addGraphicObject(rock1);
-
-		rock2 = sp_mem_new(Rock)();
-		rock2->init();
-		rock2->setRenderer(rockRenderer);
-		renderer->addGraphicObject(rock2);
-		*/
-
-
-		const sp_uint rockLength = 131072;
-		//const sp_uint rockLength = 10;
+		//const sp_uint rockLength = 131072;
+		const sp_uint rockLength = 30;
 
 		rockList = sp_mem_new(RockList)();
 		rockList->setLength(rockLength);
 
 		Randomizer rand(0, 10000);
+		sp_uint halfSpace = 10000 / 200;
 		for (sp_uint i = 0; i < rockLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
 			sp_float y = rand.rand() / 100.0f;
 			sp_float z = rand.rand() / 100.0f;
 
-			rockList->translate(i, { x, 0.5f, z });
+			rockList->translate(i, { x - halfSpace, 0.5f, z - halfSpace });
 		}
 
 		rockList->init();
 		rockList->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rockList);
+
+		SpPhysicSimulator::instance()->add(rockList);
 		
 		texture = OpenGLTexture::createFromFramebuffer();
 	}

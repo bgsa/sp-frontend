@@ -20,6 +20,7 @@
 #include "RockRenderer.h"
 #include "RockList.h"
 #include "Randomizer.h"
+#include "SpPhysicSimulator.h"
 
 namespace NAMESPACE_FRONTEND
 {
