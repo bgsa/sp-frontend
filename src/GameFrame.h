@@ -45,7 +45,7 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE void init(SpWindow* window) override;
 
-		API_INTERFACE void update(sp_longlong elapsedTime);
+		API_INTERFACE void update(sp_float elapsedTime);
 
 		API_INTERFACE void preRender() override;
 

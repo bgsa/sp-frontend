@@ -12,7 +12,7 @@ static void initGlew()
 	GLenum glewinit = glewInit();
 	if (glewinit != GLEW_OK)
 	{
-		std::string errorMessage = reinterpret_cast<sp_char*>(((GLubyte*)glewGetErrorString(glewinit)));
+		const sp_char* errorMessage = reinterpret_cast<sp_char*>(((GLubyte*)glewGetErrorString(glewinit)));
 		Log::error(errorMessage);
 	}
 }

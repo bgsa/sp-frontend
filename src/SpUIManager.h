@@ -147,7 +147,7 @@ namespace NAMESPACE_FRONTEND
 				item->value()->init(window);
 		}
 
-		API_INTERFACE void update(sp_longlong elapsedTime) override
+		API_INTERFACE void update(sp_float elapsedTime) override
 		{
 			gameFrame.update(elapsedTime);
 		}

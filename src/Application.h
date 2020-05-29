@@ -25,7 +25,7 @@ namespace NAMESPACE_FRONTEND
 		void update()
 		{
 			timer.update();
-			sp_longlong elapsedTime = timer.getElapsedTime();
+			sp_float elapsedTime = timer.getElapsedTime();
 
 			editor->update(elapsedTime);
 		}
@@ -47,7 +47,7 @@ namespace NAMESPACE_FRONTEND
 			this->window = window;
 
 			gpuContext = GpuContext::init();
-			SpPhysicSimulator::init();
+			SpPhysicSimulator::init(64);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
 
@@ -66,7 +66,7 @@ namespace NAMESPACE_FRONTEND
 
 			while (isRunning)
 			{
-				elapsedTime = sp_float(timer.getElapsedTime());
+				elapsedTime = timer.getElapsedTime();
 				nextTick = timer.getSkipTick();
 
 				do
