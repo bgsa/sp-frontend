@@ -187,6 +187,7 @@
     <ClInclude Include="src\SpFrame.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
+    <ClInclude Include="src\WorldObjectList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameFrame.cpp" />

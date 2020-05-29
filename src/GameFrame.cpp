@@ -22,19 +22,25 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(gridSystem);
 
 		//const sp_uint rockLength = 131072;
-		const sp_uint rockLength = 64;
+		const sp_uint rockLength = 63u;
+		const sp_uint worldObjectsLength = 1u;
 		Randomizer rand(0, 10000);
 		sp_uint halfSpace = 10000 / 200;
 
-		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 0.0f, 0.7f, 0.0f });
+		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
+		worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
+		worldObjects->init();
+		renderer->addGraphicObject(worldObjects);
+
+		rockList = sp_mem_new(RockList)(rockLength -1);
+		rockList->translate(0u, { 0.0f, 3.7f, 0.0f });
 		for (sp_uint i = 1; i < rockLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
 			sp_float y = rand.rand() / 100.0f;
 			sp_float z = rand.rand() / 100.0f;
 
-			rockList->translate(i, { x - halfSpace, 0.7f, z - halfSpace });
+			rockList->translate(i, { x - halfSpace, 3.7f, z - halfSpace });
 		}
 
 		rockList->init();
@@ -149,17 +155,6 @@ namespace NAMESPACE_FRONTEND
 		{
 			sp_mem_delete(gridSystem, GridSystem);
 			gridSystem = nullptr;
-		}
-
-		if (rock1 != nullptr)
-		{
-			sp_mem_delete(rock1, Rock);
-			rock1 = nullptr;
-		}
-		if (rock2 != nullptr)
-		{
-			sp_mem_delete(rock2, Rock);
-			rock2 = nullptr;
 		}
 
 		if (rockRenderer != nullptr)

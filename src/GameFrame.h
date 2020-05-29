@@ -22,6 +22,7 @@
 #include "Randomizer.h"
 #include "SpPhysicSimulator.h"
 #include "SpCollisionEventListener.h"
+#include "WorldObjectList.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -36,10 +37,9 @@ namespace NAMESPACE_FRONTEND
 		EditorViewer viewer;
 
 		GridSystem* gridSystem = nullptr;
-		Rock* rock1 = nullptr;
-		Rock* rock2 = nullptr;
 		RockRenderer* rockRenderer = nullptr;
 		RockList* rockList = nullptr;
+		WorldObjectList* worldObjects = nullptr;
 
 		sp_float gameVelocity = 0.1f;
 
