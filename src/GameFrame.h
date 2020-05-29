@@ -21,12 +21,14 @@
 #include "RockList.h"
 #include "Randomizer.h"
 #include "SpPhysicSimulator.h"
+#include "SpCollisionEventListener.h"
 
 namespace NAMESPACE_FRONTEND
 {
 	class GameFrame 
 		: public SpFrame
 		, public SpKeyboardEventListener
+		, public SpCollisionEventListener
 	{
 	private:
 		OpenGLTexture* texture = nullptr;
@@ -56,6 +58,8 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void postRender() override;
 
 		API_INTERFACE void onKeyboardEvent(SpKeyboardEvent* evt) override;
+
+		API_INTERFACE void onCollisionEvent(SpCollisionEvent* evt) override;
 
 		API_INTERFACE inline const sp_char* toString() override
 		{
