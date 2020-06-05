@@ -56,19 +56,11 @@ namespace NAMESPACE_FRONTEND
 		if (!SpPhysicSettings::instance()->isSimulationEnabled())
 			return;
 
-		const Vec3 gravityForce(0.0f, -9.8f, 0.0f);
-
 		for (sp_uint i = 0u; i < worldObjects->length(); i++)
-		{
-			worldObjects->physicProperties(i)->addForce(gravityForce);
 			worldObjects->update(i, elapsedTime);
-		}
 		
 		for (sp_uint i = 0u; i < rockList->length(); i++)
-		{
-			rockList->physicProperties(i)->addForce(gravityForce);
 			rockList->update(i, elapsedTime);
-		}
 	}
 
 	void GameFrame::renderGUI()
