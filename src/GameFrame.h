@@ -13,6 +13,7 @@
 #include "SpWindow.h"
 #include "OpenGLRendererManager.h"
 #include "EditorViewer.h"
+#include "SpPhysicSettings.h"
 
 #include "RendererList.h"
 #include "DOP18ListRenderer.h"
@@ -21,15 +22,14 @@
 #include "RockList.h"
 #include "Randomizer.h"
 #include "SpPhysicSimulator.h"
-#include "SpCollisionEventListener.h"
 #include "WorldObjectList.h"
+
 
 namespace NAMESPACE_FRONTEND
 {
 	class GameFrame 
 		: public SpFrame
 		, public SpKeyboardEventListener
-		, public SpCollisionEventListener
 	{
 	private:
 		OpenGLTexture* texture = nullptr;
@@ -41,9 +41,9 @@ namespace NAMESPACE_FRONTEND
 		RockList* rockList = nullptr;
 		WorldObjectList* worldObjects = nullptr;
 
-		sp_float gameVelocity = 0.1f;
-
 	public:
+
+		sp_bool simulationEnabled = true;
 
 		API_INTERFACE void init(SpWindow* window) override;
 
@@ -58,8 +58,6 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void postRender() override;
 
 		API_INTERFACE void onKeyboardEvent(SpKeyboardEvent* evt) override;
-
-		API_INTERFACE void onCollisionEvent(SpCollisionEvent* evt) override;
 
 		API_INTERFACE inline const sp_char* toString() override
 		{

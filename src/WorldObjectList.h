@@ -70,22 +70,24 @@ namespace NAMESPACE_RENDERING
 		{
 			GraphicObject3DList::setLength(length);
 
-			DOP18* bvs = (DOP18*) boundingVolumes();
+			DOP18* bvs = (DOP18*) boundingVolumes(0u);
 			bvs[0].scale({ 1.0f, 0.5f, 1.0f });
+
+			SpPhysicProperties* physicProperty = physicProperties(0u);
 		}
 
 		API_INTERFACE inline sp_uint length() const override { return _length; }
 
-		API_INTERFACE void translate(const sp_uint index, Vec3 translation) override
+		API_INTERFACE void translate(const sp_uint index, const Vec3& translation) override
 		{
 			_transforms->data()[index].translate(translation);
-			boundingVolumes()[index].translate(translation);
+			boundingVolumes(index)->translate(translation);
 		}
 
-		API_INTERFACE void scale(const sp_uint index, Vec3 factors) override
+		API_INTERFACE void scale(const sp_uint index, const Vec3& factors) override
 		{
 			_transforms->data()[index].scale(factors);
-			boundingVolumes()[index].scale(factors);
+			boundingVolumes(index)->scale(factors);
 		}
 
 		API_INTERFACE void init() override
@@ -103,12 +105,6 @@ namespace NAMESPACE_RENDERING
 			transformMatrixLocation = shader->getUniform("transformMatrix");
 
 			positionAttribute = shader->getAttribute("Position");
-		}
-
-		API_INTERFACE void update(sp_float elapsedTime) override
-		{
-			SpPhysicObjectList::update(elapsedTime);
-			GraphicObject3DList::update(elapsedTime);
 		}
 
 		API_INTERFACE void render(const RenderData& renderData) override

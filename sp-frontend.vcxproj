@@ -180,11 +180,13 @@
     <ClInclude Include="src\AboutFrame.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
+    <ClInclude Include="src\SpGameSettings.h" />
     <ClInclude Include="src\LogFrame.h" />
     <ClInclude Include="src\ProjectExplorerFrame.h" />
     <ClInclude Include="src\PropertiesFrame.h" />
     <ClInclude Include="src\SpectrumFronend.h" />
     <ClInclude Include="src\SpFrame.h" />
+    <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
     <ClInclude Include="src\WorldObjectList.h" />

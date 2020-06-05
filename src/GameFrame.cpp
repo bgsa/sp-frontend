@@ -9,7 +9,8 @@ namespace NAMESPACE_FRONTEND
 		viewer.init(this);
 
 		SpEventDispatcher::instance()->addKeyboardListener(this);
-		SpEventDispatcher::instance()->addCollisionListener(this);
+
+		SpPhysicSettings::instance()->disableSimulation();
 
 		// init renderer 
 		renderer = sp_mem_new(OpenGLRendererManager)();
@@ -22,7 +23,7 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(gridSystem);
 
 		//const sp_uint rockLength = 131072;
-		const sp_uint rockLength = 63u;
+		const sp_uint rockLength = 1u;
 		const sp_uint worldObjectsLength = 1u;
 		Randomizer rand(0, 10000);
 		sp_uint halfSpace = 10000 / 200;
@@ -32,7 +33,7 @@ namespace NAMESPACE_FRONTEND
 		worldObjects->init();
 		renderer->addGraphicObject(worldObjects);
 
-		rockList = sp_mem_new(RockList)(rockLength -1);
+		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 0.0f, 3.7f, 0.0f });
 		for (sp_uint i = 1; i < rockLength; i++)
 		{
@@ -50,15 +51,24 @@ namespace NAMESPACE_FRONTEND
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
 
-	void GameFrame::onCollisionEvent(SpCollisionEvent* evt)
-	{
-		sp_uint objIndex1 = evt->indexBody1;
-		sp_uint objIndex2 = evt->indexBody1;
-	}
-
 	void GameFrame::update(sp_float elapsedTime)
 	{
-		renderer->update(elapsedTime);
+		if (!SpPhysicSettings::instance()->isSimulationEnabled())
+			return;
+
+		const Vec3 gravityForce(0.0f, -9.8f, 0.0f);
+
+		for (sp_uint i = 0u; i < worldObjects->length(); i++)
+		{
+			worldObjects->physicProperties(i)->addForce(gravityForce);
+			worldObjects->update(i, elapsedTime);
+		}
+		
+		for (sp_uint i = 0u; i < rockList->length(); i++)
+		{
+			rockList->physicProperties(i)->addForce(gravityForce);
+			rockList->update(i, elapsedTime);
+		}
 	}
 
 	void GameFrame::renderGUI()
@@ -112,20 +122,20 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rockList->translate(0u, { temp * gameVelocity , 0.0f, 0.0f });
+			rockList->translate(0u, { temp * SpPhysicSettings::instance()->physicVelocity(), 0.0f, 0.0f });
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rockList->translate(0u, { -temp * gameVelocity , 0.0f, 0.0f });
+			rockList->translate(0u, { -temp * SpPhysicSettings::instance()->physicVelocity() , 0.0f, 0.0f });
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
-			rockList->translate(0u, { 0.0f , 0.0f, temp * gameVelocity });
+			rockList->translate(0u, { 0.0f , 0.0f, temp * SpPhysicSettings::instance()->physicVelocity() });
 			break;
 
 		case SP_KEYBOARD_KEY_S:
-			rockList->translate(0u, { 0.0f , 0.0f, -temp * gameVelocity });
+			rockList->translate(0u, { 0.0f , 0.0f, -temp * SpPhysicSettings::instance()->physicVelocity() });
 			break;
 		}
 
