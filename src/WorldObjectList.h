@@ -32,7 +32,7 @@ namespace NAMESPACE_RENDERING
 			_transformsBuffer = sp_mem_new(OpenGLTextureBuffer)();
 
 			Mat4* transformsAsMat4 = ALLOC_NEW_ARRAY(Mat4, MAT4_LENGTH * _length);
-			SpTransform* transforms = _transforms->data();
+			SpTransform* transforms = GraphicObject3DList::transforms(0u);
 
 			for (sp_uint i = 0; i < _length; i++)
 				std::memcpy(&transformsAsMat4[i], transforms[i].toMat4(), MAT4_SIZE);
@@ -80,13 +80,13 @@ namespace NAMESPACE_RENDERING
 
 		API_INTERFACE void translate(const sp_uint index, const Vec3& translation) override
 		{
-			_transforms->data()[index].translate(translation);
+			GraphicObject3DList::transforms(index)->translate(translation);
 			boundingVolumes(index)->translate(translation);
 		}
 
 		API_INTERFACE void scale(const sp_uint index, const Vec3& factors) override
 		{
-			_transforms->data()[index].scale(factors);
+			GraphicObject3DList::transforms(index)->scale(factors);
 			boundingVolumes(index)->scale(factors);
 		}
 
@@ -138,12 +138,6 @@ namespace NAMESPACE_RENDERING
 
 		API_INTERFACE inline void dispose() override
 		{
-			if (_transforms != nullptr)
-			{
-				sp_mem_delete(_transforms, SpArray<SpTransform>);
-				_transforms = nullptr;
-			}
-
 			if (_indexesBuffer != nullptr)
 			{
 				sp_mem_delete(_indexesBuffer, OpenGLBuffer);

@@ -39,7 +39,8 @@ namespace NAMESPACE_FRONTEND
 			this->window = window;
 
 			gpuContext = GpuContext::init();
-			SpPhysicSimulator::init(64);
+			SpPhysicSimulator::init(64u);
+			SpGraphicObjectManager::instance()->init(64u);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
 
