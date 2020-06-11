@@ -8,6 +8,7 @@
 #include "OpenGLBuffer.h"
 #include "OpenGLShader.h"
 #include "SpPhysicObjectList.h"
+#include "SpLightManager.h"
 
 namespace NAMESPACE_RENDERING
 {
@@ -20,6 +21,10 @@ namespace NAMESPACE_RENDERING
 
 		WorldObjectList* translate(const Vec3& translation) override { return nullptr; }
 		WorldObjectList* scale(const Vec3& scaleVector) override { return nullptr;  }
+
+		sp_int lightPositionLocation;
+		sp_int lightColorLocation;
+		sp_int shininessFactorLocation;
 		
 		void initIndexBuffer()
 		{
@@ -104,6 +109,10 @@ namespace NAMESPACE_RENDERING
 			viewMatrixLocation = shader->getUniform("viewMatrix");
 			transformMatrixLocation = shader->getUniform("transformMatrix");
 
+			lightColorLocation = shader->getUniform("LightColor");
+			lightPositionLocation = shader->getUniform("LightPosition");
+			shininessFactorLocation = shader->getUniform("ShininessFactor");
+
 			positionAttribute = shader->getAttribute("Position");
 		}
 
@@ -112,7 +121,10 @@ namespace NAMESPACE_RENDERING
 			shader
 				->enable()
 				->setUniform<Mat4>(projectionMatrixLocation, renderData.projectionMatrix)
-				->setUniform<Mat4>(viewMatrixLocation, renderData.viewMatrix);
+				->setUniform<Mat4>(viewMatrixLocation, renderData.viewMatrix)
+				->setUniform3<sp_float>(lightPositionLocation, SpLightManager::instance()->lights()->position())
+				->setUniform3<sp_float>(lightColorLocation, SpLightManager::instance()->lights()->color())
+				->setUniform<sp_float>(shininessFactorLocation, 1000.0f);
 
 			_buffer->use();
 			glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);

@@ -22,6 +22,10 @@ namespace NAMESPACE_FRONTEND
 		gridSystem->init();
 		renderer->addGraphicObject(gridSystem);
 
+		// init lights
+		SpLightManager::instance()->init(1u);
+		SpLightManager::instance()->lights(0u)->position(Vec3(10.0f, 10.0f, 0.0f));
+
 		//const sp_uint rockLength = 131072;
 		const sp_uint rockLength = 1u;
 		const sp_uint worldObjectsLength = 1u;

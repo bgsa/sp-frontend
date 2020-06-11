@@ -23,7 +23,7 @@
 #include "Randomizer.h"
 #include "SpPhysicSimulator.h"
 #include "WorldObjectList.h"
-
+#include "SpLightManager.h"
 
 namespace NAMESPACE_FRONTEND
 {
