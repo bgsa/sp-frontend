@@ -17,17 +17,17 @@ namespace NAMESPACE_FRONTEND
 		renderer->init(&viewer);
 		renderer->resize((sp_float)width(), (sp_float)width());
 
+		// init lights
+		SpLightManager::instance()->init(1u);
+		SpLightManager::instance()->lights(0u)->position(Vec3(10.0f, 10.0f, 0.0f));
+
 		// init objects to render
 		gridSystem = sp_mem_new(GridSystem)();
 		gridSystem->init();
 		renderer->addGraphicObject(gridSystem);
 
-		// init lights
-		SpLightManager::instance()->init(1u);
-		SpLightManager::instance()->lights(0u)->position(Vec3(10.0f, 10.0f, 0.0f));
-
 		//const sp_uint rockLength = 131072;
-		const sp_uint rockLength = 1u;
+		const sp_uint rockLength = 2u;
 		const sp_uint worldObjectsLength = 1u;
 		Randomizer rand(0, 10000);
 		sp_uint halfSpace = 10000 / 200;
@@ -38,8 +38,9 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 0.0f, 3.7f, 0.0f });
-		for (sp_uint i = 1; i < rockLength; i++)
+		rockList->translate(0u, { 10.0f, 0.5f, 0.0f });
+		rockList->translate(1u, { 0.0f, 10.0f, 0.0f });		
+		for (sp_uint i = 2; i < rockLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
 			sp_float y = rand.rand() / 100.0f;

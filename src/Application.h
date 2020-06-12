@@ -61,13 +61,14 @@ namespace NAMESPACE_FRONTEND
 
 				SpEventDispatcher::instance()->processAllEvents();
 
-				//do {
-					editor->update(elapsedTime);
-
-					SpPhysicSimulator::instance()->run(timer);
-
+				if (SpPhysicSettings::instance()->isSimulationEnabled())
+				{
+					//do {
+						editor->update(elapsedTime);
+						SpPhysicSimulator::instance()->run(timer);
 					//elapsedTime = timer.elapsedTime();
-				//} while (elapsedTime * 2.0f < timer.framePerSecondLimit());
+					//} while (elapsedTime * 2.0f < timer.framePerSecondLimit());
+				}
 
 				//timeInterpolated = timer.getFramesPerSecond() + SKIP_TICKS - FRAMES_PER_SECOND_LIMIT / SKIP_TICKS;
 				//render(timeInterpolated);
