@@ -27,7 +27,7 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(gridSystem);
 
 		//const sp_uint rockLength = 131072;
-		const sp_uint rockLength = 2u;
+		const sp_uint rockLength = 3u;
 		const sp_uint worldObjectsLength = 1u;
 		Randomizer rand(0, 10000);
 		sp_uint halfSpace = 10000 / 200;
@@ -38,9 +38,10 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 10.0f, 0.5f, 0.0f });
-		rockList->translate(1u, { 0.0f, 10.0f, 0.0f });		
-		for (sp_uint i = 2; i < rockLength; i++)
+		rockList->translate(0u, { 1.0f, 0.5f, 0.0f });
+		rockList->translate(1u, { 0.0f, 10.0f, 0.0f });
+		rockList->translate(2u, { 7.0f, 0.5f, 0.0f });
+		for (sp_uint i = 3; i < rockLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
 			sp_float y = rand.rand() / 100.0f;
@@ -133,6 +134,10 @@ namespace NAMESPACE_FRONTEND
 
 		case SP_KEYBOARD_KEY_S:
 			rockList->translate(0u, { 0.0f , 0.0f, -temp * SpPhysicSettings::instance()->physicVelocity() });
+			break;
+
+		case SP_KEYBOARD_KEY_SPACE:
+			rockList->physicProperties(2u)->addForce(Vec3(+300.0f, 0.0f, 0.0f));
 			break;
 		}
 

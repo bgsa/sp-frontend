@@ -76,7 +76,7 @@ namespace NAMESPACE_RENDERING
 			GraphicObject3DList::setLength(length);
 
 			DOP18* bvs = (DOP18*) boundingVolumes(0u);
-			bvs[0].scale({ 1.0f, 0.5f, 1.0f });
+			bvs[0].scale({ 1.0f, 0.2f, 1.0f });
 
 			SpPhysicProperties* physicProperty = physicProperties(0u);
 		}
