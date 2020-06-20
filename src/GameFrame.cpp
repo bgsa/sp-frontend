@@ -39,8 +39,8 @@ namespace NAMESPACE_FRONTEND
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 1.0f, 0.5f, 0.0f });
-		rockList->translate(1u, { 0.0f, 10.0f, 0.0f });
-		rockList->translate(2u, { 7.0f, 0.5f, 0.0f });
+		rockList->translate(1u, { -10.0f, 10.5f, 0.0f });
+		rockList->translate(2u, { 10.0f, 10.0f, 4.0f });
 		for (sp_uint i = 3; i < rockLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
@@ -114,41 +114,35 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
-		const sp_float temp = 1.0f;
+		const sp_float temp = 3.0f;
 
 		switch (evt->key)
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rockList->translate(0u, { temp * SpPhysicSettings::instance()->physicVelocity(), 0.0f, 0.0f });
+			rockList->physicProperties(1u)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
+			//rockList->physicProperties(1u)->addForce(Vec3(-temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rockList->translate(0u, { -temp * SpPhysicSettings::instance()->physicVelocity() , 0.0f, 0.0f });
+			rockList->physicProperties(1u)->addImpulse(Vec3(temp, 0.0f, 0.0f));
+			//rockList->physicProperties(1u)->addForce(Vec3(temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
-			rockList->translate(0u, { 0.0f , 0.0f, temp * SpPhysicSettings::instance()->physicVelocity() });
-			break;
-
-		case SP_KEYBOARD_KEY_S:
-			rockList->translate(0u, { 0.0f , 0.0f, -temp * SpPhysicSettings::instance()->physicVelocity() });
-			break;
-
-		case SP_KEYBOARD_KEY_SPACE:
-			rockList->physicProperties(2u)->addForce(Vec3(+300.0f, 0.0f, 0.0f));
+		{
+			rockList->physicProperties(1u)->addImpulse(Vec3(0.0f, 0.0f, -temp));
+			//rockList->physicProperties(1u)->addForce(Vec3(0.0f, 0.0f, -temp));
 			break;
 		}
-
-		/*
-		DOP18* bv1 = (DOP18*)rock1->boundingVolume();
-		DOP18* bv2 = (DOP18*)rock2->boundingVolume();
-		CollisionStatus status = bv1->collisionStatus(*bv2);
-
-		if (status != CollisionStatus::OUTSIDE)
-			Log::info("COLLISION!");
-			*/
+		case SP_KEYBOARD_KEY_S:
+		{
+			rockList->physicProperties(1u)->addImpulse(Vec3(0.0f, 0.0f, temp));
+			//rockList->physicProperties(1u)->addForce(Vec3(0.0f, 0.0f, temp));
+			break;
+		}
+		}
 	}
 
 	void GameFrame::postRender()

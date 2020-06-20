@@ -7,7 +7,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		this->frame = frame;
 
-		Vec3 cameraPosition = { 0.0f, 30.0f, -25.0f };
+		Vec3 cameraPosition = { 0.0f, 30.0f, 25.0f };
 		Vec3 cameraTarget = { 0.0f, 0.0f, 0.0f };
 		initProjectionPerspective(cameraPosition, cameraTarget, frame->aspectRatio());
 
@@ -28,7 +28,7 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::lookAtVertical(sp_float angle)
 	{
-		angle *= invertY;
+		angle *= _invertY;
 
 		target = Vec3(
 			target[0],
@@ -41,19 +41,19 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::zoom(sp_float scale)
 	{
-		sp_float newFieldOfView = fieldOfView - (fieldOfView * scale * velocity);
+		sp_float newFieldOfView = _fieldOfView - (_fieldOfView * scale * _velocity);
 
 		if (newFieldOfView <= SP_MIN_FIELD_OF_VIEW || newFieldOfView >= SP_MAX_FIELD_OF_VIEW)
 			return;
 
-		fieldOfView = newFieldOfView;
-		setProjectionPerspective(fieldOfView, aspectRatio, nearFrustum, farFrustum);
+		_fieldOfView = newFieldOfView;
+		setProjectionPerspective(_fieldOfView, aspectRatio, nearFrustum, farFrustum);
 	}
 
 	void EditorViewer::moveForward(sp_float distance)
 	{
 		Vec3 directionToMove = _direction.normalize();
-		directionToMove *= (distance * velocity);
+		directionToMove *= (distance * _velocity);
 
 		position -= directionToMove;
 		target -= directionToMove;
@@ -64,7 +64,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveBackward(sp_float distance)
 	{
 		Vec3 directionToMove = _direction.normalize();
-		directionToMove *= (distance * velocity);
+		directionToMove *= (distance * _velocity);
 
 		position += directionToMove;
 		target += directionToMove;
@@ -76,7 +76,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		Vec3 directionToMove = _up.cross(_direction).normalize();
 
-		Vec3 distanceToMove = directionToMove * distance * velocity;
+		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
 		position += distanceToMove;
 		target += distanceToMove;
@@ -87,7 +87,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveRight(sp_float distance)
 	{
 		Vec3 directionToMove = _up.cross(_direction).normalize();
-		Vec3 distanceToMove = directionToMove * distance * velocity;
+		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
 		position -= distanceToMove;
 		target -= distanceToMove;
@@ -97,7 +97,7 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::rotateX(sp_float angle)
 	{
-		angle *= velocity;
+		angle *= _velocity;
 		sp_float z = position.z;
 
 		position = Quat::createRotate(angle, _right).rotate(position);
@@ -110,14 +110,14 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::rotateY(sp_float angle)
 	{
-		angle *= velocity;
+		angle *= _velocity;
 		position = Quat::createRotationAxisY(angle).rotate(position);
 		updateViewMatrix();
 	}
 
 	void EditorViewer::rotateZ(sp_float angle)
 	{
-		angle *= velocity;
+		angle *= _velocity;
 		position = Quat::createRotate(angle, _direction).rotate(position);
 		updateViewMatrix();
 	}

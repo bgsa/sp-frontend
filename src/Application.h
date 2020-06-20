@@ -80,10 +80,11 @@ namespace NAMESPACE_FRONTEND
 
 				if (!isRunning)
 					break;
-				else
-					LogGL::glErrors(__FILE__, __LINE__);
 
-				//std::cout << "FPS: " << timer.elapsedTime() << END_OF_LINE;
+#ifdef DEBUG
+				LogGL::glErrors(__FILE__, __LINE__);
+#endif // DEBUG
+
 				timer.update();
 
 				window->refresh();
