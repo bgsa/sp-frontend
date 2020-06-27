@@ -59,6 +59,12 @@ namespace NAMESPACE_FRONTEND
 			{
 				elapsedTime = timer.elapsedTime();
 
+#ifdef DEBUG
+				if (elapsedTime > timer.framePerSecondLimit())
+					elapsedTime = timer.framePerSecondLimit() * 0.5f;
+#endif
+
+
 				SpEventDispatcher::instance()->processAllEvents();
 
 				if (SpPhysicSettings::instance()->isSimulationEnabled())

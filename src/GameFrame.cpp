@@ -39,7 +39,8 @@ namespace NAMESPACE_FRONTEND
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 1.0f, 0.5f, 0.0f });
-		rockList->translate(1u, { -10.0f, 10.5f, 0.0f });
+		//rockList->translate(1u, { -10.0f, 10.5f, 0.0f });
+		rockList->translate(1u, { 1.0f, 10.5f, -1.0f });
 		rockList->translate(2u, { 10.0f, 10.0f, 4.0f });
 		for (sp_uint i = 3; i < rockLength; i++)
 		{
@@ -64,9 +65,15 @@ namespace NAMESPACE_FRONTEND
 
 		for (sp_uint i = 0u; i < worldObjects->length(); i++)
 			worldObjects->update(i, elapsedTime);
+
+		SpPhysicSettings* settings = SpPhysicSettings::instance();
+		const Vec3 gravityForce = settings->gravityForce();
 		
 		for (sp_uint i = 0u; i < rockList->length(); i++)
+		{
+			rockList->physicProperties(i)->addForce(gravityForce);
 			rockList->update(i, elapsedTime);
+		}
 	}
 
 	void GameFrame::renderGUI()
@@ -114,32 +121,33 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
-		const sp_float temp = 3.0f;
+		const sp_float temp = 2.0f;
+		const sp_uint objectIndex = 0u;
 
 		switch (evt->key)
 		{
 		case SP_KEYBOARD_KEY_A:
 		{
-			rockList->physicProperties(1u)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
-			//rockList->physicProperties(1u)->addForce(Vec3(-temp, 0.0f, 0.0f));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
+			//rockList->physicProperties(objectIndex)->addForce(Vec3(-temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rockList->physicProperties(1u)->addImpulse(Vec3(temp, 0.0f, 0.0f));
-			//rockList->physicProperties(1u)->addForce(Vec3(temp, 0.0f, 0.0f));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(temp, 0.0f, 0.0f));
+			//rockList->physicProperties(objectIndex)->addForce(Vec3(temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
 		{
-			rockList->physicProperties(1u)->addImpulse(Vec3(0.0f, 0.0f, -temp));
-			//rockList->physicProperties(1u)->addForce(Vec3(0.0f, 0.0f, -temp));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, -temp));
+			//rockList->physicProperties(objectIndex)->addForce(Vec3(0.0f, 0.0f, -temp));
 			break;
 		}
 		case SP_KEYBOARD_KEY_S:
 		{
-			rockList->physicProperties(1u)->addImpulse(Vec3(0.0f, 0.0f, temp));
-			//rockList->physicProperties(1u)->addForce(Vec3(0.0f, 0.0f, temp));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
+			//rockList->physicProperties(objectIndex)->addForce(Vec3(0.0f, 0.0f, temp));
 			break;
 		}
 		}
