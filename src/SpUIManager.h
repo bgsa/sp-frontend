@@ -148,6 +148,8 @@ namespace NAMESPACE_FRONTEND
 
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->init(window);
+
+			propertiesFrame.selectedObject(3u);
 		}
 
 		API_INTERFACE void update(sp_float elapsedTime) override

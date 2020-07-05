@@ -2,12 +2,34 @@
 #define PROPERTIES_FRAME_HEADER
 
 #include "SpFrame.h"
+#include "SpPhysicSimulator.h"
+#include "SpVector.h"
+#include "SpMap.h"
+#include "SpPropertyInfo.h"
 
 namespace NAMESPACE_FRONTEND
 {
 	class PropertiesFrame
 		: public SpFrame
 	{
+	private:
+		sp_uint _selectedObject;
+
+		inline void renderPhysicProperties()
+		{
+			const SpPhysicProperties* physicProperties = SpPhysicSimulator::instance()->physicProperties(_selectedObject);
+
+			ImGui::Text("Position");
+			ImGui::NextColumn();
+
+			sp_char* text = ALLOC_ARRAY(sp_char, 20);
+			SpString::convert(physicProperties->position().y, text);
+			ImGui::Text(text);
+			ALLOC_RELEASE(text);
+			
+			ImGui::NextColumn();
+		}
+
 	public:
 
 		API_INTERFACE void init(SpWindow* window) override
@@ -15,6 +37,18 @@ namespace NAMESPACE_FRONTEND
 			SpFrame::init(window);
 			resize(300, 600);
 			show();
+
+			_selectedObject = SP_UINT_MAX;
+		}
+
+		API_INTERFACE inline sp_uint selectedObject()
+		{
+			return _selectedObject;
+		}
+
+		API_INTERFACE inline void selectedObject(sp_uint globalIndex)
+		{
+			_selectedObject = globalIndex;
 		}
 
 		API_INTERFACE void preRender() override
@@ -30,6 +64,9 @@ namespace NAMESPACE_FRONTEND
 			if (!isVisible())
 				return;
 
+			if (_selectedObject == SP_UINT_MAX)
+				return;
+
 			resize(width(), height() - 25);
 
 			if (ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoCollapse))
@@ -41,14 +78,7 @@ namespace NAMESPACE_FRONTEND
 
 				ImGui::Columns(2, "Bar");
 
-				for (sp_uint i = 0; i < 3; i++)
-				{
-					ImGui::Text("Label");
-					ImGui::NextColumn();
-
-					ImGui::Text("Value");
-					ImGui::NextColumn();
-				}
+				renderPhysicProperties();
 
 				ImGui::End();
 			}
@@ -61,6 +91,10 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline const sp_char* toString() override
 		{
 			return "PropertiesFrame";
+		}
+
+		~PropertiesFrame()
+		{
 		}
 
 	};

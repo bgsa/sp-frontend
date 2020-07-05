@@ -27,6 +27,9 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE Application()
 		{
 			isRunning = true;
+			window = nullptr;
+			editor = nullptr;
+			gpuContext = nullptr;
 		}
 
 		API_INTERFACE void setEngineEditor(SpUIManager* editor)
@@ -38,7 +41,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			this->window = window;
 
-			gpuContext = GpuContext::init();
+			//gpuContext = GpuContext::init();
 			SpPhysicSimulator::init(64u);
 			SpGraphicObjectManager::instance()->init(64u);
 

@@ -38,10 +38,9 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 1.0f, 0.5f, 0.0f });
-		//rockList->translate(1u, { -10.0f, 10.5f, 0.0f });
-		rockList->translate(1u, { 1.0f, 10.5f, -1.0f });
-		rockList->translate(2u, { 10.0f, 10.0f, 4.0f });
+		rockList->translate(0u, { 1.0f, 1.5f, 0.0f });
+		rockList->translate(1u, { 1.0f, 11.5f, -1.0f });
+		rockList->translate(2u, { 10.0f, 11.0f, 4.0f });
 		for (sp_uint i = 3; i < rockLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
@@ -54,7 +53,7 @@ namespace NAMESPACE_FRONTEND
 		rockList->init();
 		rockList->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rockList);
-		
+
 		texture = OpenGLTexture::createFromFramebuffer();
 	}
 
@@ -122,32 +121,36 @@ namespace NAMESPACE_FRONTEND
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
 		const sp_float temp = 2.0f;
-		const sp_uint objectIndex = 0u;
+		const sp_uint objectIndex = 2u;
 
 		switch (evt->key)
 		{
+		case SP_KEYBOARD_KEY_Q:
+		{
+			//Quat rotation = Quat::createRotationAxisZ(0.2f);			
+			//rockList->rotate(2, rotation);
+
+			rockList->physicProperties(objectIndex)->addTorque(Vec3(1.0f, 0.0f, 0.0f), degreesToRadians(1));
+			break;
+		}
 		case SP_KEYBOARD_KEY_A:
 		{
 			rockList->physicProperties(objectIndex)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
-			//rockList->physicProperties(objectIndex)->addForce(Vec3(-temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
 			rockList->physicProperties(objectIndex)->addImpulse(Vec3(temp, 0.0f, 0.0f));
-			//rockList->physicProperties(objectIndex)->addForce(Vec3(temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
 		{
 			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, -temp));
-			//rockList->physicProperties(objectIndex)->addForce(Vec3(0.0f, 0.0f, -temp));
 			break;
 		}
 		case SP_KEYBOARD_KEY_S:
 		{
 			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
-			//rockList->physicProperties(objectIndex)->addForce(Vec3(0.0f, 0.0f, temp));
 			break;
 		}
 		}
