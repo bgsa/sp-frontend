@@ -120,7 +120,7 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
-		const sp_float temp = 2.0f;
+		const sp_float temp = 20.0f;
 		const sp_uint objectIndex = 2u;
 
 		switch (evt->key)
