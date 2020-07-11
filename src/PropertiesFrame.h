@@ -47,6 +47,45 @@ namespace NAMESPACE_FRONTEND
 			ALLOC_RELEASE(text);
 		}
 
+		inline void renderQuatProperty(const sp_char* name, const Quat& q)
+		{
+			sp_char* text = ALLOC_ARRAY(sp_char, 20);
+
+			ImGui::Text(name);
+			ImGui::NextColumn();
+			ImGui::NextColumn();
+
+			ImGui::Text("w:");
+			ImGui::NextColumn();
+
+			SpString::convert(q.w, text);
+			ImGui::Text(text);
+			ImGui::NextColumn();
+
+			ImGui::Text("x:");
+			ImGui::NextColumn();
+
+			SpString::convert(q.x, text);
+			ImGui::Text(text);
+			ImGui::NextColumn();
+
+			ImGui::Text("y:");
+			ImGui::NextColumn();
+
+			SpString::convert(q.y, text);
+			ImGui::Text(text);
+			ImGui::NextColumn();
+
+			ImGui::Text("z:");
+			ImGui::NextColumn();
+
+			SpString::convert(q.z, text);
+			ImGui::Text(text);
+			ImGui::NextColumn();
+
+			ALLOC_RELEASE(text);
+		}
+
 		inline void renderProperty(const sp_char* name, const sp_float value)
 		{
 			sp_char* text = ALLOC_ARRAY(sp_char, 20);
@@ -84,7 +123,7 @@ namespace NAMESPACE_FRONTEND
 			renderVec3Property("Velocity", physicProperties->velocity());
 			renderVec3Property("Acceleration", physicProperties->acceleration());
 			//renderVec3Property("Orientation", physicProperties->orientation());
-			renderVec3Property("Angular Velocity", physicProperties->angularVelocity());
+			renderVec3Property("Torque", physicProperties->torque());
 
 			renderProperty("Mass", ONE_FLOAT / physicProperties->massInverse());
 			renderProperty("Restitution", physicProperties->coeficientOfRestitution());

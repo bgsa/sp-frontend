@@ -127,10 +127,10 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_Q:
 		{
-			//Quat rotation = Quat::createRotationAxisZ(0.2f);			
-			//rockList->rotate(2, rotation);
-
-			rockList->physicProperties(objectIndex)->addTorque(Vec3(1.0f, 0.0f, 0.0f), degreesToRadians(1));
+			const Vec3 position = rockList->physicProperties(objectIndex)->position() 
+				+ Vec3(0.0f, 0.5f, 0.0f);
+			const Vec3 force = Vec3(0.0f, 0.0f, -0.1f);
+			rockList->physicProperties(objectIndex)->addTorque(position, force);
 			break;
 		}
 		case SP_KEYBOARD_KEY_A:
