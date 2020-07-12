@@ -27,7 +27,7 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(gridSystem);
 
 		//const sp_uint rockLength = 131072;
-		const sp_uint rockLength = 3u;
+		const sp_uint rockLength = 510u;
 		const sp_uint worldObjectsLength = 1u;
 		Randomizer rand(0, 10000);
 		sp_uint halfSpace = 10000 / 200;
@@ -38,16 +38,17 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 1.0f, 1.5f, 0.0f });
-		rockList->translate(1u, { 1.0f, 11.5f, -1.0f });
-		rockList->translate(2u, { 10.0f, 11.0f, 4.0f });
-		for (sp_uint i = 3; i < rockLength; i++)
+		//rockList->translate(0u, { 1.0f, 1.5f, 0.0f });
+		//rockList->translate(1u, { 1.0f, 11.5f, -1.0f });
+		//rockList->translate(2u, { 10.0f, 11.0f, 4.0f });
+		//for (sp_uint i = 3; i < rockLength; i++)
+		for (sp_uint i = 0; i < rockLength - worldObjectsLength; i++)
 		{
 			sp_float x = rand.rand() / 100.0f;
 			sp_float y = rand.rand() / 100.0f;
 			sp_float z = rand.rand() / 100.0f;
 
-			rockList->translate(i, { x - halfSpace, 3.7f, z - halfSpace });
+			rockList->translate(i, { x - halfSpace, y + 3.7f, z - halfSpace });
 		}
 
 		rockList->init();
