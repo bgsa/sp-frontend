@@ -189,6 +189,7 @@
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
+    <ClInclude Include="src\SpStatusBarFrame.h" />
     <ClInclude Include="src\WorldObjectList.h" />
   </ItemGroup>
   <ItemGroup>

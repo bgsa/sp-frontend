@@ -12,6 +12,7 @@
 #include "LogFrame.h"
 #include "PropertiesFrame.h"
 #include "SpToolbarFrame.h"
+#include "SpStatusBarFrame.h"
 #include "GameFrame.h"
 #include "SpEventDispatcher.h"
 #include "SpWindow.h"
@@ -31,6 +32,7 @@ namespace NAMESPACE_FRONTEND
 		LogFrame logFrame;
 		PropertiesFrame propertiesFrame;
 		SpToolbarFrame toolbarFrame;
+		SpStatusBarFrame statusBarFrame;
 		GameFrame gameFrame;
 
 		SpVector<SpFrame*> frames;
@@ -144,6 +146,7 @@ namespace NAMESPACE_FRONTEND
 			frames.add(&projectExplorerFrame);
 			frames.add(&propertiesFrame);
 			frames.add(&logFrame);
+			frames.add(&statusBarFrame);
 			frames.add(&gameFrame);
 
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())

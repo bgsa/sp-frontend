@@ -314,6 +314,9 @@
     <ClInclude Include="src\SpGameSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\SpStatusBarFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

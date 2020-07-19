@@ -65,7 +65,7 @@ namespace NAMESPACE_FRONTEND
 				elapsedTime = timer.elapsedTime();
 
 #ifdef DEBUG
-				if (elapsedTime > timer.framePerSecondLimit())
+				if (elapsedTime > timer.framePerSecondLimit() * 4.0f) // application sttoped at breakpoint
 					elapsedTime = timer.framePerSecondLimit() * 0.5f;
 #endif
 
