@@ -4,6 +4,7 @@
 #include "SpUIManager.h"
 #include "SpWindowGLFW.h"
 #include "Application.h"
+#include "SpThreadPool.h"
 
 using namespace NAMESPACE_FRONTEND;
 
@@ -20,6 +21,7 @@ static void initGlew()
 sp_int main(sp_int, sp_char**)
 {
 	StackMemoryAllocator::main()->init();
+	SpThreadPool::instance()->init();
 
 	SpWindowGLFW window;
 	window.init();
