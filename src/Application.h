@@ -21,6 +21,7 @@ namespace NAMESPACE_FRONTEND
 		SpUIManager* editor;
 		SpWindow* window;
 		GpuContext* gpuContext;
+		SpPhysicSimulator* physicSimulator;
 
 	public:
 
@@ -44,7 +45,7 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 
 			const sp_uint maxObjects = 1024u;
-			SpPhysicSimulator::init(maxObjects);
+			physicSimulator = SpPhysicSimulator::init(maxObjects);
 			SpGraphicObjectManager::instance()->init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -69,14 +70,13 @@ namespace NAMESPACE_FRONTEND
 					elapsedTime = timer.framePerSecondLimit() * 0.5f;
 #endif
 
-
 				SpEventDispatcher::instance()->processAllEvents();
 
 				if (SpPhysicSettings::instance()->isSimulationEnabled())
 				{
 					//do {
 						editor->update(elapsedTime);
-						SpPhysicSimulator::instance()->run(timer);
+						physicSimulator->run(timer);
 					//elapsedTime = timer.elapsedTime();
 					//} while (elapsedTime * 2.0f < timer.framePerSecondLimit());
 				}
@@ -123,6 +123,12 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void dispose() override 
 		{
+			if (physicSimulator != nullptr)
+			{
+				sp_mem_delete(physicSimulator, SpPhysicSimulator);
+				physicSimulator = nullptr;
+			}
+
 			if (gpuContext != nullptr)
 			{
 				sp_mem_delete(gpuContext, GpuContext);
