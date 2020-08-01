@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "SpPhysicSimulator.h"
 #include "GpuContext.h"
+#include "SpGpuRenderingFactoryOpenGL.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -43,10 +44,10 @@ namespace NAMESPACE_FRONTEND
 			this->window = window;
 
 			gpuContext = GpuContext::init();
+			SpGpuRenderingFactoryOpenGL::init();
 
-			const sp_uint maxObjects = 1024u;
+			const sp_uint maxObjects = 4096u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
-			SpGraphicObjectManager::instance()->init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
 
@@ -83,6 +84,8 @@ namespace NAMESPACE_FRONTEND
 
 				//timeInterpolated = timer.getFramesPerSecond() + SKIP_TICKS - FRAMES_PER_SECOND_LIMIT / SKIP_TICKS;
 				//render(timeInterpolated);
+
+				physicSimulator->updateTransformsOnGPU();
 
 				editor->preRender();
 				editor->render();

@@ -19,34 +19,15 @@ namespace NAMESPACE_RENDERING
 	private:
 		OpenGLShader* shader;
 
-		WorldObjectList* translate(const Vec3& translation) override { return nullptr; }
-		WorldObjectList* scale(const Vec3& scaleVector) override { return nullptr;  }
-
 		sp_int lightPositionLocation;
 		sp_int lightColorLocation;
 		sp_int shininessFactorLocation;
+		sp_int transformOffsetLocation;
 		
 		void initIndexBuffer()
 		{
 			sp_uint vertexIndexes[4] = { 3u, 2u, 1u, 0u, };
 			_indexesBuffer = sp_mem_new(OpenGLBuffer)(sizeof(vertexIndexes), vertexIndexes, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-		}
-
-		void initTransformBuffer()
-		{
-			_transformsBuffer = sp_mem_new(OpenGLTextureBuffer)();
-
-			Mat4* transformsAsMat4 = ALLOC_NEW_ARRAY(Mat4, MAT4_LENGTH * _length);
-			SpTransform* transforms = GraphicObject3DList::transforms(0u);
-
-			for (sp_uint i = 0; i < _length; i++)
-				std::memcpy(&transformsAsMat4[i], transforms[i].toMat4(), MAT4_SIZE);
-
-			_transformsBuffer
-				->use()
-				->setData(MAT4_SIZE * _length, transformsAsMat4, GL_DYNAMIC_DRAW);
-
-			ALLOC_RELEASE(transformsAsMat4);
 		}
 
 		void initVertexBuffer()
@@ -65,7 +46,6 @@ namespace NAMESPACE_RENDERING
 		{
 			initVertexBuffer();
 			initIndexBuffer();
-			initTransformBuffer();
 		}
 
 	public:
@@ -73,25 +53,21 @@ namespace NAMESPACE_RENDERING
 		API_INTERFACE WorldObjectList(const sp_uint length)
 			: SpPhysicObjectList::SpPhysicObjectList(length)
 		{
-			GraphicObject3DList::setLength(length);
-
 			DOP18* bvs = (DOP18*) boundingVolumes(0u);
 			bvs[0].scale({ 1.0f, 0.2f, 1.0f });
 
 			SpPhysicProperties* physicProperty = physicProperties(0u);
 		}
 
-		API_INTERFACE inline sp_uint length() const override { return _length; }
-
 		API_INTERFACE void translate(const sp_uint index, const Vec3& translation) override
 		{
-			GraphicObject3DList::transforms(index)->translate(translation);
+			transforms(index)->translate(translation);
 			boundingVolumes(index)->translate(translation);
 		}
 
 		API_INTERFACE void scale(const sp_uint index, const Vec3& factors) override
 		{
-			GraphicObject3DList::transforms(index)->scale(factors);
+			transforms(index)->scale(factors);
 			boundingVolumes(index)->scale(factors);
 		}
 
@@ -107,7 +83,7 @@ namespace NAMESPACE_RENDERING
 
 			projectionMatrixLocation = shader->getUniform("projectionMatrix");
 			viewMatrixLocation = shader->getUniform("viewMatrix");
-			transformMatrixLocation = shader->getUniform("transformMatrix");
+			transformOffsetLocation = shader->getUniform("transformOffset");
 
 			lightColorLocation = shader->getUniform("LightColor");
 			lightPositionLocation = shader->getUniform("LightPosition");
@@ -124,16 +100,17 @@ namespace NAMESPACE_RENDERING
 				->setUniform<Mat4>(viewMatrixLocation, renderData.viewMatrix)
 				->setUniform3<sp_float>(lightPositionLocation, SpLightManager::instance()->lights()->position())
 				->setUniform3<sp_float>(lightColorLocation, SpLightManager::instance()->lights()->color())
-				->setUniform<sp_float>(shininessFactorLocation, 1000.0f);
+				->setUniform<sp_float>(shininessFactorLocation, 1000.0f)
+				->setUniform<sp_uint>(transformOffsetLocation, physicIndex);
 
 			_buffer->use();
 			glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
 			glEnableVertexAttribArray(positionAttribute);
 
-			_transformsBuffer->use();			
+			SpPhysicSimulator::instance()->transformsGPU()->use();
 			_indexesBuffer->use();
 
-			glDrawElementsInstanced(GL_TRIANGLE_FAN, 2 * THREE_SIZE, GL_UNSIGNED_INT, NULL, _length);
+			glDrawElementsInstanced(GL_TRIANGLE_FAN, 2 * THREE_SIZE, GL_UNSIGNED_INT, NULL, length());
 
 			shader->disable();
 

@@ -22,9 +22,9 @@ namespace NAMESPACE_FRONTEND
 		SpLightManager::instance()->lights(0u)->position(Vec3(10.0f, 10.0f, 0.0f));
 
 		// init objects to render
-		gridSystem = sp_mem_new(GridSystem)();
-		gridSystem->init();
-		renderer->addGraphicObject(gridSystem);
+		//gridSystem = sp_mem_new(GridSystem)();
+		//gridSystem->init();
+		//renderer->addGraphicObject(gridSystem);
 
 		const sp_uint rockLength = SpPhysicSimulator::instance()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
@@ -38,6 +38,7 @@ namespace NAMESPACE_FRONTEND
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 10.0f, 11.5f, 0.0f });
+		
 		if (rockLength > 1)
 		{
 			for (sp_uint i = 1; i < rockLength - worldObjectsLength - 1u; i++)
@@ -79,7 +80,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		
+
 		ImGui::Begin("Framebuffer", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		loadState();
 
@@ -88,8 +89,9 @@ namespace NAMESPACE_FRONTEND
 
 		ImVec2 size = ImVec2((sp_float)width(), (sp_float)height());
 		renderer->resize(size.x, size.y);
+		texture->resize(SpSize<sp_int>((sp_int)size.x, (sp_int)size.y));
 
-		ImGui::Image((void*)(intptr_t)texture->getId(), size, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((void*)(intptr_t)texture->id(), size, ImVec2(0, 1), ImVec2(1, 0));
 
 		if (ImGui::BeginPopupContextWindow())
 		{
@@ -113,9 +115,14 @@ namespace NAMESPACE_FRONTEND
 
 		SpViewportData* viewport = renderer->viewport();
 
-		sp_uchar* data = Framebuffer::getFramebuffer();
-		texture->use()->setData(data, SpSize<sp_int>(viewport->width, viewport->height), GL_RGBA);
-		sp_mem_release(data);
+		sp_uchar* data = ALLOC_ARRAY(sp_uchar, FOUR_INT * viewport->width * viewport->height);
+		Framebuffer::getFramebuffer(data);
+
+		texture
+			->use()
+			->updateData(data, GL_RGBA);
+		
+		ALLOC_RELEASE(data);
 	}
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)

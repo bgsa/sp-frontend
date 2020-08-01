@@ -20,7 +20,6 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpFrame* frame;
-		Camera* camera;
 
 	public:
 
