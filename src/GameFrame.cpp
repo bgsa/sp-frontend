@@ -37,17 +37,32 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 10.0f, 11.5f, 0.0f });
-		
-		if (rockLength > 1)
+		rockList->translate(0u, { 0.0f, 11.5f, 0.0f });
+		rockList->translate(1u, { 5.0f, 01.0f, 0.0f });
+
+		if (rockLength > 2)
 		{
-			for (sp_uint i = 1; i < rockLength - worldObjectsLength - 1u; i++)
+			for (sp_uint i = 2; i < rockLength; i++)
 			{
 				sp_float x = rand.rand() / 100.0f;
 				sp_float y = rand.rand() / 100.0f;
 				sp_float z = rand.rand() / 100.0f;
 
+				// move the object to a random position
 				rockList->translate(i, { x - halfSpace, y + 3.7f, z - halfSpace });
+
+				// move away initial inter-penettrations
+				DOP18* bvi = rockList->boundingVolumes(i);
+				for (sp_uint j = 0; j < i; j++)
+				{
+					DOP18* bvj = rockList->boundingVolumes(j);
+					CollisionStatus status = bvi->collisionStatus(*bvj);
+					if (status != CollisionStatus::OUTSIDE)
+					{
+						i--; // back i index to translate a valid position
+						break;
+					}
+				}
 			}
 		}
 
@@ -69,7 +84,7 @@ namespace NAMESPACE_FRONTEND
 		SpPhysicSettings* settings = SpPhysicSettings::instance();
 		const Vec3 gravityForce = settings->gravityForce();
 		
-		for (sp_uint i = 0u; i < rockList->length(); i++)
+		for (sp_uint i = 0u; i < rockList->length() - 1u; i++)
 		{
 			rockList->physicProperties(i)->addForce(gravityForce);
 			rockList->update(i, elapsedTime);
@@ -128,7 +143,7 @@ namespace NAMESPACE_FRONTEND
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
 		const sp_float temp = 20.0f;
-		const sp_uint objectIndex = 2u;
+		const sp_uint objectIndex = 0u;
 
 		switch (evt->key)
 		{
@@ -137,7 +152,7 @@ namespace NAMESPACE_FRONTEND
 			const Vec3 position = rockList->physicProperties(objectIndex)->position() 
 				+ Vec3(0.0f, 0.5f, 0.0f);
 			const Vec3 force = Vec3(0.0f, 0.0f, -0.1f);
-			rockList->physicProperties(objectIndex)->addTorque(position, force);
+			rockList->physicProperties(objectIndex)->addImpulseAngular(position, force);
 			break;
 		}
 		case SP_KEYBOARD_KEY_A:

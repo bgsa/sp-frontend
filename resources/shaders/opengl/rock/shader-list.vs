@@ -107,9 +107,10 @@ mat4 buildTransformationMatrix()
 		scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
 	}
 	
+	orientation = vec4(1.0, 0.0, 0.0, 0.0);
+	
 	return SpTransform_ToMat4(position, scaleVec, orientation);
 }
-
 
 void main()
 {	

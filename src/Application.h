@@ -46,7 +46,8 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
-			const sp_uint maxObjects = 4096u;
+			//const sp_uint maxObjects = 4u;
+			const sp_uint maxObjects = 1024u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -60,6 +61,8 @@ namespace NAMESPACE_FRONTEND
 #if defined(WINDOWS) || defined(LINUX) || defined(MAC)
 			sp_float elapsedTime = ZERO_FLOAT;
 			
+			SpPhysicSimulator::instance()->moveAwayDynamicObjects();
+
 			timer.start();
 
 			while (isRunning)
@@ -98,6 +101,9 @@ namespace NAMESPACE_FRONTEND
 #ifdef DEBUG
 				LogGL::glErrors(__FILE__, __LINE__);
 #endif // DEBUG
+
+				sp_int msToWait = (int)(25.0f - timer.elapsedTime());
+				std::this_thread::sleep_for(std::chrono::milliseconds(msToWait)); // fix to 30 FPS
 
 				timer.update();
 

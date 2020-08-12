@@ -122,7 +122,9 @@ namespace NAMESPACE_FRONTEND
 			renderVec3Property("Posision", physicProperties->position());
 			renderVec3Property("Velocity", physicProperties->velocity());
 			renderVec3Property("Acceleration", physicProperties->acceleration());
-			//renderVec3Property("Orientation", physicProperties->orientation());
+
+			renderQuatProperty("Orientation", physicProperties->orientation());
+			renderVec3Property("Angular Velocity", physicProperties->angularVelocity());
 			renderVec3Property("Torque", physicProperties->torque());
 
 			renderProperty("Mass", ONE_FLOAT / physicProperties->massInverse());
