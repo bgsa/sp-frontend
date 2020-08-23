@@ -18,7 +18,6 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		sp_bool isRunning;
-		Timer timer;
 		SpUIManager* editor;
 		SpWindow* window;
 		GpuContext* gpuContext;
@@ -46,8 +45,8 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
-			//const sp_uint maxObjects = 4u;
-			const sp_uint maxObjects = 1024u;
+			const sp_uint maxObjects = 4u;
+		//	const sp_uint maxObjects = 1024u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -59,55 +58,43 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void start()
 		{
 #if defined(WINDOWS) || defined(LINUX) || defined(MAC)
-			sp_float elapsedTime = ZERO_FLOAT;
-			
-			SpPhysicSimulator::instance()->moveAwayDynamicObjects();
 
-			timer.start();
+			SpPhysicSimulator::instance()->moveAwayDynamicObjects(); // remove initial collisions
+
+			Timer::init();
 
 			while (isRunning)
 			{
-				elapsedTime = timer.elapsedTime();
-
-#ifdef DEBUG
-				if (elapsedTime > timer.framePerSecondLimit() * 4.0f) // application sttoped at breakpoint
-					elapsedTime = timer.framePerSecondLimit() * 0.5f;
-#endif
+				Timer::frameTimer()->update();
 
 				SpEventDispatcher::instance()->processAllEvents();
 
 				if (SpPhysicSettings::instance()->isSimulationEnabled())
 				{
-					//do {
-						editor->update(elapsedTime);
-						physicSimulator->run(timer);
-					//elapsedTime = timer.elapsedTime();
-					//} while (elapsedTime * 2.0f < timer.framePerSecondLimit());
+					physicSimulator->run(); // update collisions and responses
+					editor->update(Timer::physicTimer()->elapsedTime()); // integrate all objects
+					Timer::physicTimer()->update();
 				}
 
-				//timeInterpolated = timer.getFramesPerSecond() + SKIP_TICKS - FRAMES_PER_SECOND_LIMIT / SKIP_TICKS;
-				//render(timeInterpolated);
-
-				physicSimulator->updateTransformsOnGPU();
+				physicSimulator->updateTransformsOnGPU(); // update data on GPU
 
 				editor->preRender();
 				editor->render();
+				Timer::renderTimer()->update();
 				editor->postRender();
 				editor->renderGUI();
-
-				if (!isRunning)
-					break;
 
 #ifdef DEBUG
 				LogGL::glErrors(__FILE__, __LINE__);
 #endif // DEBUG
 
-				sp_int msToWait = (int)(25.0f - timer.elapsedTime());
-				std::this_thread::sleep_for(std::chrono::milliseconds(msToWait)); // fix to 30 FPS
-
-				timer.update();
-
 				window->refresh();
+
+				if (Timer::frameTimer()->elapsedTime() < Timer::frameTimer()->framePerSecondLimit())
+				{
+					const sp_int msToWait = (int)(Timer::frameTimer()->framePerSecondLimit() - Timer::frameTimer()->elapsedTime());
+					std::this_thread::sleep_for(std::chrono::milliseconds(msToWait)); // fix to FPS limit
+				}
 			}
 #endif
 		}

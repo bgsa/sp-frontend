@@ -38,7 +38,7 @@ namespace NAMESPACE_FRONTEND
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 0.0f, 11.5f, 0.0f });
-		rockList->translate(1u, { 5.0f, 01.0f, 0.0f });
+		rockList->translate(1u, { 5.0f, 8.0f, 0.0f });
 
 		if (rockLength > 2)
 		{
@@ -84,7 +84,7 @@ namespace NAMESPACE_FRONTEND
 		SpPhysicSettings* settings = SpPhysicSettings::instance();
 		const Vec3 gravityForce = settings->gravityForce();
 		
-		for (sp_uint i = 0u; i < rockList->length() - 1u; i++)
+		for (sp_uint i = 0u; i < rockList->length(); i++)
 		{
 			rockList->physicProperties(i)->addForce(gravityForce);
 			rockList->update(i, elapsedTime);
@@ -142,7 +142,7 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
-		const sp_float temp = 20.0f;
+		const sp_float temp = 1.0f;
 		const sp_uint objectIndex = 0u;
 
 		switch (evt->key)
@@ -173,6 +173,15 @@ namespace NAMESPACE_FRONTEND
 		case SP_KEYBOARD_KEY_S:
 		{
 			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
+			break;
+		}
+		case SP_KEYBOARD_KEY_F5:
+		{
+			if (SpPhysicSettings::instance()->isSimulationEnabled())
+				SpPhysicSettings::instance()->disableSimulation();
+			else
+				SpPhysicSettings::instance()->enableSimulation();
+			
 			break;
 		}
 		}

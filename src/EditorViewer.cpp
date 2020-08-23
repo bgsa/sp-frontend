@@ -7,7 +7,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		this->frame = frame;
 
-		Vec3 cameraPosition = { 0.0f, 30.0f, 25.0f };
+		Vec3 cameraPosition = { 0.0f, 50.0f, 50.0f };
 		Vec3 cameraTarget = { 0.0f, 0.0f, 0.0f };
 		initProjectionPerspective(cameraPosition, cameraTarget, frame->aspectRatio());
 

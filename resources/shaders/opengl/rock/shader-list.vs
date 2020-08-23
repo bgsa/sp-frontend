@@ -70,8 +70,10 @@ mat4 Mat4_Scale(vec3 scaleVector)
 
 mat4 SpTransform_ToMat4(vec3 position, vec3 scale, vec4 orientation)
 {
-	return Mat4_Translate(position)
-		* Quat_ToMat4(orientation)
+	return
+		Mat4_Translate(position)
+		* Quat_ToMat4(orientation) 
+		* Mat4_Translate(vec3(0.0f, -1.1f, -1.3f))
 		* Mat4_Scale(scale);
 }
 
@@ -107,7 +109,7 @@ mat4 buildTransformationMatrix()
 		scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
 	}
 	
-	orientation = vec4(1.0, 0.0, 0.0, 0.0);
+	//orientation = vec4(1.0, 0.0, 0.0, 0.0);
 	
 	return SpTransform_ToMat4(position, scaleVec, orientation);
 }

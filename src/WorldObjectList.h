@@ -24,21 +24,22 @@ namespace NAMESPACE_RENDERING
 		sp_int shininessFactorLocation;
 		sp_int transformOffsetLocation;
 		
+		const sp_uint vertexIndexes[4] = { 3u, 2u, 1u, 0u, };
+
+		const sp_float vertexes[12] = {
+			-0.5f, 0.0f, -0.5f,
+			0.5f, 0.0f, -0.5f,
+			0.5f, 0.0f, 0.5f,
+			-0.5f, 0.0f, 0.5f
+		};
+
 		void initIndexBuffer()
 		{
-			sp_uint vertexIndexes[4] = { 3u, 2u, 1u, 0u, };
 			_indexesBuffer = sp_mem_new(OpenGLBuffer)(sizeof(vertexIndexes), vertexIndexes, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 		}
 
 		void initVertexBuffer()
 		{
-			sp_float vertexes[12] = {
-				-0.5f, 0.0f, -0.5f,
-				0.5f, 0.0f, -0.5f,
-				0.5f, 0.0f, 0.5f,
-				-0.5f, 0.0f, 0.5f
-			};
-
 			_buffer = sp_mem_new(OpenGLBuffer)(sizeof(vertexes), vertexes);
 		}
 
@@ -46,6 +47,26 @@ namespace NAMESPACE_RENDERING
 		{
 			initVertexBuffer();
 			initIndexBuffer();
+		}
+
+		void buildMesh()
+		{
+			PoolMemoryAllocator::main()->enableMemoryAlignment();
+
+			SpMesh* mesh = sp_mem_new(SpMesh)();
+
+			mesh->vertexes = sp_mem_new(SpArray<Vec3>)(4);
+			for (sp_uint i = 0; i < 4; i++)
+				mesh->vertexes->add(Vec3(vertexes[3 * i], vertexes[3 * i + 1], vertexes[3 * i + 2]));
+
+			mesh->facesIndexes = sp_mem_new(SpArray<SpPoint3<sp_uint>>)(2);
+			mesh->facesIndexes->add(SpPoint3<sp_uint>(vertexIndexes[0], vertexIndexes[1], vertexIndexes[2]));
+			mesh->facesIndexes->add(SpPoint3<sp_uint>(vertexIndexes[2], vertexIndexes[3], vertexIndexes[0]));
+			mesh->init();
+
+			SpPhysicSimulator::instance()->mesh(physicIndex, mesh);
+
+			PoolMemoryAllocator::main()->disableMemoryAlignment();
 		}
 
 	public:
@@ -74,6 +95,7 @@ namespace NAMESPACE_RENDERING
 		API_INTERFACE void init() override
 		{
 			initBuffers();
+			buildMesh();
 
 			shader = sp_mem_new(OpenGLShader)();
 			shader
