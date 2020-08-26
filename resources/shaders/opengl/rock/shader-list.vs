@@ -12,38 +12,29 @@ in vec3 Normal;
 out vec3 normalCoord, eyeCoord;
 
 
-mat4 Quat_ToMat4(vec4 quat)
+mat4 Quat_ToMat4(vec4 q)
 {
-	float sqw = quat.w * quat.w;
-	float sqx = quat.x * quat.x;
-	float sqy = quat.y * quat.y;
-	float sqz = quat.z * quat.z;
+	float v = q.x;
+	q.x = q.z;
+	q.z = v;
+	
+	float qxx = (q.x * q.x);
+	float qyy = (q.y * q.y);
+	float qzz = (q.z * q.z);
+	float qxz = (q.x * q.z);
+	float qxy = (q.x * q.y);
+	float qyz = (q.y * q.z);
+	float qwx = (q.w * q.x);
+	float qwy = (q.w * q.y);
+	float qwz = (q.w * q.z);
 
-	float m00 = sqx - sqy - sqz + sqw; // since sqw + sqx + sqy + sqz =1
-	float m11 = -sqx + sqy - sqz + sqw;
-	float m22 = -sqx - sqy + sqz + sqw;
-
-	float tmp1 = quat.x * quat.y;
-	float tmp2 = quat.z * quat.w;
-	float m01 = 2.0 * (tmp1 + tmp2);
-	float m10 = 2.0 * (tmp1 - tmp2);
-
-	tmp1 = quat.x * quat.z;
-	tmp2 = quat.y * quat.w;
-	float m02 = 2.0 * (tmp1 - tmp2);
-	float m20 = 2.0 * (tmp1 + tmp2);
-
-	tmp1 = quat.y * quat.z;
-	tmp2 = quat.x * quat.w;
-	float m12 = 2.0 * (tmp1 + tmp2);
-	float m21 = 2.0 * (tmp1 - tmp2);
-
-	return mat4(
-		m00, m10, m20, 0.0,
-		m01, m11, m21, 0.0,
-		m02, m12, m22, 0.0,
-		0.0, 0.0, 0.0, 1.0
-	);
+	return 
+		mat4(
+			1.0 - 2.0 * (qyy +  qzz),  2.0 * (qxy - qwz),        2.0 * (qxz + qwy),        0.0,
+			2.0 * (qxy + qwz),         1.0 - 2.0 * (qxx +  qzz), 2.0 * (qyz - qwx),        0.0,
+			2.0 * (qxz - qwy),         2.0 * (qyz + qwx),        1.0 - 2.0 * (qxx +  qyy), 0.0,
+			0.0,                       0.0,                      0.0,                      1.0
+		);
 }
 
 mat4 Mat4_Translate(vec3 position)
@@ -73,7 +64,7 @@ mat4 SpTransform_ToMat4(vec3 position, vec3 scale, vec4 orientation)
 	return
 		Mat4_Translate(position)
 		* Quat_ToMat4(orientation) 
-		* Mat4_Translate(vec3(0.0f, -1.1f, -1.3f))
+		//* Mat4_Translate(vec3(0.0f, -1.1f, -1.3f)) // initial position of the object
 		* Mat4_Scale(scale);
 }
 
