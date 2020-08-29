@@ -38,7 +38,7 @@ namespace NAMESPACE_FRONTEND
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 0.0f, 11.5f, 0.0f });
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 1.0f)));
+		rockList->rotate(0u, Quat::createRotate(degreesToRadians(1), Vec3(0.0f, 0.0f, 1.0f)));
 		rockList->translate(1u, { 5.0f, 8.0f, 0.0f });
 
 		if (rockLength > 2)

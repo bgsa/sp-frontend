@@ -64,7 +64,6 @@ mat4 SpTransform_ToMat4(vec3 position, vec3 scale, vec4 orientation)
 	return
 		Mat4_Translate(position)
 		* Quat_ToMat4(orientation) 
-		//* Mat4_Translate(vec3(0.0f, -1.1f, -1.3f)) // initial position of the object
 		* Mat4_Scale(scale);
 }
 
@@ -100,8 +99,6 @@ mat4 buildTransformationMatrix()
 		scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
 	}
 	
-	//orientation = vec4(1.0, 0.0, 0.0, 0.0);
-	
 	return SpTransform_ToMat4(position, scaleVec, orientation);
 }
 
@@ -109,7 +106,6 @@ void main()
 {	
 	mat4 transform = buildTransformationMatrix();
 	
-	//normalCoord = mat3(transform) * vec3(0, 1, 0);   //matrix normal * vertex normal 
 	normalCoord = mat3(transform) * Normal;
 	eyeCoord = vec3(transform * vec4(Position, 1));
 

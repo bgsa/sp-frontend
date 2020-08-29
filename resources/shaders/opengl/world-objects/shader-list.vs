@@ -68,7 +68,8 @@ mat4 Mat4_Scale(vec3 scaleVector)
 
 mat4 SpTransform_ToMat4(vec3 position, vec3 scale, vec4 orientation)
 {
-	return Mat4_Translate(position)
+	return 
+		Mat4_Translate(position)
 		* Quat_ToMat4(orientation)
 		* Mat4_Scale(scale);
 }

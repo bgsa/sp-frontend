@@ -8,16 +8,6 @@
 
 using namespace NAMESPACE_FRONTEND;
 
-static void initGlew()
-{
-	GLenum glewinit = glewInit();
-	if (glewinit != GLEW_OK)
-	{
-		const sp_char* errorMessage = reinterpret_cast<sp_char*>(((GLubyte*)glewGetErrorString(glewinit)));
-		Log::error(errorMessage);
-	}
-}
-
 sp_int main(sp_int, sp_char**)
 {
 	StackMemoryAllocator::main()->init();
@@ -27,7 +17,7 @@ sp_int main(sp_int, sp_char**)
 	window.init();
 	window.setTitle(WINDOW_TITLE);
 
-	initGlew();
+	NAMESPACE_RENDERING::SpOpenGL::init();
 
 	SpUIManager engineEditor;
 	engineEditor.setWindow(&window);
