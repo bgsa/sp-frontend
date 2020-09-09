@@ -21,11 +21,6 @@ namespace NAMESPACE_FRONTEND
 		SpLightManager::instance()->init(1u);
 		SpLightManager::instance()->lights(0u)->position(Vec3(10.0f, 10.0f, 0.0f));
 
-		// init objects to render
-		//gridSystem = sp_mem_new(GridSystem)();
-		//gridSystem->init();
-		//renderer->addGraphicObject(gridSystem);
-
 		const sp_uint rockLength = SpPhysicSimulator::instance()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
 		Randomizer rand(0, 10000);
@@ -38,8 +33,7 @@ namespace NAMESPACE_FRONTEND
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 0.0f, 11.5f, 0.0f });
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(1), Vec3(0.0f, 0.0f, 1.0f)));
-		rockList->translate(1u, { 5.0f, 8.0f, 0.0f });
+		//rockList->rotate(0u, Quat::createRotate(degreesToRadians(1), Vec3(0.0f, 0.0f, 1.0f)));
 
 		if (rockLength > 2)
 		{
@@ -87,7 +81,7 @@ namespace NAMESPACE_FRONTEND
 		
 		for (sp_uint i = 0u; i < rockList->length(); i++)
 		{
-			rockList->physicProperties(i)->addForce(gravityForce);
+			rockList->physicProperties(i)->currentState.addForce(gravityForce);
 			rockList->update(i, elapsedTime);
 		}
 	}
@@ -150,7 +144,7 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_Q:
 		{
-			const Vec3 position = rockList->physicProperties(objectIndex)->position() 
+			const Vec3 position = rockList->physicProperties(objectIndex)->currentState.position()
 				+ Vec3(0.0f, 0.5f, 0.0f);
 			const Vec3 force = Vec3(0.0f, 0.0f, -0.1f);
 			rockList->physicProperties(objectIndex)->addImpulseAngular(position, force);

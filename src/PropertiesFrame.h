@@ -119,13 +119,13 @@ namespace NAMESPACE_FRONTEND
 
 			renderProperty("Static", physicProperties->isStatic());
 
-			renderVec3Property("Posision", physicProperties->position());
-			renderVec3Property("Velocity", physicProperties->velocity());
-			renderVec3Property("Acceleration", physicProperties->acceleration());
+			renderVec3Property("Posision", physicProperties->currentState.position());
+			renderVec3Property("Velocity", physicProperties->currentState.velocity());
+			renderVec3Property("Acceleration", physicProperties->currentState.acceleration());
 
-			renderQuatProperty("Orientation", physicProperties->orientation());
-			renderVec3Property("Angular Velocity", physicProperties->angularVelocity());
-			renderVec3Property("Torque", physicProperties->torque());
+			renderQuatProperty("Orientation", physicProperties->currentState.orientation());
+			renderVec3Property("Angular Velocity", physicProperties->currentState.angularVelocity());
+			renderVec3Property("Torque", physicProperties->currentState.torque());
 
 			renderProperty("Mass", ONE_FLOAT / physicProperties->massInverse());
 			renderProperty("Restitution", physicProperties->coeficientOfRestitution());

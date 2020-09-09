@@ -2,6 +2,7 @@
 #define WORLD_OBJECTS_LIST_HEADER
 
 #include "SpectrumRendering.h"
+#include "SpMesh.h"
 #include "GraphicObject3DList.h"
 #include "DOP18.h"
 #include "IGraphicObjectRenderer.h"
@@ -55,13 +56,17 @@ namespace NAMESPACE_RENDERING
 
 			SpMesh* mesh = sp_mem_new(SpMesh)();
 
-			mesh->vertexes = sp_mem_new(SpArray<Vec3>)(4);
+			mesh->vertexesMesh = sp_mem_new(SpArray<SpVertexMesh*>)(4);
 			for (sp_uint i = 0; i < 4; i++)
-				mesh->vertexes->add(Vec3(vertexes[3 * i], vertexes[3 * i + 1], vertexes[3 * i + 2]));
+			{
+				Vec3 v(vertexes[3 * i], vertexes[3 * i + 1], vertexes[3 * i + 2]);
+				mesh->vertexesMesh->add(sp_mem_new(SpVertexMesh)(mesh, i, v));
+			}
 
-			mesh->facesIndexes = sp_mem_new(SpArray<SpPoint3<sp_uint>>)(2);
-			mesh->facesIndexes->add(SpPoint3<sp_uint>(vertexIndexes[0], vertexIndexes[1], vertexIndexes[2]));
-			mesh->facesIndexes->add(SpPoint3<sp_uint>(vertexIndexes[2], vertexIndexes[3], vertexIndexes[0]));
+			mesh->faces = sp_mem_new(SpArray<SpFaceMesh*>)(2);
+			mesh->faces->add(sp_mem_new(SpFaceMesh(mesh, 0, 0, 1, 2)));
+			mesh->faces->add(sp_mem_new(SpFaceMesh(mesh, 1, 2, 3, 0)));
+
 			mesh->init();
 
 			SpPhysicSimulator::instance()->mesh(physicIndex, mesh);
@@ -78,6 +83,8 @@ namespace NAMESPACE_RENDERING
 			bvs[0].scale({ 1.0f, 0.2f, 1.0f });
 
 			SpPhysicProperties* physicProperty = physicProperties(0u);
+			physicProperty->mass(ZERO_FLOAT);
+			physicProperty->inertialTensor(Mat3(ZERO_FLOAT));
 		}
 
 		API_INTERFACE void translate(const sp_uint index, const Vec3& translation) override
