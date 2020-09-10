@@ -9,6 +9,9 @@
 #include "SpPhysicSimulator.h"
 #include "GpuContext.h"
 #include "SpGpuRenderingFactoryOpenGL.h"
+#include "SpLogger.h"
+#include "SpLogConsoleProvider.h"
+#include "SpLogEngineProvider.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -41,6 +44,9 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void init(SpWindow* window)
 		{
 			this->window = window;
+
+			SpLogEngineProvider* logProvider = sp_mem_new(SpLogEngineProvider);
+			SpLogger::init(logProvider);
 
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
@@ -130,6 +136,8 @@ namespace NAMESPACE_FRONTEND
 				sp_mem_delete(gpuContext, GpuContext);
 				gpuContext = nullptr;
 			}
+
+			SpLogger::dispose();
 		}
 
 		API_INTERFACE inline const sp_char* toString()

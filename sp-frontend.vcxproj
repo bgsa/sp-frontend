@@ -186,6 +186,7 @@
     <ClInclude Include="src\PropertiesFrame.h" />
     <ClInclude Include="src\SpectrumFronend.h" />
     <ClInclude Include="src\SpFrame.h" />
+    <ClInclude Include="src\SpLogEngineProvider.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
