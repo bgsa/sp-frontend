@@ -6,7 +6,7 @@
 
 namespace NAMESPACE_FRONTEND
 {
-#define MAX_LINES 10
+#define MAX_LINES 100
 #define MAX_CHARS 256
 	class SpLogEngineProvider 
 		: public SpLogProvider
