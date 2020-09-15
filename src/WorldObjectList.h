@@ -28,10 +28,10 @@ namespace NAMESPACE_RENDERING
 		const sp_uint vertexIndexes[4] = { 3u, 2u, 1u, 0u, };
 
 		const sp_float vertexes[12] = {
-			-0.5f, 0.0f, -0.5f,
-			0.5f, 0.0f, -0.5f,
+			-0.5f, 0.0f, 0.5f,
 			0.5f, 0.0f, 0.5f,
-			-0.5f, 0.0f, 0.5f
+			0.5f, 0.0f, -0.5f,
+			-0.5f, 0.0f, -0.5f
 		};
 
 		void initIndexBuffer()

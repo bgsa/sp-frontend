@@ -74,7 +74,9 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveLeft(sp_float distance)
 	{
-		Vec3 directionToMove = _up.cross(_direction).normalize();
+		Vec3 directionToMove;
+		cross(_up, _direction, &directionToMove);
+		normalize(&directionToMove);
 
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
@@ -86,7 +88,10 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::moveRight(sp_float distance)
 	{
-		Vec3 directionToMove = _up.cross(_direction).normalize();
+		Vec3 directionToMove;
+		cross(_up, _direction, &directionToMove);
+		normalize(&directionToMove);
+		
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
 		position -= distanceToMove;
