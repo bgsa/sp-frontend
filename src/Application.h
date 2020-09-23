@@ -51,8 +51,8 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
-			const sp_uint maxObjects = 2u;
-		//	const sp_uint maxObjects = 1024u;
+			//const sp_uint maxObjects = 2u;
+			const sp_uint maxObjects = 1024u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -78,7 +78,11 @@ namespace NAMESPACE_FRONTEND
 				if (SpPhysicSettings::instance()->isSimulationEnabled())
 				{
 					physicSimulator->run(); // update collisions and responses
-					editor->update(Timer::physicTimer()->elapsedTime()); // integrate all objects
+					//editor->update(Timer::physicTimer()->elapsedTime()); // integrate all objects
+					
+					// TODO: REMOVER
+					editor->update(30.0f); // fixed to 30 
+
 					Timer::physicTimer()->update();
 				}
 

@@ -32,12 +32,12 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 0.0f, 11.5f, 0.0f });
-		//rockList->rotate(0u, Quat::createRotate(degreesToRadians(1), Vec3(0.0f, 0.0f, 1.0f)));
+		rockList->translate(0u, { -10.0f, 10.0f, 10.0f });
+		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
 
-		if (rockLength > 2)
+		if (rockLength > 1)
 		{
-			for (sp_uint i = 2; i < rockLength; i++)
+			for (sp_uint i = 1; i < rockLength; i++)
 			{
 				sp_float x = rand.rand() / 100.0f;
 				sp_float y = rand.rand() / 100.0f;
