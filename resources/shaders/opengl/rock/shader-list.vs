@@ -9,8 +9,9 @@ uniform samplerBuffer transformMatrix;
 in vec3 Position;
 in vec3 Normal;
 
-out vec3 normalCoord, eyeCoord;
-
+flat out vec3 normalCoord;
+out vec3 eyeCoord;
+out vec4 fragmentColor;
 
 mat4 Quat_ToMat4(vec4 q)
 {
@@ -110,4 +111,5 @@ void main()
 	eyeCoord = vec3(transform * vec4(Position, 1));
 
 	gl_Position = projectionMatrix * viewMatrix * transform * vec4(Position, 1.0);
+	fragmentColor = vec4(0.5, 0.5, 1.0, 1.0);
 }

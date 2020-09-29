@@ -3,6 +3,7 @@ precision mediump float;
 
 uniform vec3  LightPosition;
 uniform vec3  LightColor;
+uniform vec3  EnvironmentLightColor;
 uniform float ShininessFactor;
 
 in vec3  normalCoord;
@@ -24,10 +25,11 @@ vec4 PhongShading()
 	vec3 diffuse = cosAngle * LightColor;
 	vec3 specular = specularIntensity * LightColor;
 
-	return vec4(diffuse + specular, 1.0);
+	return vec4(EnvironmentLightColor + diffuse + specular, 1.0);
 }
 
 void main()
 {
-	FragOutput = vec4(0.4, 0.2, 0.1, 1.0) * PhongShading();
+	FragOutput = vec4(0.5, 0.5, 0.5, 1.0) * PhongShading();
+	//FragOutput = vec4(0.5, 0.5, 0.5, 1.0);
 }

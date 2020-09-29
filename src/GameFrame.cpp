@@ -18,13 +18,12 @@ namespace NAMESPACE_FRONTEND
 		renderer->resize((sp_float)width(), (sp_float)width());
 
 		// init lights
-		SpLightManager::instance()->init(1u);
-		SpLightManager::instance()->lights(0u)->position(Vec3(10.0f, 10.0f, 0.0f));
+		SpLightManager::instance()->addLight(SP_RGB_WHITE, Vec3(10.0f, 10.0f, 0.0f));
 
 		const sp_uint rockLength = SpPhysicSimulator::instance()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
-		Randomizer rand(0, 10000);
-		sp_uint halfSpace = 10000 / 200;
+		Randomizer rand(0, 1000);
+		sp_uint halfSpace = 1000 / 200;
 
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
 		worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
@@ -32,12 +31,16 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { -10.0f, 10.0f, 10.0f });
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
+		rockList->translate(0u, { 2.0f, 10.0f, 3.0f });
+		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(0.0f, 0.0f, 0.0f)));
 
-		if (rockLength > 1)
+		//rockList->translate(1u, { 3.0f, 10.0f, 0.0f });
+		//rockList->rotate(1u, Quat::createRotate(degreesToRadians(30), Vec3(0.0f, 0.0f, 1.0f)));
+
+		const sp_uint randomizeFrom = 2u;
+		if (rockLength > randomizeFrom)
 		{
-			for (sp_uint i = 1; i < rockLength; i++)
+			for (sp_uint i = randomizeFrom; i < rockLength; i++)
 			{
 				sp_float x = rand.rand() / 100.0f;
 				sp_float y = rand.rand() / 100.0f;

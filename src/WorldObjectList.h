@@ -20,12 +20,13 @@ namespace NAMESPACE_RENDERING
 	private:
 		OpenGLShader* shader;
 
+		sp_int lightEnvironmentLocation;
 		sp_int lightPositionLocation;
 		sp_int lightColorLocation;
 		sp_int shininessFactorLocation;
 		sp_int transformOffsetLocation;
 		
-		const sp_uint vertexIndexes[4] = { 3u, 2u, 1u, 0u, };
+		const sp_uint vertexIndexes[4] = { 0u, 1u, 2u, 3u, };
 
 		const sp_float vertexes[12] = {
 			-0.5f, 0.0f, 0.5f,
@@ -116,6 +117,7 @@ namespace NAMESPACE_RENDERING
 
 			lightColorLocation = shader->getUniform("LightColor");
 			lightPositionLocation = shader->getUniform("LightPosition");
+			lightEnvironmentLocation = shader->getUniform("EnvironmentLightColor");
 			shininessFactorLocation = shader->getUniform("ShininessFactor");
 
 			positionAttribute = shader->getAttribute("Position");
@@ -127,8 +129,9 @@ namespace NAMESPACE_RENDERING
 				->enable()
 				->setUniform<Mat4>(projectionMatrixLocation, renderData.projectionMatrix)
 				->setUniform<Mat4>(viewMatrixLocation, renderData.viewMatrix)
-				->setUniform3<sp_float>(lightPositionLocation, SpLightManager::instance()->lights()->position())
-				->setUniform3<sp_float>(lightColorLocation, SpLightManager::instance()->lights()->color())
+				->setUniform3<sp_float>(lightEnvironmentLocation, SpLightManager::instance()->environmentLight)
+				->setUniform3<sp_float>(lightPositionLocation, SpLightManager::instance()->lights(0u)->position())
+				->setUniform3<sp_float>(lightColorLocation, SpLightManager::instance()->lights(0u)->color())
 				->setUniform<sp_float>(shininessFactorLocation, 1000.0f)
 				->setUniform<sp_uint>(transformOffsetLocation, physicIndex);
 
