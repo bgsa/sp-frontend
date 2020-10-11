@@ -22,8 +22,8 @@ namespace NAMESPACE_FRONTEND
 
 		const sp_uint rockLength = SpPhysicSimulator::instance()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
-		Randomizer rand(0, 1000);
-		sp_uint halfSpace = 1000 / 200;
+		Randomizer rand(0, 5000);
+		sp_uint halfSpace = 5000 / 200;
 
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
 		worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
