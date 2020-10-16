@@ -42,9 +42,9 @@ namespace NAMESPACE_FRONTEND
 		{
 			for (sp_uint i = randomizeFrom; i < rockLength; i++)
 			{
-				sp_float x = rand.rand() / 100.0f;
-				sp_float y = rand.rand() / 100.0f;
-				sp_float z = rand.rand() / 100.0f;
+				sp_float x = rand.randInt() / 100.0f;
+				sp_float y = rand.randInt() / 100.0f;
+				sp_float z = rand.randInt() / 100.0f;
 
 				// move the object to a random position
 				rockList->translate(i, { x - halfSpace, y + 3.7f, z - halfSpace });
