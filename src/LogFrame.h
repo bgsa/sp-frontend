@@ -39,7 +39,7 @@ namespace NAMESPACE_FRONTEND
 
 				ImGui::SetWindowSize(ImVec2((sp_float)width(), (sp_float)height()));
 
-				SpLogEngineProvider* provider = dynamic_cast<SpLogEngineProvider*>(SpLogger::instance()->provider());
+				SpLogEngineProvider* provider = dynamic_cast<SpLogEngineProvider*>(SpLogger::instance()->providers()->begin()->value());
 
 				for (sp_uint i = 0; i < provider->messageLength(); i++)
 					ImGui::Text(provider->message(i));

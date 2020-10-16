@@ -45,14 +45,17 @@ namespace NAMESPACE_FRONTEND
 		{
 			this->window = window;
 
-			SpLogEngineProvider* logProvider = sp_mem_new(SpLogEngineProvider);
-			SpLogger::init(logProvider);
+			SpLogger::init();
+			SpLogEngineProvider* logEngineProvider = sp_mem_new(SpLogEngineProvider);
+			SpLogConsoleProvider* logConsoleProvider = sp_mem_new(SpLogConsoleProvider);
+			SpLogger::instance()->addProvider(logEngineProvider);
+			SpLogger::instance()->addProvider(logConsoleProvider);
 
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
 			//const sp_uint maxObjects = 2u;
-			const sp_uint maxObjects = 12u;
+			const sp_uint maxObjects = 4u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
