@@ -22,21 +22,20 @@ namespace NAMESPACE_FRONTEND
 
 		const sp_uint rockLength = SpPhysicSimulator::instance()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
-		Randomizer rand(0, 5000);
-		sp_uint halfSpace = 5000 / 200;
-
+		
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
 		worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
 		worldObjects->init();
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 2.0f, 10.0f, 3.0f });
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(0.0f, 0.0f, 0.0f)));
+		rockList->translate(0u, { 0.0f, 1.0f, 0.0f });
+		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
 
-		//rockList->translate(1u, { 3.0f, 10.0f, 0.0f });
-		//rockList->rotate(1u, Quat::createRotate(degreesToRadians(30), Vec3(0.0f, 0.0f, 1.0f)));
+		rockList->translate(1u, { 1.0f, 10.0f, 0.0f });
 
+		Randomizer rand(0, 3000);
+		sp_uint halfSpace = 1000 / 200;
 		const sp_uint randomizeFrom = 2u;
 		if (rockLength > randomizeFrom)
 		{
@@ -47,7 +46,7 @@ namespace NAMESPACE_FRONTEND
 				sp_float z = rand.randInt() / 100.0f;
 
 				// move the object to a random position
-				rockList->translate(i, { x - halfSpace, y + 3.7f, z - halfSpace });
+				rockList->translate(i, { x - halfSpace, y + 1.0f, z - halfSpace });
 
 				// move away initial inter-penettrations
 				DOP18* bvi = rockList->boundingVolumes(i);

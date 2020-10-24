@@ -54,8 +54,8 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
-			//const sp_uint maxObjects = 2u;
-			const sp_uint maxObjects = 64u;
+			const sp_uint maxObjects = 4u;
+			//const sp_uint maxObjects = 64u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
