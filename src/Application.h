@@ -62,6 +62,8 @@ namespace NAMESPACE_FRONTEND
 
 			editor->setWindow(window);
 			editor->init();
+
+			physicSimulator->initMeshCache();
 		}
 
 		API_INTERFACE void start()
