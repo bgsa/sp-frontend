@@ -139,6 +139,9 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
+		if (evt->type == SpKeyEventType::Released)
+			return;
+
 		const sp_float temp = 1.0f;
 		const sp_uint objectIndex = 0u;
 
