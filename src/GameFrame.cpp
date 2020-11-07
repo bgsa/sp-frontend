@@ -32,7 +32,7 @@ namespace NAMESPACE_FRONTEND
 		rockList->translate(0u, { 0.0f, 1.0f, 0.0f });
 		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
 
-		rockList->translate(1u, { 1.0f, 10.0f, 0.0f });
+		rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
 
 		Randomizer rand(0, 3000);
 		sp_uint halfSpace = 1000 / 200;
