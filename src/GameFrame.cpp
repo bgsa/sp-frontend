@@ -67,7 +67,8 @@ namespace NAMESPACE_FRONTEND
 		rockList->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rockList);
 
-		texture = OpenGLTexture::createFromFramebuffer();
+		framebuffer = sp_mem_new(OpenGLFramebuffer)();
+		framebuffer->setup(100, 100);
 	}
 
 	void GameFrame::update(sp_float elapsedTime)
@@ -101,9 +102,8 @@ namespace NAMESPACE_FRONTEND
 
 		ImVec2 size = ImVec2((sp_float)width(), (sp_float)height());
 		renderer->resize(size.x, size.y);
-		texture->resize(SpSize<sp_int>((sp_int)size.x, (sp_int)size.y));
-
-		ImGui::Image((void*)(intptr_t)texture->id(), size, ImVec2(0, 1), ImVec2(1, 0));
+		
+		ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(0, 1), ImVec2(1, 0));
 
 		if (ImGui::BeginPopupContextWindow())
 		{
@@ -123,18 +123,17 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::render()
 	{
-		renderer->render();
-
 		SpViewportData* viewport = renderer->viewport();
 
-		sp_uchar* data = ALLOC_ARRAY(sp_uchar, FOUR_INT * viewport->width * viewport->height);
-		Framebuffer::getFramebuffer(data);
-
-		texture
-			->use()
-			->updateData(data, GL_RGBA);
+		if (viewport->width != framebuffer->size().width
+			|| viewport->height != framebuffer->size().height)
+			framebuffer->setup(viewport->width, viewport->height);
 		
-		ALLOC_RELEASE(data);
+		framebuffer->use();
+
+		renderer->render();
+
+		framebuffer->disable();
 	}
 
 	void GameFrame::onKeyboardEvent(SpKeyboardEvent* evt)
@@ -200,10 +199,10 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::dispose()
 	{
-		if (texture != nullptr)
+		if (framebuffer != nullptr)
 		{
-			sp_mem_delete(texture, OpenGLTexture);
-			texture = nullptr;
+			sp_mem_delete(framebuffer, OpenGLFramebuffer);
+			framebuffer = nullptr;
 		}
 
 		if(gridSystem != nullptr)
@@ -229,6 +228,5 @@ namespace NAMESPACE_FRONTEND
 			sp_mem_delete(renderer, OpenGLRendererManager);
 			renderer = nullptr;
 		}
-		
 	}
 }

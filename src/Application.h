@@ -55,7 +55,7 @@ namespace NAMESPACE_FRONTEND
 			SpGpuRenderingFactoryOpenGL::init();
 
 			//const sp_uint maxObjects = 4u;
-			const sp_uint maxObjects = 8u;
+			const sp_uint maxObjects = 64u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -74,6 +74,8 @@ namespace NAMESPACE_FRONTEND
 
 			Timer::init();
 
+			Timer tt; 
+
 			while (isRunning)
 			{
 				Timer::frameTimer()->update();
@@ -82,22 +84,30 @@ namespace NAMESPACE_FRONTEND
 
 				if (SpPhysicSettings::instance()->isSimulationEnabled())
 				{
-					// TODO: REMOVER
+					tt.update();
 					editor->update(30.0f); // fixed to 30 
 					//editor->update(Timer::physicTimer()->elapsedTime()); // integrate all objects
+					sp_log_debug1s("UPDATE: "); sp_log_debug1ll(tt.elapsedTime()); sp_log_newline();
 
+					tt.update();
 					physicSimulator->run(); // update collisions and responses
+					sp_log_debug1s("PHYSIC: "); sp_log_debug1ll(tt.elapsedTime()); sp_log_newline();
 
 					Timer::physicTimer()->update();
 				}
 
+				tt.update();
 				physicSimulator->updateTransformsOnGPU(); // update data on GPU
-
+				sp_log_debug1s("UPDATE TRANSFORMS: "); sp_log_debug1ll(tt.elapsedTime()); sp_log_newline();
+				tt.update();
 				editor->preRender();
 				editor->render();
+				sp_log_debug1s("RENDER 1: "); sp_log_debug1ll(tt.elapsedTime()); sp_log_newline();
+				tt.update();
 				Timer::renderTimer()->update();
 				editor->postRender();
 				editor->renderGUI();
+				sp_log_debug1s("RENDER 2: "); sp_log_debug1ll(tt.elapsedTime()); sp_log_newline();
 
 #ifdef DEBUG
 				LogGL::glErrors(__FILE__, __LINE__);

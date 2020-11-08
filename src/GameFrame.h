@@ -24,6 +24,7 @@
 #include "SpPhysicSimulator.h"
 #include "WorldObjectList.h"
 #include "SpLightManager.h"
+#include "OpenGLFramebuffer.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -32,7 +33,6 @@ namespace NAMESPACE_FRONTEND
 		, public SpKeyboardEventListener
 	{
 	private:
-		OpenGLTexture* texture = nullptr;
 		OpenGLRendererManager* renderer;
 		EditorViewer viewer;
 
@@ -40,6 +40,8 @@ namespace NAMESPACE_FRONTEND
 		RockRenderer* rockRenderer = nullptr;
 		RockList* rockList = nullptr;
 		WorldObjectList* worldObjects = nullptr;
+
+		OpenGLFramebuffer* framebuffer = nullptr;
 
 	public:
 
