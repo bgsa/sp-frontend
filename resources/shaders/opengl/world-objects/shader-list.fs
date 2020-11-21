@@ -31,5 +31,5 @@ vec4 PhongShading()
 void main()
 {
 	FragOutput = vec4(0.5, 0.5, 0.5, 1.0) * PhongShading();
-	//FragOutput = vec4(0.5, 0.5, 0.5, 1.0);
+	//FragOutput = vec4(0.5, 0.5, 1.0, 0.7);
 }

@@ -24,7 +24,9 @@ namespace NAMESPACE_FRONTEND
 		const sp_uint worldObjectsLength = 1u;
 		
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
-		worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
+		//worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
+		//worldObjects->scale(0u, Vec3(0.1f, 0.1f, 0.1f));
+		//worldObjects->translate(0u, Vec3(0.0f, -10.0f, 0.0f));
 		worldObjects->init();
 		renderer->addGraphicObject(worldObjects);
 
@@ -104,6 +106,9 @@ namespace NAMESPACE_FRONTEND
 		renderer->resize(size.x, size.y);
 		
 		ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(0, 1), ImVec2(1, 0));
+		//ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(1, 0), ImVec2(0, 1));
+		//ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(1, 1), ImVec2(0, 0));
+		//ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(0, 0), ImVec2(1, 1));
 
 		if (ImGui::BeginPopupContextWindow())
 		{

@@ -26,53 +26,76 @@ namespace NAMESPACE_RENDERING
 		sp_int shininessFactorLocation;
 		sp_int transformOffsetLocation;
 		
-		const sp_uint vertexIndexes[4] = { 0u, 1u, 2u, 3u, };
+		sp_uint vertexesLength;
+		sp_uint indexesLength;
+		sp_uint facesLength;
+		sp_uint* temp;
 
-		const sp_float vertexes[12] = {
-			-0.5f, 0.0f, 0.5f,
-			0.5f, 0.0f, 0.5f,
-			0.5f, 0.0f, -0.5f,
-			-0.5f, 0.0f, -0.5f
-		};
-
-		void initIndexBuffer()
+		void initTerrain(const sp_uint rows, const sp_uint cols, Vec3* vertexes, sp_uint* indexes, const sp_float squareSize = ONE_FLOAT, const Vec3& translation = Vec3Zeros)
 		{
-			_indexesBuffer = sp_mem_new(OpenGLBuffer)(sizeof(vertexIndexes), vertexIndexes, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-		}
+			sp_uint vertexIndex = ZERO_UINT;
+			for (sp_uint row = 0; row != rows + 1u; row++)
+				for (sp_uint col = 0; col != cols + 1u; col++)
+					vertexes[vertexIndex++] = Vec3(col * squareSize, ZERO_FLOAT, row * squareSize) + translation;
 
-		void initVertexBuffer()
-		{
-			_buffer = sp_mem_new(OpenGLBuffer)(sizeof(vertexes), vertexes);
-		}
+			_buffer = sp_mem_new(OpenGLBuffer)(VEC3_SIZE * vertexesLength, vertexes);
 
-		void initBuffers()
-		{
-			initVertexBuffer();
-			initIndexBuffer();
+			sp_uint index = ZERO_UINT;
+			for (sp_uint row = 0; row < rows; row++)
+				for (sp_uint col = 0; col < cols; col++)
+				{
+					indexes[index++] = row * (cols + 1u) + col;
+					indexes[index++] = row * (cols + 1u) + col + 1u;
+					indexes[index++] = (row + 1u) * (cols + 1u) + col;
+
+					indexes[index++] = (row + 1u) * (cols + 1u) + col;
+					indexes[index++] = row * (cols + 1u) + col + 1u;
+					indexes[index++] = (row + 1u) * (cols + 1u) + col + 1u;
+				}
+
+			_indexesBuffer = sp_mem_new(OpenGLBuffer)(index * SIZEOF_FLOAT, indexes, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 		}
 
 		void buildMesh()
 		{
+			const sp_uint rows = 50u, cols = 50u, squareSize = 2u;
+
+			vertexesLength = (rows + 1u) * (cols + 1u);
+			facesLength = multiplyBy2(rows * cols);
+			indexesLength = multiplyBy3(facesLength);
+
+			Vec3* vertexes = ALLOC_NEW_ARRAY(Vec3, vertexesLength);
+			sp_uint* indexes = ALLOC_NEW_ARRAY(sp_uint, indexesLength);
+			
+			const Vec3 translation = Vec3(rows * squareSize * -0.5f, 0.0f, cols * squareSize * -0.5f);
+			initTerrain(rows, cols, vertexes, indexes, squareSize, translation);
+
 			PoolMemoryAllocator::main()->enableMemoryAlignment();
 
 			SpMesh* mesh = sp_mem_new(SpMesh)();
+			mesh->vertexesMesh = sp_mem_new(SpArray<SpVertexMesh*>)(vertexesLength);
+			mesh->faces = sp_mem_new(SpArray<SpFaceMesh*>)(facesLength);
 
-			mesh->vertexesMesh = sp_mem_new(SpArray<SpVertexMesh*>)(4);
-			for (sp_uint i = 0; i < 4; i++)
+			for (sp_uint i = 0; i < vertexesLength; i++)
+				mesh->vertexesMesh->add(sp_mem_new(SpVertexMesh)(mesh, i, vertexes[i]));
+
+			for (sp_uint i = 0; i < facesLength; i++)
 			{
-				Vec3 v(vertexes[3 * i], vertexes[3 * i + 1], vertexes[3 * i + 2]);
-				mesh->vertexesMesh->add(sp_mem_new(SpVertexMesh)(mesh, i, v));
+				sp_uint faceIndex = 3u * i;
+
+				mesh->faces->add(sp_mem_new(SpFaceMesh)(mesh, i, 
+					indexes[faceIndex], 
+					indexes[faceIndex + 1u], 
+					indexes[faceIndex + 2u])
+				);
 			}
-
-			mesh->faces = sp_mem_new(SpArray<SpFaceMesh*>)(2);
-			mesh->faces->add(sp_mem_new(SpFaceMesh(mesh, 0, 0, 1, 2)));
-			mesh->faces->add(sp_mem_new(SpFaceMesh(mesh, 1, 2, 3, 0)));
-
 			mesh->init();
 
 			SpPhysicSimulator::instance()->mesh(physicIndex, mesh);
 
 			PoolMemoryAllocator::main()->disableMemoryAlignment();
+
+			ALLOC_RELEASE(vertexes);
 		}
 
 	public:
@@ -80,9 +103,6 @@ namespace NAMESPACE_RENDERING
 		API_INTERFACE WorldObjectList(const sp_uint length)
 			: SpPhysicObjectList::SpPhysicObjectList(length)
 		{
-			DOP18* bvs = (DOP18*) boundingVolumes(0u);
-			bvs[0].scale({ 1.0f, 0.2f, 1.0f });
-
 			SpPhysicProperties* physicProperty = physicProperties(0u);
 			physicProperty->mass(ZERO_FLOAT);
 			physicProperty->inertialTensor(Mat3(ZERO_FLOAT));
@@ -91,18 +111,15 @@ namespace NAMESPACE_RENDERING
 		API_INTERFACE void translate(const sp_uint index, const Vec3& translation) override
 		{
 			transforms(index)->translate(translation);
-			boundingVolumes(index)->translate(translation);
 		}
 
 		API_INTERFACE void scale(const sp_uint index, const Vec3& factors) override
 		{
 			transforms(index)->scale(factors);
-			boundingVolumes(index)->scale(factors);
 		}
 
 		API_INTERFACE void init() override
 		{
-			initBuffers();
 			buildMesh();
 
 			shader = sp_mem_new(OpenGLShader)();
@@ -142,7 +159,8 @@ namespace NAMESPACE_RENDERING
 			SpPhysicSimulator::instance()->transformsGPU()->use();
 			_indexesBuffer->use();
 
-			glDrawElementsInstanced(GL_TRIANGLE_FAN, 2 * THREE_SIZE, GL_UNSIGNED_INT, NULL, length());
+			//glDrawElements(GL_TRIANGLES, indexesLength, GL_UNSIGNED_INT, NULL);
+			glDrawElementsInstanced(GL_TRIANGLES, indexesLength, GL_UNSIGNED_INT, NULL, 2u);
 
 			shader->disable();
 

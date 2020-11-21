@@ -103,8 +103,8 @@ mat4 buildTransformationMatrix()
 void main()
 {
 	mat4 transform = buildTransformationMatrix();
-	
-	normalCoord = mat3(transform) * vec3(0, 1, 0);   //matrix normal * vertex normal 
+
+	normalCoord = mat3(transform) * vec3(0, -1, 0);   //matrix normal * vertex normal 
 	eyeCoord = vec3(transform * vec4(Position, 1));
 
 	gl_Position = projectionMatrix * viewMatrix * transform * vec4(Position, 1.0);
