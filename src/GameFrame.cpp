@@ -116,6 +116,16 @@ namespace NAMESPACE_FRONTEND
 			{
 				// camera frame!
 			}
+
+			if (ImGui::MenuItem("Wireframe"))
+			{
+				// camera frame!
+			}
+
+			if (ImGui::MenuItem("Background Color"))
+			{
+				// camera frame!
+			}
 			ImGui::EndPopup();
 		}
 
