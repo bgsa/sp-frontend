@@ -96,6 +96,7 @@ mat4 buildTransformationMatrix()
 		vec4 scaleTemp    = texelFetch(transformMatrix, index - offset + 2);
 		
 		orientation = vec4(orientation.w, orientation.x, orientation.y, orientation.z);
+		//orientation = vec4(orientation.x, orientation.y, orientation.z, orientation.w);
 		position = positionTemp.xyz;
 		scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
 	}

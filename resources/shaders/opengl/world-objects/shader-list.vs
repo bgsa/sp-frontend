@@ -67,36 +67,22 @@ mat4 SpTransform_ToMat4(vec3 position, vec3 scale, vec4 orientation)
 
 mat4 buildTransformationMatrix()
 {
-	int index  = (gl_InstanceID + int(transformOffset)) * 3;
-	int temp   = (gl_InstanceID + int(transformOffset)) * 2;
-	int offset = int(float(temp) / 4.0);
-	bool shift  = int(index % 2) != 0; // shift two backward
-	
-	vec4 orientation;
 	vec3 position;
 	vec3 scaleVec;
+	vec4 orientation;
+
+	orientation  = texelFetch(transformMatrix, 0);
+	vec4 positionTemp = texelFetch(transformMatrix, 1);
+	vec4 scaleTemp    = texelFetch(transformMatrix, 2);
 	
-	if (shift)
-	{
-		orientation       = texelFetch(transformMatrix, index - offset - 1);
-		vec4 positionTemp = texelFetch(transformMatrix, index - offset    );
-		vec4 scaleTemp    = texelFetch(transformMatrix, index - offset + 1);
-		
-		orientation = vec4(orientation.z , orientation.w , positionTemp.x, positionTemp.y);
-		position    = vec3(positionTemp.z, positionTemp.w, scaleTemp.x                   );
-		scaleVec    = vec3(scaleTemp.y   , scaleTemp.z   , scaleTemp.w                   );
-	}
-	else
-	{
-		orientation       = texelFetch(transformMatrix, index - offset);
-		vec4 positionTemp = texelFetch(transformMatrix, index - offset + 1);
-		vec4 scaleTemp    = texelFetch(transformMatrix, index - offset + 2);
-		
-		orientation = vec4(orientation.w, orientation.x, orientation.y, orientation.z);
-		position = positionTemp.xyz;
-		scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
-	}
-	
+	orientation = vec4(orientation.x, orientation.y, orientation.z, orientation.w);
+	position = positionTemp.xyz;
+	scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
+
+	//orientation = vec4(1.0, 0.0, 0.0, 0.0);
+	//position = vec3(0.0, 0.0, 0.0);
+	//scaleVec = vec3(1.0, 1.0, 1.0);
+
 	return SpTransform_ToMat4(position, scaleVec, orientation);
 }
 
@@ -104,7 +90,7 @@ void main()
 {
 	mat4 transform = buildTransformationMatrix();
 
-	normalCoord = mat3(transform) * vec3(0, -1, 0);   //matrix normal * vertex normal 
+	normalCoord = mat3(transform) * vec3(0, -1, 0);   //matrix normal * vertex normal 	
 	eyeCoord = vec3(transform * vec4(Position, 1));
 
 	gl_Position = projectionMatrix * viewMatrix * transform * vec4(Position, 1.0);

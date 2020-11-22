@@ -159,8 +159,8 @@ namespace NAMESPACE_RENDERING
 			SpPhysicSimulator::instance()->transformsGPU()->use();
 			_indexesBuffer->use();
 
-			//glDrawElements(GL_TRIANGLES, indexesLength, GL_UNSIGNED_INT, NULL);
-			glDrawElementsInstanced(GL_TRIANGLES, indexesLength, GL_UNSIGNED_INT, NULL, 2u);
+			glDrawElements(GL_TRIANGLES, indexesLength, GL_UNSIGNED_INT, NULL);
+			//glDrawElementsInstanced(GL_TRIANGLES, indexesLength, GL_UNSIGNED_INT, NULL, 1u);
 
 			shader->disable();
 
