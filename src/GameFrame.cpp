@@ -31,11 +31,65 @@ namespace NAMESPACE_FRONTEND
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 0.0f, 1.0f, 0.0f });
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
+		//rockList->translate(0u, { 30.0f, 100.0f, 0.0f });
+		//rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
 
-		rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
+		//rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
+		//rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
 
+		sp_uint index = ZERO_UINT;
+		for (sp_uint y = 1u; y < 11u; y++)
+		{
+			for (sp_uint z = 1u; z < 11u; z++)
+			{
+				for (sp_uint x = 1u; x < 13u; x++)
+				{
+					rockList->translate(index, { x * 5u - 25.0f, y * 20.0f, z * 5u - 10.0f });
+					index++;
+
+					if (index == rockLength)
+						goto keep_executing;
+				}
+			}
+		}
+	keep_executing:
+		index = 0u;
+		Vec3 translation = Vec3(20.0f, 30.0f, 0.0f);
+		SpTransform* transformation = rockList->transforms(index);
+		translation -= transformation->position;
+		rockList->translate(index, translation);
+
+		index = 1u;
+		translation = Vec3(30.0f, 40.0f, 10.0f);
+		transformation = rockList->transforms(index);
+		translation -= transformation->position;
+		rockList->translate(index, translation);
+
+		index = 2u;
+		translation = Vec3(10.0f, 45.0f, 1.0f);
+		transformation = rockList->transforms(index);
+		translation -= transformation->position;
+		rockList->translate(index, translation);
+
+		index = 3u;
+		translation = Vec3(-5.0f, 45.0f, 9.0f);
+		transformation = rockList->transforms(index);
+		translation -= transformation->position;
+		rockList->translate(index, translation);
+
+		index = 4u;
+		translation = Vec3(-15.0f, 15.0f, 5.0f);
+		transformation = rockList->transforms(index);
+		translation -= transformation->position;
+		rockList->translate(index, translation);
+
+		index = 5u;
+		translation = Vec3(-25.0f, 60.0f, 11.0f);
+		transformation = rockList->transforms(index);
+		translation -= transformation->position;
+		rockList->translate(index, translation);
+
+		/*
 		Randomizer rand(0, 3000);
 		sp_uint halfSpace = 1000 / 200;
 		const sp_uint randomizeFrom = 2u;
@@ -64,6 +118,7 @@ namespace NAMESPACE_FRONTEND
 				}
 			}
 		}
+		*/
 
 		rockList->init();
 		rockList->setRenderer(rockRenderer);

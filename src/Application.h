@@ -55,8 +55,9 @@ namespace NAMESPACE_FRONTEND
 			SpGpuRenderingFactoryOpenGL::init();
 
 			//const sp_uint maxObjects = 4u;
-			const sp_uint maxObjects = 16u;
-			//const sp_uint maxObjects = 64u;
+			//const sp_uint maxObjects = 16u;
+			//const sp_uint maxObjects = 32u;
+			const sp_uint maxObjects = 64u;
 			//const sp_uint maxObjects = 128u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
@@ -73,6 +74,7 @@ namespace NAMESPACE_FRONTEND
 #if defined(WINDOWS) || defined(LINUX) || defined(MAC)
 
 			SpPhysicSimulator::instance()->moveAwayDynamicObjects(); // remove initial collisions
+			SpPhysicSettings* physicSettings = SpPhysicSettings::instance();
 
 			Timer::init();
 
@@ -82,12 +84,15 @@ namespace NAMESPACE_FRONTEND
 
 				SpEventDispatcher::instance()->processAllEvents();
 
+				SpPhysicSettings::instance()->enableSimulation();
 				if (SpPhysicSettings::instance()->isSimulationEnabled())
 				{
-					editor->update(30.0f); // fixed to 30 
-					//editor->update(Timer::physicTimer()->elapsedTime()); // integrate all objects
+					//const sp_float elapsedTime = Timer::physicTimer()->elapsedTime();
+					const sp_float elapsedTime = 30.0f;
 
-					physicSimulator->run(); // update collisions and responses
+					editor->update(elapsedTime);
+
+					physicSimulator->run(elapsedTime); // update collisions and responses
 
 					Timer::physicTimer()->update();
 				}
@@ -109,6 +114,8 @@ namespace NAMESPACE_FRONTEND
 					const sp_int msToWait = (int)(Timer::frameTimer()->framePerSecondLimit() - Timer::frameTimer()->elapsedTime());
 					std::this_thread::sleep_for(std::chrono::milliseconds(msToWait)); // fix to FPS limit
 				}
+
+				physicSettings->nextFrame();
 			}
 #endif
 		}
