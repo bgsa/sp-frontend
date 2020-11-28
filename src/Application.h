@@ -57,8 +57,8 @@ namespace NAMESPACE_FRONTEND
 			//const sp_uint maxObjects = 4u;
 			//const sp_uint maxObjects = 16u;
 			//const sp_uint maxObjects = 32u;
-			const sp_uint maxObjects = 64u;
-			//const sp_uint maxObjects = 128u;
+			//const sp_uint maxObjects = 64u;
+			const sp_uint maxObjects = 128u;
 			physicSimulator = SpPhysicSimulator::init(maxObjects);
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -84,7 +84,6 @@ namespace NAMESPACE_FRONTEND
 
 				SpEventDispatcher::instance()->processAllEvents();
 
-				SpPhysicSettings::instance()->enableSimulation();
 				if (SpPhysicSettings::instance()->isSimulationEnabled())
 				{
 					//const sp_float elapsedTime = Timer::physicTimer()->elapsedTime();

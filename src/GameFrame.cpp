@@ -24,19 +24,16 @@ namespace NAMESPACE_FRONTEND
 		const sp_uint worldObjectsLength = 1u;
 		
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
-		//worldObjects->scale(0u, Vec3(100.0f, 1.0f, 100.0f));
-		//worldObjects->scale(0u, Vec3(0.1f, 0.1f, 0.1f));
-		//worldObjects->translate(0u, Vec3(0.0f, -10.0f, 0.0f));
 		worldObjects->init();
 		renderer->addGraphicObject(worldObjects);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		//rockList->translate(0u, { 30.0f, 100.0f, 0.0f });
-		//rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
+		rockList->translate(0u, { 30.0f, 100.0f, 0.0f });
+		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
+		rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
+		rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
 
-		//rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
-		//rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
-
+		/*
 		sp_uint index = ZERO_UINT;
 		for (sp_uint y = 1u; y < 11u; y++)
 		{
@@ -88,8 +85,8 @@ namespace NAMESPACE_FRONTEND
 		transformation = rockList->transforms(index);
 		translation -= transformation->position;
 		rockList->translate(index, translation);
+		*/
 
-		/*
 		Randomizer rand(0, 3000);
 		sp_uint halfSpace = 1000 / 200;
 		const sp_uint randomizeFrom = 2u;
@@ -118,7 +115,6 @@ namespace NAMESPACE_FRONTEND
 				}
 			}
 		}
-		*/
 
 		rockList->init();
 		rockList->setRenderer(rockRenderer);
