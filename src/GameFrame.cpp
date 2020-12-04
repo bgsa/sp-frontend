@@ -33,6 +33,19 @@ namespace NAMESPACE_FRONTEND
 		rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
 		rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
 
+		const sp_uint boxSize = 20u;
+		//const sp_uint boxSize = 50u;
+		Randomizer rand(0, boxSize);
+		sp_uint halfSpace = divideBy2(boxSize);
+		for (sp_uint i = 0u; i < rockLength; i++)
+		{
+			sp_float x = (sp_float)rand.randInt();
+			sp_float z = (sp_float)rand.randInt();
+
+			// move the object to a random position
+			rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
+		}
+
 		/*
 		sp_uint index = ZERO_UINT;
 		for (sp_uint y = 1u; y < 11u; y++)
@@ -87,6 +100,7 @@ namespace NAMESPACE_FRONTEND
 		rockList->translate(index, translation);
 		*/
 
+		/*
 		Randomizer rand(0, 3000);
 		sp_uint halfSpace = 1000 / 200;
 		const sp_uint randomizeFrom = 2u;
@@ -115,6 +129,7 @@ namespace NAMESPACE_FRONTEND
 				}
 			}
 		}
+		*/
 
 		rockList->init();
 		rockList->setRenderer(rockRenderer);
