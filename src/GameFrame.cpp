@@ -36,14 +36,28 @@ namespace NAMESPACE_FRONTEND
 		const sp_uint boxSize = 20u;
 		//const sp_uint boxSize = 50u;
 		Randomizer rand(0, boxSize);
+		Randomizer randOrientationX(0, 1);
+		Randomizer randOrientationY(0, 1);
+		Randomizer randOrientationZ(0, 1);
 		sp_uint halfSpace = divideBy2(boxSize);
-		for (sp_uint i = 0u; i < rockLength; i++)
+
+		for (register sp_uint i = 0u; i < rockLength; i++)
 		{
-			sp_float x = (sp_float)rand.randInt();
-			sp_float z = (sp_float)rand.randInt();
+			const sp_float x = (sp_float)rand.randInt();
+			const sp_float z = (sp_float)rand.randInt();
 
 			// move the object to a random position
-			rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
+			//rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
+			rockList->translate(i, { 0.0f, multiplyBy16(i) + 10.0f, 0.0f });
+		
+			const sp_float orientationX = randOrientationX.randFloat();
+			rockList->rotate(i, Quat::createRotationAxisX(orientationX));
+
+			const sp_float orientationY = randOrientationY.randFloat();
+			rockList->rotate(i, Quat::createRotationAxisY(orientationY));
+			
+			const sp_float orientationZ = randOrientationZ.randFloat();
+			rockList->rotate(i, Quat::createRotationAxisZ(orientationZ));
 		}
 
 		/*
