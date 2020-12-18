@@ -166,7 +166,7 @@ namespace NAMESPACE_FRONTEND
 		
 		for (sp_uint i = 0u; i < rockList->length(); i++)
 		{
-			rockList->physicProperties(i)->currentState.addForce(gravityForce);
+			rockList->rigidBodies(i)->currentState.addForce(gravityForce);
 			rockList->update(i, elapsedTime);
 		}
 	}
@@ -243,30 +243,30 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_Q:
 		{
-			const Vec3 position = rockList->physicProperties(objectIndex)->currentState.position()
+			const Vec3 position = rockList->rigidBodies(objectIndex)->currentState.position()
 				+ Vec3(0.0f, 0.5f, 0.0f);
 			const Vec3 force = Vec3(0.0f, 0.0f, -0.1f);
-			rockList->physicProperties(objectIndex)->addImpulseAngular(position, force);
+			rockList->rigidBodies(objectIndex)->addImpulseAngular(position, force);
 			break;
 		}
 		case SP_KEYBOARD_KEY_A:
 		{
-			rockList->physicProperties(objectIndex)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
+			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rockList->physicProperties(objectIndex)->addImpulse(Vec3(temp, 0.0f, 0.0f));
+			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
 		{
-			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, -temp));
+			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, -temp));
 			break;
 		}
 		case SP_KEYBOARD_KEY_S:
 		{
-			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
+			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
 			break;
 		}
 		case SP_KEYBOARD_KEY_F5:
