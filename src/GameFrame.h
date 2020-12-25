@@ -18,7 +18,6 @@
 #include "RendererList.h"
 #include "DOP18ListRenderer.h"
 #include "Rock.h"
-#include "RockRenderer.h"
 #include "RockList.h"
 #include "Randomizer.h"
 #include "SpPhysicSimulator.h"
@@ -37,7 +36,6 @@ namespace NAMESPACE_FRONTEND
 		EditorViewer viewer;
 
 		GridSystem* gridSystem = nullptr;
-		RockRenderer* rockRenderer = nullptr;
 		RockList* rockList = nullptr;
 		WorldObjectList* worldObjects = nullptr;
 

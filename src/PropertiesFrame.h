@@ -115,7 +115,7 @@ namespace NAMESPACE_FRONTEND
 
 		inline void renderPhysicProperties()
 		{
-			const SpRigidBody* physicProperties = SpPhysicSimulator::instance()->rigidBodies(_selectedObject);
+			const SpPhysicProperties* physicProperties = SpPhysicSimulator::instance()->physicProperties(_selectedObject);
 
 			renderProperty("Static", physicProperties->isStatic());
 

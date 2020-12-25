@@ -146,7 +146,6 @@ namespace NAMESPACE_FRONTEND
 		*/
 
 		rockList->init();
-		rockList->setRenderer(rockRenderer);
 		renderer->addGraphicObject(rockList);
 
 		framebuffer = sp_mem_new(OpenGLFramebuffer)();
@@ -166,7 +165,7 @@ namespace NAMESPACE_FRONTEND
 		
 		for (sp_uint i = 0u; i < rockList->length(); i++)
 		{
-			rockList->rigidBodies(i)->currentState.addForce(gravityForce);
+			rockList->physicProperties(i)->currentState.addForce(gravityForce);
 			rockList->update(i, elapsedTime);
 		}
 	}
@@ -243,30 +242,30 @@ namespace NAMESPACE_FRONTEND
 		{
 		case SP_KEYBOARD_KEY_Q:
 		{
-			const Vec3 position = rockList->rigidBodies(objectIndex)->currentState.position()
+			const Vec3 position = rockList->physicProperties(objectIndex)->currentState.position()
 				+ Vec3(0.0f, 0.5f, 0.0f);
 			const Vec3 force = Vec3(0.0f, 0.0f, -0.1f);
-			rockList->rigidBodies(objectIndex)->addImpulseAngular(position, force);
+			rockList->physicProperties(objectIndex)->addImpulseAngular(position, force);
 			break;
 		}
 		case SP_KEYBOARD_KEY_A:
 		{
-			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(-temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_D:
 		{
-			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(temp, 0.0f, 0.0f));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(temp, 0.0f, 0.0f));
 			break;
 		}
 		case SP_KEYBOARD_KEY_W:
 		{
-			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, -temp));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, -temp));
 			break;
 		}
 		case SP_KEYBOARD_KEY_S:
 		{
-			rockList->rigidBodies(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
+			rockList->physicProperties(objectIndex)->addImpulse(Vec3(0.0f, 0.0f, temp));
 			break;
 		}
 		case SP_KEYBOARD_KEY_F5:
@@ -304,12 +303,6 @@ namespace NAMESPACE_FRONTEND
 		{
 			sp_mem_delete(gridSystem, GridSystem);
 			gridSystem = nullptr;
-		}
-
-		if (rockRenderer != nullptr)
-		{
-			sp_mem_delete(rockRenderer, RockRenderer);
-			rockRenderer = nullptr;
 		}
 
 		if (rockList != nullptr)
