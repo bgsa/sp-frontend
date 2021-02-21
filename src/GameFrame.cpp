@@ -27,11 +27,15 @@ namespace NAMESPACE_FRONTEND
 		worldObjects->init();
 		renderer->addGraphicObject(worldObjects);
 
+		const sp_float rockScale = TWO_FLOAT;
+
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 30.0f, 100.0f, 0.0f });
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(30), Vec3(1.0f, 0.0f, 0.0f)));
-		rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
-		rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
+		//rockList->translate(0u, { 0.0f, 2.3f, 0.0f });
+		rockList->translate(0u, { 0.0f, 10.0f, 0.0f });
+		rockList->scale(0u, { rockScale, rockScale, rockScale });
+		rockList->rotate(0u, Quat::createRotate(degreesToRadians(10), Vec3(1.0f, 0.0f, 0.0f)));
+		//rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
+		//rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
 
 		const sp_uint boxSize = 20u;
 		//const sp_uint boxSize = 50u;
@@ -41,23 +45,25 @@ namespace NAMESPACE_FRONTEND
 		Randomizer randOrientationZ(0, 1);
 		sp_uint halfSpace = divideBy2(boxSize);
 
-		for (register sp_uint i = 0u; i < rockLength; i++)
+		for (register sp_uint i = 1u; i < rockLength; i++)
 		{
 			const sp_float x = (sp_float)rand.randInt();
 			const sp_float z = (sp_float)rand.randInt();
 
-			// move the object to a random position
-			//rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
-			rockList->translate(i, { 0.0f, multiplyBy16(i) + 10.0f, 0.0f });
-		
 			const sp_float orientationX = randOrientationX.randFloat();
 			rockList->rotate(i, Quat::createRotationAxisX(orientationX));
 
 			const sp_float orientationY = randOrientationY.randFloat();
 			rockList->rotate(i, Quat::createRotationAxisY(orientationY));
-			
+
 			const sp_float orientationZ = randOrientationZ.randFloat();
 			rockList->rotate(i, Quat::createRotationAxisZ(orientationZ));
+
+			// move the object to a random position
+			//rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
+			rockList->translate(i, { 0.0f, multiplyBy16(i) + 10.0f, 0.0f });
+
+			rockList->scale(i, { rockScale, rockScale, rockScale });
 		}
 
 		/*

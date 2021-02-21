@@ -11,7 +11,7 @@ using namespace NAMESPACE_FRONTEND;
 sp_int main(sp_int, sp_char**)
 {
 	StackMemoryAllocator::main()->init();
-	SpThreadPool::instance()->init();
+	//	SpThreadPool::instance()->init();
 
 	SpWindowGLFW window;
 	window.init();

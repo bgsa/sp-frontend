@@ -109,7 +109,10 @@ namespace NAMESPACE_FRONTEND
 		angle *= _velocity;
 		sp_float z = position.z;
 
-		position = Quat::createRotate(angle, _right).rotate(position);
+		Vec3 n;
+		normalize(_right, &n);
+
+		position = Quat::createRotate(angle, n).rotate(position);
 
 		if (sign(position.z) != sign(z))
 			_up = -_up;
@@ -131,9 +134,9 @@ namespace NAMESPACE_FRONTEND
 		updateViewMatrix();
 	}
 
+	sp_bool controlPressed = false;
 	void EditorViewer::onKeyboardEvent(SpKeyboardEvent* evt)
 	{
-		/*
 		if (!frame->isFocused())
 			return;
 
@@ -155,10 +158,13 @@ namespace NAMESPACE_FRONTEND
 			moveBackward(TWO_FLOAT);
 			break;
 
+		case 341: // control
+			controlPressed = evt->type == 1;
+			break;
+
 		default:
 			break;
 		}
-		*/
 	}
 
 	void EditorViewer::onMouseEvent(SpMouseEvent* evt)
@@ -169,7 +175,8 @@ namespace NAMESPACE_FRONTEND
 		switch (evt->type)
 		{
 		case SP_MOUSE_EVENT_MOVED:
-			if (evt->mouse->isMiddleButtonPressed())
+			//if (evt->mouse->isMiddleButtonPressed())
+			if (controlPressed)
 			{
 				rotateY(degreesToRadians(evt->state.previousX - evt->state.x));
 				rotateX(degreesToRadians(evt->state.previousY - evt->state.y));

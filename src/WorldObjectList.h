@@ -105,7 +105,7 @@ namespace NAMESPACE_RENDERING
 		{
 			SpPhysicProperties* physicProperty = physicProperties(0u);
 			physicProperty->mass(ZERO_FLOAT);
-			physicProperty->inertialTensor(Mat3(ZERO_FLOAT));
+			physicProperty->inertialTensor(Mat3Zeros);
 		}
 
 		API_INTERFACE void translate(const sp_uint index, const Vec3& translation) override
