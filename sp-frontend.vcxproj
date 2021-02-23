@@ -92,13 +92,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;OPENGL_ENABLED;OPENCL_ENABLED;GLFW_ENABLED;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src;C:\Program Files (x86)\IntelSWTools\sw_dev_tools\compilers_and_libraries_2020.0.166\windows\mkl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\lib\x86\$(Configuration);$(SolutionDir)sp-foundation\lib\x86\$(Configuration);$(SolutionDir)sp-physics\lib\x86\$(Configuration);$(SolutionDir)sp-rendering\lib\x86\$(Configuration);C:\Program Files (x86)\IntelSWTools\sw_dev_tools\compilers_and_libraries_2020.0.166\windows\mkl\lib\ia32_win</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL32.lib;glew32sd.lib;glfw3.lib;imgui.lib;OpenCL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;mkl_core_dll.lib;mkl_core.lib;mkl_intel_c_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\lib\x86\$(Configuration);$(SolutionDir)sp-foundation\lib\x86\$(Configuration);$(SolutionDir)sp-physics\lib\x86\$(Configuration);$(SolutionDir)sp-rendering\lib\x86\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew32sd.lib;glfw3.lib;imgui.lib;OpenCL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /S "$(SolutionDir)sp-physics\resources\opencl\src\*" "$(ProjectDir)resources\gpgpu\opencl\source"</Command>
@@ -145,7 +145,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)vendor\lib\x86\$(Configuration);$(SolutionDir)sp-foundation\lib\x86\$(Configuration);$(SolutionDir)sp-physics\lib\x86\$(Configuration);$(SolutionDir)sp-rendering\lib\x86\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;imgui.lib;OpenCL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;BLAS.lib;LAPACK.lib;armadillo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;imgui.lib;OpenCL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /S "$(SolutionDir)sp-physics\resources\opencl\src\*" "$(ProjectDir)resources\gpgpu\opencl\source"</Command>
