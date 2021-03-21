@@ -103,7 +103,7 @@ namespace NAMESPACE_RENDERING
 		API_INTERFACE WorldObjectList(const sp_uint length)
 			: SpPhysicObjectList::SpPhysicObjectList(length)
 		{
-			SpPhysicProperties* physicProperty = physicProperties(0u);
+			SpRigidBody3D* physicProperty = physicProperties(0u);
 			physicProperty->mass(ZERO_FLOAT);
 			physicProperty->inertialTensor(Mat3Zeros);
 		}
