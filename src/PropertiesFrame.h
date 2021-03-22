@@ -115,22 +115,22 @@ namespace NAMESPACE_FRONTEND
 
 		inline void renderPhysicProperties()
 		{
-			const SpRigidBody3D* physicProperties = SpPhysicSimulator::instance()->physicProperties(_selectedObject);
+			const SpRigidBody3D* rigidBody = SpPhysicSimulator::instance()->rigidBody3D(_selectedObject);
 
-			renderProperty("Static", physicProperties->isStatic());
+			renderProperty("Static", rigidBody->isStatic());
 
-			renderVec3Property("Posision", physicProperties->currentState.position());
-			renderVec3Property("Velocity", physicProperties->currentState.velocity());
-			renderVec3Property("Acceleration", physicProperties->currentState.acceleration());
+			renderVec3Property("Posision", rigidBody->currentState.position());
+			renderVec3Property("Velocity", rigidBody->currentState.velocity());
+			renderVec3Property("Acceleration", rigidBody->currentState.acceleration());
 
-			renderQuatProperty("Orientation", physicProperties->currentState.orientation());
-			renderVec3Property("Angular Velocity", physicProperties->currentState.angularVelocity());
-			renderVec3Property("Torque", physicProperties->currentState.torque());
+			renderQuatProperty("Orientation", rigidBody->currentState.orientation());
+			renderVec3Property("Angular Velocity", rigidBody->currentState.angularVelocity());
+			renderVec3Property("Torque", rigidBody->currentState.torque());
 
-			renderProperty("Mass", ONE_FLOAT / physicProperties->massInverse());
-			renderProperty("Restitution", physicProperties->coeficientOfRestitution());
-			renderProperty("Damping", physicProperties->damping());
-			renderProperty("Friction", physicProperties->coeficientOfFriction());
+			renderProperty("Mass", ONE_FLOAT / rigidBody->massInverse());
+			renderProperty("Restitution", rigidBody->coeficientOfRestitution());
+			renderProperty("Damping", rigidBody->damping());
+			renderProperty("Friction", rigidBody->coeficientOfFriction());
 		}
 
 	public:
