@@ -8,13 +8,13 @@
 #include "SpMouse.h"
 #include "SpMouseEvent.h"
 #include "SpEventDispatcher.h"
-#include "Camera.h"
+#include "SpCamera.h"
 #include "SpFrame.h"
 
 namespace NAMESPACE_FRONTEND
 {
 	class EditorViewer
-		: public Camera
+		: public SpCamera
 		, public SpKeyboardEventListener
 		, public SpMouseEventListener
 	{

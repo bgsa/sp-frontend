@@ -32,13 +32,12 @@ namespace NAMESPACE_FRONTEND
 		, public SpKeyboardEventListener
 	{
 	private:
-		OpenGLRendererManager* renderer;
 		EditorViewer viewer;
 
+		OpenGLRendererManager* renderer;
 		GridSystem* gridSystem = nullptr;
 		RockList* rockList = nullptr;
 		WorldObjectList* worldObjects = nullptr;
-
 		OpenGLFramebuffer* framebuffer = nullptr;
 
 	public:
