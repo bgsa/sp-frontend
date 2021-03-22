@@ -10,7 +10,7 @@ using namespace NAMESPACE_FRONTEND;
 
 sp_int main(sp_int, sp_char**)
 {
-	StackMemoryAllocator::main()->init();
+	SpStackMemoryAllocator::main()->init(SP_STACK_MEMORY_DEFAULT_SIZE);
 	//	SpThreadPool::instance()->init();
 
 	SpWindowGLFW window;
@@ -31,6 +31,6 @@ sp_int main(sp_int, sp_char**)
 	app.dispose();
 	window.dispose();
 
-	StackMemoryAllocator::main()->release();
+	SpStackMemoryAllocator::main()->dispose();
 	return 0;
 }

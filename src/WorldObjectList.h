@@ -70,7 +70,7 @@ namespace NAMESPACE_RENDERING
 			const Vec3 translation = Vec3(rows * squareSize * -0.5f, 0.0f, cols * squareSize * -0.5f);
 			initTerrain(rows, cols, vertexes, indexes, squareSize, translation);
 
-			PoolMemoryAllocator::main()->enableMemoryAlignment();
+			SpPoolMemoryAllocator::main()->enableMemoryAlignment();
 
 			SpMesh* mesh = sp_mem_new(SpMesh)();
 			mesh->vertexesMesh = sp_mem_new(SpArray<SpVertexMesh*>)(vertexesLength);
@@ -93,7 +93,7 @@ namespace NAMESPACE_RENDERING
 
 			SpPhysicSimulator::instance()->mesh(physicIndex, mesh);
 
-			PoolMemoryAllocator::main()->disableMemoryAlignment();
+			SpPoolMemoryAllocator::main()->disableMemoryAlignment();
 
 			ALLOC_RELEASE(vertexes);
 		}
