@@ -24,7 +24,6 @@ namespace NAMESPACE_FRONTEND
 		SpUIManager* editor;
 		SpWindow* window;
 		GpuContext* gpuContext;
-		SpPhysicSimulator* physicSimulator;
 
 	public:
 
@@ -56,8 +55,6 @@ namespace NAMESPACE_FRONTEND
 
 			SpWorldManager::init();
 
-			physicSimulator = SpPhysicSimulator::init();
-
 			SpEventDispatcher::instance()->addWindowListener(this);
 
 			editor->setWindow(window);
@@ -70,7 +67,7 @@ namespace NAMESPACE_FRONTEND
 		{
 #if defined(WINDOWS) || defined(LINUX) || defined(MAC)
 
-			SpPhysicSimulator::instance()->moveAwayDynamicObjects(); // remove initial collisions
+			SpWorldManagerInstance->current()->physicSimulator->moveAwayDynamicObjects(); // remove initial collisions
 			SpPhysicSettings* physicSettings = SpPhysicSettings::instance();
 
 			Timer::init();
@@ -88,7 +85,7 @@ namespace NAMESPACE_FRONTEND
 
 					editor->update(elapsedTime);
 
-					physicSimulator->run(elapsedTime); // update collisions and responses
+					SpWorldManagerInstance->current()->update(elapsedTime);
 
 					Timer::physicTimer()->update();
 				}
@@ -136,11 +133,7 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void dispose() override 
 		{
-			if (physicSimulator != nullptr)
-			{
-				sp_mem_delete(physicSimulator, SpPhysicSimulator);
-				physicSimulator = nullptr;
-			}
+			SpWorldManager::dispose();
 
 			if (gpuContext != nullptr)
 			{
