@@ -20,7 +20,7 @@ namespace NAMESPACE_FRONTEND
 		// init lights
 		SpLightManager::instance()->addLight(SP_RGB_WHITE, Vec3(10.0f, 10.0f, 0.0f));
 
-		const sp_uint rockLength = SpPhysicSimulator::instance()->objectsLengthAllocated() - 1u;
+		const sp_uint rockLength = SpWorldManagerInstance->current()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
 		
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);

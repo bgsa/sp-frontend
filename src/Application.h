@@ -54,23 +54,16 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
-			//const sp_uint maxObjects = 2u;
-			//const sp_uint maxObjects = 3u;
-			//const sp_uint maxObjects = 4u;
-			//const sp_uint maxObjects = 16u;
-			//const sp_uint maxObjects = 32u;
-			//const sp_uint maxObjects = 64u;
-			//const sp_uint maxObjects = 128u;
-			//const sp_uint maxObjects = 256u;
-			const sp_uint maxObjects = 512u;
-			physicSimulator = SpPhysicSimulator::init(maxObjects);
+			SpWorldManager::init();
+
+			physicSimulator = SpPhysicSimulator::init();
 
 			SpEventDispatcher::instance()->addWindowListener(this);
 
 			editor->setWindow(window);
 			editor->init();
 
-			physicSimulator->initMeshCache();
+			SpWorldManagerInstance->current()->initMeshCache();
 		}
 
 		API_INTERFACE void start()
@@ -100,7 +93,7 @@ namespace NAMESPACE_FRONTEND
 					Timer::physicTimer()->update();
 				}
 
-				physicSimulator->updateTransformsOnGPU(); // update data on GPU
+				SpWorldManagerInstance->current()->updateTransformsOnGPU();
 
 				editor->preRender();
 				editor->render();
