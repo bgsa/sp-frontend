@@ -56,10 +56,6 @@ namespace NAMESPACE_FRONTEND
 			localTimer.update();
 		}
 
-		API_INTERFACE void postRender() override
-		{
-		}
-
 		API_INTERFACE inline const sp_char* toString() override
 		{
 			return "AboutFrame";

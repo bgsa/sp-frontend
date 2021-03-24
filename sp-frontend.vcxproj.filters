@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\addons">
+      <UniqueIdentifier>{95958739-4712-41ce-90a9-2c54bba5ed39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\addons\FileBrowser">
+      <UniqueIdentifier>{0ee8c215-7c3c-4d5a-a903-8db17f2f1076}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameFrame.cpp">
@@ -65,6 +71,12 @@
     </ClCompile>
     <ClCompile Include="src\EditorViewer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpProjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\addons\FileBrowser\ImGuiFileBrowser.cpp">
+      <Filter>Resource Files\addons\FileBrowser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +331,18 @@
     </ClInclude>
     <ClInclude Include="src\SpLogEngineProvider.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NewProjectFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpProject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpProjectManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\addons\FileBrowser\ImGuiFileBrowser.h">
+      <Filter>Resource Files\addons\FileBrowser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -178,8 +178,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\AboutFrame.h" />
+    <ClInclude Include="src\addons\FileBrowser\ImGuiFileBrowser.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
+    <ClInclude Include="src\NewProjectFrame.h" />
     <ClInclude Include="src\SpGameSettings.h" />
     <ClInclude Include="src\LogFrame.h" />
     <ClInclude Include="src\ProjectExplorerFrame.h" />
@@ -187,6 +189,8 @@
     <ClInclude Include="src\SpectrumFronend.h" />
     <ClInclude Include="src\SpFrame.h" />
     <ClInclude Include="src\SpLogEngineProvider.h" />
+    <ClInclude Include="src\SpProject.h" />
+    <ClInclude Include="src\SpProjectManager.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
@@ -194,9 +198,11 @@
     <ClInclude Include="src\WorldObjectList.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\addons\FileBrowser\ImGuiFileBrowser.cpp" />
     <ClCompile Include="src\GameFrame.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\EditorViewer.cpp" />
+    <ClCompile Include="src\SpProjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

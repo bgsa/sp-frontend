@@ -293,10 +293,6 @@ namespace NAMESPACE_FRONTEND
 		}
 	}
 
-	void GameFrame::postRender()
-	{
-	}
-
 	void GameFrame::dispose()
 	{
 		if (framebuffer != nullptr)

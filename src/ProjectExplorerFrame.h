@@ -2,7 +2,7 @@
 #define PROJECT_EXPLORER_FRAME_HEADER
 
 #include "SpFrame.h"
-#include <algorithm>
+#include "SpProjectManager.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -41,21 +41,27 @@ namespace NAMESPACE_FRONTEND
 			//ImGui::SetWindowPos( ImVec2( 0.0f , 25.0f ));
 
 			ImGui::SetNextTreeNodeOpen(true);
-			if (ImGui::TreeNode("project-1"))
+
+			SpProject* project = SpProjectManagerInstance->current();
+
+			if (project != nullptr)
 			{
-				ImGui::SetNextTreeNodeOpen(true);
-				if (ImGui::TreeNode("scenes"))
+				if (ImGui::TreeNode(project->name()))
 				{
+					ImGui::SetNextTreeNodeOpen(true);
+					if (ImGui::TreeNode("scenes"))
+					{
+						ImGui::TreePop();
+					}
+
+					ImGui::SetNextTreeNodeOpen(true);
+					if (ImGui::TreeNode("resources"))
+					{
+						ImGui::TreePop();
+					}
+
 					ImGui::TreePop();
 				}
-
-				ImGui::SetNextTreeNodeOpen(true);
-				if (ImGui::TreeNode("resources"))
-				{
-					ImGui::TreePop();
-				}
-
-				ImGui::TreePop();
 			}
 
 			ImGui::End();

@@ -12,6 +12,7 @@
 #include "SpLogger.h"
 #include "SpLogConsoleProvider.h"
 #include "SpLogEngineProvider.h"
+#include "SpProjectManager.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -24,6 +25,17 @@ namespace NAMESPACE_FRONTEND
 		SpUIManager* editor;
 		SpWindow* window;
 		GpuContext* gpuContext;
+
+		void initLogger()
+		{
+			SpLogger::init();
+
+			SpLogEngineProvider* logEngineProvider = sp_mem_new(SpLogEngineProvider);
+			SpLogConsoleProvider* logConsoleProvider = sp_mem_new(SpLogConsoleProvider);
+
+			SpLogger::instance()->addProvider(logEngineProvider);
+			SpLogger::instance()->addProvider(logConsoleProvider);
+		}
 
 	public:
 
@@ -44,15 +56,12 @@ namespace NAMESPACE_FRONTEND
 		{
 			this->window = window;
 
-			SpLogger::init();
-			SpLogEngineProvider* logEngineProvider = sp_mem_new(SpLogEngineProvider);
-			SpLogConsoleProvider* logConsoleProvider = sp_mem_new(SpLogConsoleProvider);
-			SpLogger::instance()->addProvider(logEngineProvider);
-			SpLogger::instance()->addProvider(logConsoleProvider);
+			initLogger();
 
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
+			SpProjectManager::init();
 			SpWorldManager::init();
 
 			SpEventDispatcher::instance()->addWindowListener(this);
@@ -134,6 +143,7 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline void dispose() override 
 		{
 			SpWorldManager::dispose();
+			SpProjectManager::dispose();
 
 			if (gpuContext != nullptr)
 			{

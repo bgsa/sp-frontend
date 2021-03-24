@@ -21,11 +21,17 @@ namespace NAMESPACE_FRONTEND
 		SpWindow* _window;
 		sp_bool _isFocused;
 		sp_bool _isMouseHovered;
+		sp_bool _isFirstLoad = false;
 
 	protected:
 		IRendererManager* renderer;
 
 	public:
+
+		API_INTERFACE inline sp_bool isFirstLoad() const noexcept
+		{
+			return _isFirstLoad;
+		}
 		
 		API_INTERFACE inline sp_float aspectRatio() const noexcept
 		{
@@ -62,11 +68,12 @@ namespace NAMESPACE_FRONTEND
 			return _isMouseHovered;
 		}
 
-		API_INTERFACE inline void show() noexcept
+		API_INTERFACE inline virtual void show() noexcept
 		{
 			this->_visible = true;
+			this->_isFirstLoad = true;
 		}
-		API_INTERFACE inline void hide() noexcept
+		API_INTERFACE inline virtual void hide() noexcept
 		{
 			this->_visible = false;
 		}
@@ -75,6 +82,17 @@ namespace NAMESPACE_FRONTEND
 		{
 			this->_width = width;
 			this->_height = height;
+		}
+
+		/// <summary>
+		/// Align the window given the rate
+		/// Default value is (0.5) center
+		/// </summary>
+		/// <param name="rate">Range from 0.0 to 1.0.</param>
+		/// <returns>void</returns>
+		API_INTERFACE inline void horizontalAlign(const sp_float rate = HALF_FLOAT) noexcept
+		{
+			ImGui::SetWindowPos(ImVec2((window()->state()->width * rate) - (width() >> 1), (window()->state()->height * rate) - (height() >> 1)));
 		}
 
 		API_INTERFACE virtual void init(SpWindow* window)
@@ -114,7 +132,10 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE virtual void renderGUI() = 0;
 
-		API_INTERFACE virtual void postRender() = 0;
+		API_INTERFACE virtual void postRender()
+		{
+			_isFirstLoad = false;
+		}
 
 	};
 }

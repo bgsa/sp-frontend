@@ -17,6 +17,7 @@
 #include "SpEventDispatcher.h"
 #include "SpWindow.h"
 #include "RendererEditor.h"
+#include "NewProjectFrame.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -34,6 +35,7 @@ namespace NAMESPACE_FRONTEND
 		SpToolbarFrame toolbarFrame;
 		SpStatusBarFrame statusBarFrame;
 		GameFrame gameFrame;
+		NewProjectFrame newProjectFrame;
 
 		SpVector<SpFrame*> frames;
 
@@ -43,6 +45,12 @@ namespace NAMESPACE_FRONTEND
 			{
 				if (ImGui::BeginMenu("File"))
 				{
+					if (ImGui::MenuItem("New Project", NULL))
+						newProjectFrame.show();
+
+					if (ImGui::MenuItem("Save", "CTRL+S", false, SpProjectManagerInstance->isLoaded()))
+						SpProjectManagerInstance->save();
+
 					if (ImGui::MenuItem("Quit", NULL))
 						window->close();
 
@@ -148,6 +156,7 @@ namespace NAMESPACE_FRONTEND
 			frames.add(&logFrame);
 			frames.add(&statusBarFrame);
 			frames.add(&gameFrame);
+			frames.add(&newProjectFrame);
 
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->init(window);

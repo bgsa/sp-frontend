@@ -54,10 +54,6 @@ namespace NAMESPACE_FRONTEND
 			}
 		}
 
-		API_INTERFACE void postRender() override
-		{
-		}
-
 		API_INTERFACE inline const sp_char* toString() override
 		{
 			return "Sp Toolbar";
