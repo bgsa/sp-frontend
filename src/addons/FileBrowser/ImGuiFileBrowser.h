@@ -13,6 +13,8 @@ namespace imgui_addons
             ImGuiFileBrowser();
             ~ImGuiFileBrowser();
 
+            void (*onClose)();
+
             enum class DialogMode
             {
                 SELECT, //Select Directory Mode

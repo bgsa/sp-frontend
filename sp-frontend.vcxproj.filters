@@ -78,6 +78,9 @@
     <ClCompile Include="src\addons\FileBrowser\ImGuiFileBrowser.cpp">
       <Filter>Resource Files\addons\FileBrowser</Filter>
     </ClCompile>
+    <ClCompile Include="src\SpUIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameFrame.h">

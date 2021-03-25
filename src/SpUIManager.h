@@ -18,9 +18,14 @@
 #include "SpWindow.h"
 #include "RendererEditor.h"
 #include "NewProjectFrame.h"
+#include "addons/FileBrowser/ImGuiFileBrowser.h"
 
 namespace NAMESPACE_FRONTEND
 {
+	extern sp_bool showLoadProject;
+	
+	void loadProjectDialog_OnClose();
+
 	class SpUIManager :
 		public RendererEditor,
 		public SpWindowEventListener
@@ -37,7 +42,11 @@ namespace NAMESPACE_FRONTEND
 		GameFrame gameFrame;
 		NewProjectFrame newProjectFrame;
 
+		imgui_addons::ImGuiFileBrowser loadProjectDialog;
+
 		SpVector<SpFrame*> frames;
+
+
 
 		void renderMainMenuBar()
 		{
@@ -50,6 +59,9 @@ namespace NAMESPACE_FRONTEND
 
 					if (ImGui::MenuItem("Save", "CTRL+S", false, SpProjectManagerInstance->isLoaded()))
 						SpProjectManagerInstance->save();
+
+					if (ImGui::MenuItem("Load", "", false))
+						showLoadProject = true;
 
 					if (ImGui::MenuItem("Quit", NULL))
 						window->close();
@@ -118,6 +130,17 @@ namespace NAMESPACE_FRONTEND
 
 				ImGui::EndMainMenuBar();
 			}
+		
+			if (showLoadProject)
+			{
+				ImGui::OpenPopup("Load Project##popup");
+				if (loadProjectDialog.showFileDialog("Load Project##popup", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(600, 300), SP_FILENAME_PROJECT_SUFFIX))
+				{
+					SpProjectManagerInstance->load(loadProjectDialog.selected_path.c_str());
+					showLoadProject = false;
+				}
+			}
+
 		}
 
 	public:
@@ -162,6 +185,8 @@ namespace NAMESPACE_FRONTEND
 				item->value()->init(window);
 
 			propertiesFrame.selectedObject(1u);
+
+			loadProjectDialog.onClose = &loadProjectDialog_OnClose;
 		}
 
 		API_INTERFACE void update(sp_float elapsedTime) override

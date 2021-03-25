@@ -29,8 +29,12 @@
 
 namespace imgui_addons
 {
+
+
+
     ImGuiFileBrowser::ImGuiFileBrowser()
     {
+
         filter_mode = FilterMode_Files | FilterMode_Dirs;
 
         show_inputbar_combobox = false;
@@ -108,6 +112,9 @@ namespace imgui_addons
         subfiles.clear();
 
         ImGui::CloseCurrentPopup();
+
+        if (onClose != nullptr)
+            onClose();
     }
 
     bool ImGuiFileBrowser::showFileDialog(const std::string& label, const DialogMode mode, const ImVec2& sz_xy, const std::string& valid_types)

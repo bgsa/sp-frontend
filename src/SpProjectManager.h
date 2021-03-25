@@ -3,6 +3,10 @@
 
 #include "SpectrumFronend.h"
 #include "SpProject.h"
+#include "FileSystem.h"
+#include "nlohmann/json.hpp"
+
+#define SP_FILENAME_PROJECT_SUFFIX ".cpp"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -47,12 +51,47 @@ namespace NAMESPACE_FRONTEND
 			_current = nullptr;
 		}
 
+		API_INTERFACE inline void load(const sp_char* filename)
+		{
+			unload();
+
+			SP_FILE file;
+			SpString* content = file.readTextFile(filename);
+			file.close();
+
+			nlohmann::json j = nlohmann::json::parse(content->data());
+
+			sp_mem_delete(content, SpString);
+
+			SpProject* project = sp_mem_new(SpProject)();
+
+			if (j.find("name") != j.end())
+			{
+				std::string name = j["name"].get<std::string>();
+				project->name(name.c_str());
+			}
+
+			_current = project;
+		}
+
 		API_INTERFACE inline void save()
 		{
 			if (_current == nullptr)
 				return;
 
-			// save on disk
+			nlohmann::json j;
+			j["name"] = _current->name();
+			std::string jsonAsString = j.dump(4);
+
+			sp_char fullname[512];
+			std::strcpy(fullname, _current->folder());
+			std::strcat(fullname, _current->name());
+			std::strcat(fullname, SP_FILENAME_PROJECT_SUFFIX);
+
+			SP_FILE file;
+			file.open(fullname, std::ios_base::out);
+			file.write(jsonAsString.c_str());
+			file.close();
 		}
 
 		API_INTERFACE static void init();

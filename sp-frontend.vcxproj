@@ -203,6 +203,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\EditorViewer.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
+    <ClCompile Include="src\SpUIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

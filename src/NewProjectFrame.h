@@ -20,7 +20,7 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void init(SpWindow* window) override
 		{
 			SpFrame::init(window);
-			resize(500, 300);
+			resize(500, 190);
 		}
 
 		API_INTERFACE inline void show() noexcept override
@@ -57,7 +57,7 @@ namespace NAMESPACE_FRONTEND
 			ImGui::SetWindowSize(ImVec2((sp_float)width(), (sp_float)height()));
 			horizontalAlign(HALF_FLOAT);
 
-			ImVec2 itemSize = ImGui::GetItemRectSize();
+			ImVec2 frameSize = ImGui::GetItemRectSize();
 
 			ImGui::Text("Name:");
 
@@ -79,8 +79,7 @@ namespace NAMESPACE_FRONTEND
 			if (file_dialog.showFileDialog("Project Folder##popup", imgui_addons::ImGuiFileBrowser::DialogMode::SELECT, ImVec2(600, 300)))
 				std::strcpy(folder, file_dialog.selected_path.c_str());
 
-
-			//ImGui::Indent(((sp_int)itemSize.x >> 1) - 60.0f);
+			ImGui::Indent(((sp_int)frameSize.x >> 1) + 20.0f);
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 			if (ImGui::Button("OK", ImVec2(100, 25)))
@@ -97,7 +96,10 @@ namespace NAMESPACE_FRONTEND
 			ImGui::SameLine();
 
 			if (ImGui::Button("Cancel", ImVec2(100, 25)))
+			{
+				ImGui::CloseCurrentPopup();
 				hide();
+			}
 
 			ImGui::EndPopup();
 
