@@ -53,7 +53,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveForward(sp_float distance)
 	{
 		Vec3 directionToMove;
-		normalize(_forward, &directionToMove);
+		normalize(_forward, directionToMove);
 		
 		directionToMove *= (distance * _velocity);
 
@@ -66,7 +66,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveBackward(sp_float distance)
 	{
 		Vec3 directionToMove;
-		normalize(_forward, &directionToMove);
+		normalize(_forward, directionToMove);
 
 		directionToMove *= (distance * _velocity);
 
@@ -80,7 +80,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		Vec3 directionToMove;
 		cross(_up, _forward, &directionToMove);
-		normalize(&directionToMove);
+		normalize(directionToMove);
 
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
@@ -94,7 +94,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		Vec3 directionToMove;
 		cross(_up, _forward, &directionToMove);
-		normalize(&directionToMove);
+		normalize(directionToMove);
 		
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
@@ -110,7 +110,7 @@ namespace NAMESPACE_FRONTEND
 		sp_float z = position.z;
 
 		Vec3 n;
-		normalize(_right, &n);
+		normalize(_right, n);
 
 		position = Quat::createRotate(angle, n).rotate(position);
 
