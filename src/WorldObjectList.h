@@ -4,7 +4,6 @@
 #include "SpectrumRendering.h"
 #include "SpMesh.h"
 #include "GraphicObject3DList.h"
-#include "DOP18.h"
 #include "IGraphicObjectRenderer.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLShader.h"

@@ -167,11 +167,10 @@ namespace NAMESPACE_FRONTEND
 			worldObjects->update(i, elapsedTime);
 
 		SpPhysicSettings* settings = SpPhysicSettings::instance();
-		const Vec3 gravityForce = settings->gravityForce();
 		
 		for (sp_uint i = 0u; i < rockList->length(); i++)
 		{
-			rockList->rigidBody3D(i)->currentState.addForce(gravityForce);
+			rockList->rigidBody3D(i)->currentState.addForce(settings->gravityForce());
 			rockList->update(i, elapsedTime);
 		}
 	}
