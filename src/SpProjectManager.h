@@ -6,7 +6,7 @@
 #include "FileSystem.h"
 #include "nlohmann/json.hpp"
 
-#define SP_FILENAME_PROJECT_SUFFIX ".cpp"
+#define SP_FILENAME_PROJECT_SUFFIX ".spp"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -32,10 +32,11 @@ namespace NAMESPACE_FRONTEND
 			return _current != nullptr;
 		}
 
-		API_INTERFACE inline SpProject* newProject(const sp_char* name)
+		API_INTERFACE inline SpProject* newProject(const sp_char* name, const sp_int gameType)
 		{
 			SpProject* project = sp_mem_new(SpProject)();
 			project->name(name);
+			project->type(gameType);
 
 			_current = project;
 
@@ -71,6 +72,12 @@ namespace NAMESPACE_FRONTEND
 				project->name(name.c_str());
 			}
 
+			if (j.find("type") != j.end())
+			{
+				const sp_int type = j["type"].get<sp_int>();
+				project->type(type);
+			}
+
 			_current = project;
 		}
 
@@ -81,6 +88,7 @@ namespace NAMESPACE_FRONTEND
 
 			nlohmann::json j;
 			j["name"] = _current->name();
+			j["type"] = _current->game()->gameType();
 			std::string jsonAsString = j.dump(4);
 
 			sp_char fullname[512];

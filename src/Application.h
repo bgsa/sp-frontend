@@ -76,9 +76,6 @@ namespace NAMESPACE_FRONTEND
 		{
 #if defined(WINDOWS) || defined(LINUX) || defined(MAC)
 
-			SpWorldManagerInstance->current()->physicSimulator->moveAwayDynamicObjects(); // remove initial collisions
-			SpPhysicSettings* physicSettings = SpPhysicSettings::instance();
-
 			Timer::init();
 
 			while (isRunning)
@@ -95,12 +92,14 @@ namespace NAMESPACE_FRONTEND
 
 					editor->update(elapsedTime);
 
-					SpWorldManagerInstance->current()->update(elapsedTime);
+					if (SpWorldManager::isInitialized())
+						SpWorldManagerInstance->current()->update(elapsedTime);
 
 					Timer::physicTimer()->update();
 				}
 
-				SpWorldManagerInstance->current()->updateTransformsOnGPU();
+				if (SpWorldManager::isInitialized())
+					SpWorldManagerInstance->current()->updateTransformsOnGPU();
 
 				editor->preRender();
 				editor->render();
@@ -118,7 +117,7 @@ namespace NAMESPACE_FRONTEND
 					std::this_thread::sleep_for(std::chrono::milliseconds(msToWait)); // fix to FPS limit
 				}
 
-				physicSettings->nextFrame();
+				SpPhysicSettings::instance()->nextFrame();
 				ALLOC_RELEASE(checkPoint);
 			}
 #endif

@@ -13,6 +13,7 @@ namespace NAMESPACE_FRONTEND
 	private:
 		sp_char name[100];
 		sp_char folder[512];
+		sp_bool game2DSelected, game3DSelected;
 		imgui_addons::ImGuiFileBrowser file_dialog;
 
 	public:
@@ -20,7 +21,9 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void init(SpWindow* window) override
 		{
 			SpFrame::init(window);
-			resize(500, 190);
+			resize(500, 260);
+			game2DSelected = false;
+			game3DSelected = false;
 		}
 
 		API_INTERFACE inline void show() noexcept override
@@ -68,6 +71,21 @@ namespace NAMESPACE_FRONTEND
 			if (isFirstLoad())
 				ImGui::SetKeyboardFocusHere(0);
 
+			ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+			if (ImGui::RadioButton("2D Game", game2DSelected))
+			{
+				game2DSelected = true;
+				game3DSelected = false;
+			}
+			if (ImGui::RadioButton("3D Game", game3DSelected))
+			{
+				game2DSelected = false;
+				game3DSelected = true;
+			}
+
+			ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
 			ImGui::Text("Folder:");
 			ImGui::Text(folder);
 
@@ -87,7 +105,11 @@ namespace NAMESPACE_FRONTEND
 				if (SpProjectManagerInstance->current() != nullptr)
 					SpProjectManagerInstance->unload();
 
-				SpProjectManagerInstance->newProject(name);
+				sp_int gameType = 2;
+				if (game3DSelected)
+					gameType = 3;
+
+				SpProjectManagerInstance->newProject(name, gameType);
 				SpProjectManagerInstance->current()->folder(folder);
 
 				hide();
