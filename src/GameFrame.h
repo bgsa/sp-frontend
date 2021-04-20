@@ -5,7 +5,7 @@
 
 #include "SpectrumFronend.h"
 #include "SpFrame.h"
-#include "RenderData.h"
+#include "SpRenderData.h"
 #include "Framebuffer.h"
 #include "RendererSettings.h"
 #include "OpenGLTexture.h"
@@ -32,14 +32,13 @@ namespace NAMESPACE_FRONTEND
 		, public SpKeyboardEventListener
 	{
 	private:
-		EditorViewer viewer;
+		OpenGLFramebuffer* framebuffer = nullptr;
 
-		OpenGLRendererManager* renderer;
+		EditorViewer viewer;
 		GridSystem* gridSystem = nullptr;
 		RockList* rockList = nullptr;
 		WorldObjectList* worldObjects = nullptr;
-		OpenGLFramebuffer* framebuffer = nullptr;
-
+		
 	public:
 
 		sp_bool simulationEnabled = true;

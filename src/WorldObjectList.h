@@ -139,7 +139,7 @@ namespace NAMESPACE_RENDERING
 			positionAttribute = shader->getAttribute("Position");
 		}
 
-		API_INTERFACE void render(const RenderData& renderData) override
+		API_INTERFACE void render(const SpRenderData& renderData) override
 		{
 			shader
 				->enable()

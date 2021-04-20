@@ -6,6 +6,9 @@ namespace NAMESPACE_FRONTEND
 	{
 		SpFrame::init(window);
 
+		framebuffer = sp_mem_new(OpenGLFramebuffer)();
+		framebuffer->setup(100, 100);
+
 		viewer.init(this);
 
 		SpEventDispatcher::instance()->addKeyboardListener(this);
@@ -13,9 +16,9 @@ namespace NAMESPACE_FRONTEND
 		SpPhysicSettings::instance()->disableSimulation();
 
 		// init renderer 
-		renderer = sp_mem_new(OpenGLRendererManager)();
-		renderer->init(&viewer);
-		renderer->resize((sp_float)width(), (sp_float)width());
+		SpWorldManagerInstance->current()->renderer = sp_mem_new(OpenGLRendererManager)();
+		SpWorldManagerInstance->current()->renderer->init(&viewer);
+		SpWorldManagerInstance->current()->renderer->resize((sp_float)width(), (sp_float)width());
 
 		// init lights
 		SpLightManager::instance()->addLight(SP_RGB_WHITE, Vec3(10.0f, 10.0f, 0.0f));
@@ -25,7 +28,7 @@ namespace NAMESPACE_FRONTEND
 		
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
 		worldObjects->init();
-		renderer->addGraphicObject(worldObjects);
+		SpWorldManagerInstance->current()->renderer->addGraphicObject(worldObjects);
 
 		const sp_float rockScale = TWO_FLOAT;
 
@@ -152,10 +155,8 @@ namespace NAMESPACE_FRONTEND
 		*/
 
 		rockList->init();
-		renderer->addGraphicObject(rockList);
 
-		framebuffer = sp_mem_new(OpenGLFramebuffer)();
-		framebuffer->setup(100, 100);
+		SpWorldManagerInstance->current()->renderer->addGraphicObject(rockList);
 	}
 
 	void GameFrame::update(sp_float elapsedTime)
@@ -187,7 +188,7 @@ namespace NAMESPACE_FRONTEND
 		ImGui::PopStyleVar();
 
 		ImVec2 size = ImVec2((sp_float)width(), (sp_float)height());
-		renderer->resize(size.x, size.y);
+		SpWorldManagerInstance->current()->renderer->resize(size.x, size.y);
 		
 		ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(0, 1), ImVec2(1, 0));
 		//ImGui::Image((void*)(intptr_t)framebuffer->colorTexture(), size, ImVec2(1, 0), ImVec2(0, 1));
@@ -222,15 +223,15 @@ namespace NAMESPACE_FRONTEND
 
 	void GameFrame::render()
 	{
-		SpViewportData* viewport = renderer->viewport();
+		const SpViewportData viewport = SpWorldManagerInstance->current()->renderer->viewport();
 
-		if (viewport->width != framebuffer->size().width
-			|| viewport->height != framebuffer->size().height)
-			framebuffer->setup(viewport->width, viewport->height);
+		if (viewport.width != framebuffer->size().width
+			|| viewport.height != framebuffer->size().height)
+			framebuffer->setup(viewport.width, viewport.height);
 		
 		framebuffer->use();
 
-		renderer->render();
+		SpWorldManagerInstance->current()->renderer->render();
 
 		framebuffer->disable();
 	}
@@ -310,12 +311,6 @@ namespace NAMESPACE_FRONTEND
 		{
 			sp_mem_delete(rockList, RockList);
 			rockList = nullptr;
-		}
-		
-		if (renderer != nullptr)
-		{
-			sp_mem_delete(renderer, OpenGLRendererManager);
-			renderer = nullptr;
 		}
 	}
 }

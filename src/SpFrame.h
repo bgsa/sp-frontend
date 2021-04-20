@@ -3,9 +3,8 @@
 
 #include "SpectrumFronend.h"
 #include "SpWindow.h"
-#include "IRendererManager.h"
+#include "SpIRendererManager.h"
 #include "RendererSettings.h"
-#include "RenderData.h"
 #include "imgui/imgui.h"
 #include "SpSize.h"
 
@@ -22,9 +21,6 @@ namespace NAMESPACE_FRONTEND
 		sp_bool _isFocused;
 		sp_bool _isMouseHovered;
 		sp_bool _isFirstLoad = false;
-
-	protected:
-		IRendererManager* renderer;
 
 	public:
 
@@ -103,7 +99,6 @@ namespace NAMESPACE_FRONTEND
 			_width = 300;
 			_height = 200;
 			_window = window;
-			renderer = renderer;
 		};
 
 		API_INTERFACE virtual void loadState()
@@ -114,11 +109,6 @@ namespace NAMESPACE_FRONTEND
 
 			_isFocused = ImGui::IsWindowFocused();
 			_isMouseHovered = ImGui::IsWindowHovered();
-		}
-
-		API_INTERFACE void setRenderer(IRendererManager* renderer)
-		{
-			this->renderer = renderer;
 		}
 
 		API_INTERFACE inline SpWindow* window() const
