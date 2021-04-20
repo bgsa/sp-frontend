@@ -83,6 +83,7 @@ namespace NAMESPACE_FRONTEND
 
 			while (isRunning)
 			{
+				int* checkPoint = ALLOC_ARRAY(int, ONE_UINT);
 				Timer::frameTimer()->update();
 
 				SpEventDispatcher::instance()->processAllEvents();
@@ -118,6 +119,7 @@ namespace NAMESPACE_FRONTEND
 				}
 
 				physicSettings->nextFrame();
+				ALLOC_RELEASE(checkPoint);
 			}
 #endif
 		}
