@@ -70,12 +70,12 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline virtual void show() noexcept
 		{
-			this->_visible = true;
-			this->_isFirstLoad = true;
+			_visible = true;
+			_isFirstLoad = true;
 		}
 		API_INTERFACE inline virtual void hide() noexcept
 		{
-			this->_visible = false;
+			_visible = false;
 		}
 
 		API_INTERFACE inline void resize(sp_int width, sp_int height) noexcept
@@ -97,13 +97,13 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE virtual void init(SpWindow* window)
 		{
-			this->_visible = false;
-			this->_isFocused = false;
-			this->_isMouseHovered = false;
-			this->_width = 300;
-			this->_height = 200;
-			this->_window = window;
-			this->renderer = renderer;
+			_visible = false;
+			_isFocused = false;
+			_isMouseHovered = false;
+			_width = 300;
+			_height = 200;
+			_window = window;
+			renderer = renderer;
 		};
 
 		API_INTERFACE virtual void loadState()
