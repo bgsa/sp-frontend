@@ -136,7 +136,10 @@ namespace NAMESPACE_FRONTEND
 				ImGui::OpenPopup("Load Project##popup");
 				if (loadProjectDialog.showFileDialog("Load Project##popup", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(600, 300), SP_FILENAME_PROJECT_SUFFIX))
 				{
-					SpProjectManagerInstance->load(loadProjectDialog.selected_path.c_str());
+					sp_char filename[512];
+					strReplace(loadProjectDialog.selected_path.c_str(), '/', SP_DIRECTORY_SEPARATOR, filename);
+
+					SpProjectManagerInstance->load(filename);
 					showLoadProject = false;
 				}
 			}

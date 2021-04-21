@@ -6,6 +6,8 @@
 #include "FileSystem.h"
 #include "nlohmann/json.hpp"
 
+//typedef void(*helloF)(char* msg);
+
 #define SP_FILENAME_PROJECT_SUFFIX ".spp"
 
 namespace NAMESPACE_FRONTEND
@@ -78,6 +80,13 @@ namespace NAMESPACE_FRONTEND
 				project->type(type);
 			}
 
+			sp_char folder[256];
+			SpDirectory::directoryFromFile(filename, folder);
+
+			project->folder(folder);
+
+			project->loadLibraries();
+
 			_current = project;
 		}
 
@@ -100,6 +109,15 @@ namespace NAMESPACE_FRONTEND
 			file.open(fullname, std::ios_base::out);
 			file.write(jsonAsString.c_str());
 			file.close();
+
+			sp_char str[512];
+			SpDirectory::buildPath(_current->folder(), "lib", str);
+			SpDirectory dir(str);
+			dir.create();
+
+			SpDirectory::buildPath(_current->folder(), "src", str);
+			dir = str;
+			dir.create();
 		}
 
 		API_INTERFACE static void init();

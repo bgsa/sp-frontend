@@ -5,6 +5,8 @@
 #include "SpGame.h"
 #include "SpGame2D.h"
 #include "SpGame3D.h"
+#include "SpDynamicLibrary.h"
+#include "SpVector.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -14,6 +16,7 @@ namespace NAMESPACE_FRONTEND
 		sp_char* _name;
 		sp_char* _folder;
 		SpGame* _game;
+		SpVector<SpDynamicLibrary*>* _libraries;
 
 	public:
 		
@@ -26,6 +29,7 @@ namespace NAMESPACE_FRONTEND
 			_name = nullptr;
 			_folder = nullptr;
 			_game = nullptr;
+			_libraries = nullptr;
 		}
 
 		/// <summary>
@@ -115,6 +119,58 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		/// <summary>
+		/// Load the libraries of the project
+		/// </summary>
+		/// <returns>void</returns>
+		API_INTERFACE inline void loadLibraries()
+		{
+			sp_char libDir[256];
+			SpDirectory::buildPath(_folder, "lib", libDir);
+
+			sp_char files[256 * 1000];
+			files[0] = END_OF_STRING;
+
+			SpDirectory dir(libDir);
+			dir.files(files);
+
+			_libraries = sp_mem_new(SpVector<SpDynamicLibrary*>)();
+
+			const sp_uint libDirLength = strlen(libDir);
+			sp_uint index = ZERO_UINT;
+
+			while (files[index] != END_OF_STRING)
+			{
+				if (files[index] == END_OF_LINE)
+					index++;
+
+				sp_char file[256];
+				std::memcpy(file, libDir, sizeof(sp_char) * libDirLength);
+				file[libDirLength] = SP_DIRECTORY_SEPARATOR;
+
+				sp_int length = strIndexOf(&files[index], END_OF_LINE);
+
+				if (length == -1)
+					length = strlen(&files[index]);
+				
+				std::memcpy(&file[libDirLength + 1u], &files[index], sizeof(sp_char) * length + sizeof(sp_char));
+				file[libDirLength + 1u + length] = END_OF_STRING;
+
+#ifdef WINDOWS
+				if (endsWith(file, ".dll"))
+#else
+				if (endsWith(file, ".so"))
+#endif		
+				{
+					SpDynamicLibrary* library = sp_mem_new(SpDynamicLibrary);
+					library->load(file);
+					_libraries->add(library);
+				}
+
+				index += length;
+			}
+		}
+
+		/// <summary>
 		/// Release all allocated resources
 		/// </summary>
 		/// <returns>void</returns>
@@ -137,6 +193,12 @@ namespace NAMESPACE_FRONTEND
 				_game->dispose();
 				sp_mem_release(_game);
 				_game = nullptr;
+			}
+
+			if (_libraries != nullptr)
+			{
+				sp_mem_delete(_libraries, SpVector<SpDynamicLibrary*>);
+				_libraries = nullptr;
 			}
 		}
 
