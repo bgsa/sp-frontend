@@ -95,10 +95,24 @@ namespace NAMESPACE_FRONTEND
 			if (_current == nullptr)
 				return;
 
-			nlohmann::json j;
-			j["name"] = _current->name();
-			j["type"] = _current->game()->gameType();
-			std::string jsonAsString = j.dump(4);
+			nlohmann::json json;
+			json["name"] = _current->name();
+			json["type"] = _current->game()->gameType();
+
+			for (SpVectorItem<SpWorld*>* item = SpWorldManagerInstance->worlds()->begin(); item != nullptr; item = item->next())
+			{
+				SpWorld* world = item->value();
+
+				nlohmann::json jsonWorld = nlohmann::json
+				{
+					{ "name", world->name },
+					{ "objects-length", world->objectsLength() }
+				};
+
+				json["worlds"].push_back(jsonWorld);
+			}
+
+			std::string jsonAsString = json.dump(4);
 
 			sp_char fullname[512];
 			std::strcpy(fullname, _current->folder());
