@@ -231,7 +231,11 @@ namespace NAMESPACE_FRONTEND
 		
 		framebuffer->use();
 
+		// TODO: REMOVE
+		Timer t;
+		t.start();
 		SpWorldManagerInstance->current()->renderer->render();
+		((sp_float*)SpGlobalPropertiesInscance->get(ID_renderingTime))[0] = t.elapsedTime();
 
 		framebuffer->disable();
 	}

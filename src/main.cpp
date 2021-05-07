@@ -5,6 +5,7 @@
 #include "SpWindowGLFW.h"
 #include "Application.h"
 #include "SpThreadPool.h"
+#include "SpGlobalProperties.h"
 
 using namespace NAMESPACE_FRONTEND;
 
@@ -12,6 +13,8 @@ sp_int main(sp_int, sp_char**)
 {
 	SpStackMemoryAllocator::main()->init(SP_STACK_MEMORY_DEFAULT_SIZE);
 	//	SpThreadPool::instance()->init();
+
+	SpGlobalProperties::init();
 
 	SpWindowGLFW window;
 	window.init();
@@ -30,6 +33,8 @@ sp_int main(sp_int, sp_char**)
 	engineEditor.dispose();
 	app.dispose();
 	window.dispose();
+
+	SpGlobalProperties::dispose();
 
 	SpStackMemoryAllocator::main()->dispose();
 	return 0;
