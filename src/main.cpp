@@ -15,6 +15,7 @@ sp_int main(sp_int, sp_char**)
 	//	SpThreadPool::instance()->init();
 
 	SpGlobalProperties::init();
+	SpPhysicSettings::instance()->enableProfiling();
 
 	SpWindowGLFW window;
 	window.init();
