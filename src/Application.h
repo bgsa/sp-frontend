@@ -132,18 +132,18 @@ namespace NAMESPACE_FRONTEND
 				.addHeader("FRAME ID")
 
 				->addHeader("TEMPO BUILD DOP18")
-				->addHeader("PARES DOP18")
-				->addHeader("TEMPO SAP DOP18")
-				->addHeader("TEMPO BUILD ELEMENTS RADIX DOP18")
-
 				->addHeader("TEMPO BUILD AABB")
-				->addHeader("PARES AABB")
-				->addHeader("TEMPO SAP AABB")
-				->addHeader("TEMPO BUILD ELEMENTS RADIX AABB")
-
 				->addHeader("TEMPO BUILD SPHERE")
+
+				->addHeader("PARES DOP18")
+				->addHeader("PARES AABB")
 				->addHeader("PARES SPHERE")
-				->addHeader("TEMPO SAP SPHERE")
+
+				->addHeader("TEMPO SAP DOP18")
+				->addHeader("TEMPO SAP AABB")
+
+				->addHeader("TEMPO BUILD ELEMENTS RADIX DOP18")
+				->addHeader("TEMPO BUILD ELEMENTS RADIX AABB")
 				->addHeader("TEMPO BUILD ELEMENTS RADIX SPHERE")
 
 				->addHeader("TEMPO RADIX")
@@ -209,22 +209,20 @@ namespace NAMESPACE_FRONTEND
 				// FRAME ID
 				csvFile.addValue(SpPhysicSettings::instance()->frameId());
 
-				// DOP18
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildDOP18Time)));
-				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresDOP18)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapDOP18Time)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsDOP18Time)));
-
-				// AABB
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildAABBTime)));
-				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresAABB)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapAABBTime)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsAABBTime)));
-
-				// ESFERAS
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildSphereTime)));
+
+				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresDOP18)));
+				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresAABB)));
 				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresSphere)));
+
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapDOP18Time)));
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapAABBTime)));
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapSphereTime)));
+
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsDOP18Time)));
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsAABBTime)));
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsSphereTime)));
 
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_radixSortingTime)));
