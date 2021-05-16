@@ -30,12 +30,12 @@ namespace NAMESPACE_FRONTEND
 		worldObjects->init();
 		SpWorldManagerInstance->current()->renderer->addGraphicObject(worldObjects);
 
-		const sp_float rockScale = TWO_FLOAT;
+		const Vec3 rockScale(2.0f, 2.0f, 2.0f);
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		//rockList->translate(0u, { 0.0f, 2.3f, 0.0f });
 		rockList->translate(0u, { 0.0f, 10.0f, 0.0f });
-		rockList->scale(0u, { rockScale, rockScale, rockScale });
+		rockList->scale(0u, rockScale);
 		rockList->rotate(0u, Quat::createRotate(degreesToRadians(10), Vec3(1.0f, 0.0f, 0.0f)));
 		//rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
 		//rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
@@ -66,7 +66,7 @@ namespace NAMESPACE_FRONTEND
 			//rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
 			rockList->translate(i, { 0.0f, multiplyBy16(i) + 10.0f, 0.0f });
 
-			rockList->scale(i, { rockScale, rockScale, rockScale });
+			rockList->scale(i, rockScale);
 		}
 
 		/*
