@@ -63,7 +63,7 @@ elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "U
 	set (CUSTOM_DEFINITIONS "-Wno-dangling-else")
 
 	find_package(GLEW REQUIRED)
-	find_package(GLFW REQUIRED glfw3)
+	#find_package(GLFW REQUIRED glfw3)
 else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()

@@ -18,9 +18,9 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::lookAtHorizontal(sp_float angle)
 	{
 		target = Vec3(
-			position[0] + _forward[0] * std::cosf(angle) + _forward[2] * std::sinf(angle),
+			position[0] + _forward[0] * sp_cos(angle) + _forward[2] * sp_sin(angle),
 			target[1],
-			position[2] + _forward[2] * std::cosf(angle) + (position[0] - target[0]) * std::sinf(angle)
+			position[2] + _forward[2] * sp_cos(angle) + (position[0] - target[0]) * sp_sin(angle)
 		);
 
 		updateViewMatrix();
@@ -32,8 +32,8 @@ namespace NAMESPACE_FRONTEND
 
 		target = Vec3(
 			target[0],
-			position[1] + _forward[1] * std::cosf(angle) + (position[2] - target[2]) * std::sinf(angle),
-			position[2] + _forward[1] * std::sinf(angle) + _forward[2] * std::cosf(angle)
+			position[1] + _forward[1] * sp_cos(angle) + (position[2] - target[2]) * sp_sin(angle),
+			position[2] + _forward[1] * sp_sin(angle) + _forward[2] * sp_cos(angle)
 		);
 
 		updateViewMatrix();
@@ -79,7 +79,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveLeft(sp_float distance)
 	{
 		Vec3 directionToMove;
-		cross(_up, _forward, &directionToMove);
+		cross(_up, _forward, directionToMove);
 		normalize(directionToMove);
 
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
@@ -93,7 +93,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::moveRight(sp_float distance)
 	{
 		Vec3 directionToMove;
-		cross(_up, _forward, &directionToMove);
+		cross(_up, _forward, directionToMove);
 		normalize(directionToMove);
 		
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
