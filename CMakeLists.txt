@@ -17,7 +17,6 @@ option(OPERATING_SYSTEM "Defined which operating system will be built for" "WIND
 option(GLFW_ENABLED     "Defined if GLFW will be used" ON)
 option(QT_ENABLED       "Defined if QT will be used"   OFF)
 option(ARCH_BITS        "Defined the compilation to 64 bits"   "32")
-option(BUILD_TYPE       "Defined the build type (Debig or Release"   "Debug")
 
 set (PROJECT_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
 set (SOLUTION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -39,13 +38,17 @@ if ( ${ARCH_BITS} STREQUAL "64" )
 	set (ARCH_DIR "x86_64")
 	set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -std=c11" )
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -std=c++11" )
-	set (ENV_DEFINITION "-DENV_64BITS")
+	set (ENV_DEFINITION  "-DENV_64BITS")
+	set (OS_LIB_DIR      /usr/lib/x86_64-linux-gnu)
 else()
 	set(ARCH_DIR  "x86")	
 	set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -std=c11" )
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -std=c++11" )
-	set (ENV_DEFINITION "-DENV_32BITS")
+	set (ENV_DEFINITION  "-DENV_32BITS")
+	set (OS_LIB_DIR      /usr/lib/i386-linux-gnu)
 endif()
+
+set (LIB_DIR ${VENDOR_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE})
 
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	set (GLFW_LIB_NAME "glfw3.lib")
@@ -63,7 +66,6 @@ elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "U
 	set (CUSTOM_DEFINITIONS "-Wno-dangling-else")
 
 	find_package(GLEW REQUIRED)
-	#find_package(GLFW REQUIRED glfw3)
 else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()
@@ -83,12 +85,8 @@ include_directories(
 )
 
 link_directories(
-	${VENDOR_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
-	${SP_FOUNDATION_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
-	${SP_PHYSICS_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
-	${SP_RENDERING_DIR}/lib/${ARCH_DIR}/${BUILD_TYPE}
-	/usr/bin/x86_64-linux-gnu
-	/usr/local/lib
+	${LIB_DIR}
+	${OS_LIB_DIR}
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -104,13 +102,15 @@ else()
 endif()
 
 target_link_libraries(${PROJECT_NAME} 
-	${OPENGL_LIBRARY}
-	${GLEW_LIBRARIES}
-	${GLFW_LIB_NAME}
-	${IMGUI_LIB_NAME}
-	${SP_FOUNDATION_LIBRARY}
-	${SP_PHYSICS_LIBRARY}
-	${SP_RENDERING_LIBRARY}
+	${LIB_DIR}/libGLEW.a
+	${OS_LIB_DIR}/libGL.so.1
+	${LIB_DIR}/${GLFW_LIB_NAME}
+	${CMAKE_DL_LIBS}
+	${LIB_DIR}/${IMGUI_LIB_NAME}
+	${LIB_DIR}/libOpenCL.a
+	${SP_FOUNDATION_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE}/${SP_FOUNDATION_LIBRARY}
+	${SP_PHYSICS_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE}/${SP_PHYSICS_LIBRARY}
+	${SP_RENDERING_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE}/${SP_RENDERING_LIBRARY}
 )
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	target_link_libraries(${PROJECT_NAME} glew32s.lib)
