@@ -66,11 +66,6 @@ namespace imgui_addons
         #endif
     }
 
-    ImGuiFileBrowser::~ImGuiFileBrowser()
-    {
-
-    }
-
     void ImGuiFileBrowser::clearFileList()
     {
         //Clear pointer references to subdirs and subfiles

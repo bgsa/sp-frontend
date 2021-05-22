@@ -9,7 +9,7 @@ namespace NAMESPACE_FRONTEND
 
 		Vec3 cameraPosition = { 0.0f, 50.0f, 50.0f };
 		Vec3 cameraTarget = { 0.0f, 0.0f, 0.0f };
-		initProjectionPerspective(cameraPosition, cameraTarget, frame->aspectRatio());
+		SpCamera::initProjectionPerspective(cameraPosition, cameraTarget, frame->aspectRatio());
 
 		SpEventDispatcher::instance()->addKeyboardListener(this);
 		SpEventDispatcher::instance()->addMouseListener(this);

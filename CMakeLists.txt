@@ -23,7 +23,6 @@ set (SOLUTION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 set (ENV_DEFINITION "-DENV_32BITS")
 set (ARCH_DIR "x86")
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin)
 set (SP_FOUNDATION_DIR ${SOLUTION_DIR}/sp-foundation)
 set (SP_PHYSICS_DIR ${SOLUTION_DIR}/sp-physics)
 set (SP_RENDERING_DIR ${SOLUTION_DIR}/sp-rendering)
@@ -49,8 +48,10 @@ else()
 endif()
 
 set (LIB_DIR ${VENDOR_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin/${ARCH_DIR}/${CMAKE_BUILD_TYPE})
 
 if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
+	set (POSIX_THREAD_LIBRARY "")
 	set (GLFW_LIB_NAME "glfw3.lib")
 	set (IMGUI_LIB_NAME "imgui.lib")
 	set (SP_FOUNDATION_LIBRARY "SpFoundation.lib")
@@ -58,6 +59,7 @@ if ( ${OPERATING_SYSTEM} STREQUAL "WINDOWS" )
 	set (SP_RENDERING_LIBRARY "SpRendering.lib")
 	set (CUSTOM_DEFINITIONS "-D_CRT_SECURE_NO_WARNINGS")
 elseif ( ${OPERATING_SYSTEM} STREQUAL "LINUX" OR ${OPERATING_SYSTEM} STREQUAL "UNIX" )
+	set (POSIX_THREAD_LIBRARY "pthread")
 	set (GLFW_LIB_NAME "libglfw3.a")
 	set (IMGUI_LIB_NAME "libimgui.a")
 	set (SP_FOUNDATION_LIBRARY "libSpFoundation.a")
@@ -72,8 +74,16 @@ endif()
 
 find_package(OpenGL REQUIRED)
 
-file(GLOB HEADERS "src/*.h")
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS 
+	"src/*.h"   
+	"src/addons/*.h"
+	"src/addons/FileBrowser/*.h"
+)
+file(GLOB SOURCES 
+	"src/*.cpp" 
+	"src/addons/*.cpp"
+	"src/addons/FileBrowser/*.cpp"
+)
 
 include_directories(
 	${HEADERS}
@@ -101,7 +111,8 @@ else()
     message(FATAL_ERROR "Operating System not defined!")
 endif()
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
+	${POSIX_THREAD_LIBRARY}
 	${LIB_DIR}/libGLEW.a
 	${OS_LIB_DIR}/libGL.so.1
 	${LIB_DIR}/${GLFW_LIB_NAME}

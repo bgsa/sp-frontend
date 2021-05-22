@@ -46,9 +46,7 @@ namespace NAMESPACE_FRONTEND
 
 		SpVector<SpFrame*> frames;
 
-
-
-		void renderMainMenuBar()
+		inline void renderMainMenuBar()
 		{
 			if (ImGui::BeginMainMenuBar())
 			{

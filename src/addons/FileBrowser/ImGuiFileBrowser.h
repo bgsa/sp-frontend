@@ -11,7 +11,6 @@ namespace imgui_addons
     {
         public:
             ImGuiFileBrowser();
-            ~ImGuiFileBrowser();
 
             void (*onClose)();
 

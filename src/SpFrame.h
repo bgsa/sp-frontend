@@ -4,7 +4,7 @@
 #include "SpectrumFronend.h"
 #include "SpWindow.h"
 #include "SpIRendererManager.h"
-#include "RendererSettings.h"
+#include <RendererSettings.h>
 #include "imgui/imgui.h"
 #include "SpSize.h"
 
