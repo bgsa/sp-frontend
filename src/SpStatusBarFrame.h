@@ -45,7 +45,7 @@ namespace NAMESPACE_FRONTEND
 			ImVec2 itemSize = ImGui::GetItemRectSize();
 
 			sp_char value[30];
-			std::memcpy(value, "FPS:  ", SIZEOF_CHAR * 5);
+			std::memcpy(value, "FPS:  ", sizeof(sp_char) * 5);
 			SpString::convert(localTimer.elapsedTime(), &value[5]);
 
 			ImGui::Text(value);

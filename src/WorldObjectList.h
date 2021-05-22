@@ -52,7 +52,7 @@ namespace NAMESPACE_RENDERING
 					indexes[index++] = (row + 1u) * (cols + 1u) + col + 1u;
 				}
 
-			_indexesBuffer = sp_mem_new(OpenGLBuffer)(index * SIZEOF_FLOAT, indexes, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+			_indexesBuffer = sp_mem_new(OpenGLBuffer)(index * sizeof(sp_float), indexes, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 		}
 
 		void buildMesh()
