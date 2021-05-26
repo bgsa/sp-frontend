@@ -33,126 +33,40 @@ namespace NAMESPACE_FRONTEND
 		const Vec3 rockScale(2.0f, 2.0f, 2.0f);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		//rockList->translate(0u, { 0.0f, 2.3f, 0.0f });
 		rockList->translate(0u, { 0.0f, 10.0f, 0.0f });
 		rockList->scale(0u, rockScale);
 		rockList->rotate(0u, Quat::createRotate(degreesToRadians(10), Vec3(1.0f, 0.0f, 0.0f)));
-		//rockList->translate(1u, { -1.0f, 10.0f, 0.0f });
-		//rockList->translate(1u, { 4.0f, 100.7f, 4.0f });
-
-		const sp_uint boxSize = 20u;
+		
+		//const sp_uint boxSize = 20u;
 		//const sp_uint boxSize = 50u;
-		Randomizer rand(0, boxSize);
-		Randomizer randOrientationX(0, 1);
-		Randomizer randOrientationY(0, 1);
-		Randomizer randOrientationZ(0, 1);
-		sp_uint halfSpace = divideBy2(boxSize);
+		//Randomizer rand(0, boxSize);
+		//sp_uint halfSpace = divideBy2(boxSize);
+
+		SpCSVFileReader csvReader("seed.csv");
 
 		for (register sp_uint i = 1u; i < rockLength; i++)
 		{
-			const sp_float x = (sp_float)rand.randInt();
-			const sp_float z = (sp_float)rand.randInt();
+			sp_char value[30];
 
-			const sp_float orientationX = randOrientationX.randFloat();
+			csvReader.readValue(value, 30);
+			const sp_float orientationX = convert(value);
 			rockList->rotate(i, Quat::createRotationAxisX(orientationX));
 
-			const sp_float orientationY = randOrientationY.randFloat();
+			csvReader.readValue(value, 30);
+			const sp_float orientationY = convert(value);
 			rockList->rotate(i, Quat::createRotationAxisY(orientationY));
 
-			const sp_float orientationZ = randOrientationZ.randFloat();
+			csvReader.readValue(value, 30);
+			const sp_float orientationZ = convert(value);
 			rockList->rotate(i, Quat::createRotationAxisZ(orientationZ));
 
-			// move the object to a random position
+			//const sp_float x = (sp_float)rand.randInt();
+			//const sp_float z = (sp_float)rand.randInt();
 			//rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
 			rockList->translate(i, { 0.0f, multiplyBy16(i) + 10.0f, 0.0f });
 
 			rockList->scale(i, rockScale);
 		}
-
-		/*
-		sp_uint index = ZERO_UINT;
-		for (sp_uint y = 1u; y < 11u; y++)
-		{
-			for (sp_uint z = 1u; z < 11u; z++)
-			{
-				for (sp_uint x = 1u; x < 13u; x++)
-				{
-					rockList->translate(index, { x * 5u - 25.0f, y * 20.0f, z * 5u - 10.0f });
-					index++;
-
-					if (index == rockLength)
-						goto keep_executing;
-				}
-			}
-		}
-	keep_executing:
-		index = 0u;
-		Vec3 translation = Vec3(20.0f, 30.0f, 0.0f);
-		SpTransform* transformation = rockList->transforms(index);
-		translation -= transformation->position;
-		rockList->translate(index, translation);
-
-		index = 1u;
-		translation = Vec3(30.0f, 40.0f, 10.0f);
-		transformation = rockList->transforms(index);
-		translation -= transformation->position;
-		rockList->translate(index, translation);
-
-		index = 2u;
-		translation = Vec3(10.0f, 45.0f, 1.0f);
-		transformation = rockList->transforms(index);
-		translation -= transformation->position;
-		rockList->translate(index, translation);
-
-		index = 3u;
-		translation = Vec3(-5.0f, 45.0f, 9.0f);
-		transformation = rockList->transforms(index);
-		translation -= transformation->position;
-		rockList->translate(index, translation);
-
-		index = 4u;
-		translation = Vec3(-15.0f, 15.0f, 5.0f);
-		transformation = rockList->transforms(index);
-		translation -= transformation->position;
-		rockList->translate(index, translation);
-
-		index = 5u;
-		translation = Vec3(-25.0f, 60.0f, 11.0f);
-		transformation = rockList->transforms(index);
-		translation -= transformation->position;
-		rockList->translate(index, translation);
-		*/
-
-		/*
-		Randomizer rand(0, 3000);
-		sp_uint halfSpace = 1000 / 200;
-		const sp_uint randomizeFrom = 2u;
-		if (rockLength > randomizeFrom)
-		{
-			for (sp_uint i = randomizeFrom; i < rockLength; i++)
-			{
-				sp_float x = rand.randInt() / 100.0f;
-				sp_float y = rand.randInt() / 100.0f;
-				sp_float z = rand.randInt() / 100.0f;
-
-				// move the object to a random position
-				rockList->translate(i, { x - halfSpace, y + 1.0f, z - halfSpace });
-
-				// move away initial inter-penettrations
-				DOP18* bvi = rockList->boundingVolumes(i);
-				for (sp_uint j = 0; j < i; j++)
-				{
-					DOP18* bvj = rockList->boundingVolumes(j);
-					CollisionStatus status = bvi->collisionStatus(*bvj);
-					if (status != CollisionStatus::OUTSIDE)
-					{
-						i--; // back i index to translate a valid position
-						break;
-					}
-				}
-			}
-		}
-		*/
 
 		rockList->init();
 
