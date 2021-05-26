@@ -63,6 +63,8 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
+			SpPhysicSettings::instance()->boundingVolumeType(BoundingVolumeType::Sphere);
+
 			SpProjectManager::init();
 			SpWorldManager::init();
 
@@ -80,42 +82,33 @@ namespace NAMESPACE_FRONTEND
 
 			Timer::init();
 
-			sp_float buildDOP18Time = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&buildDOP18Time);
-			sp_uint paresDOP18 = ZERO_UINT;
-			SpGlobalPropertiesInscance->add(&paresDOP18);
-			sp_float sapDOP18Time = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&sapDOP18Time);
-			sp_float buildElementsDOP18Time = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&buildElementsDOP18Time);
+			sp_float buildBVTime = ZERO_FLOAT;
+			SpGlobalPropertiesInscance->add(&buildBVTime);
 
-			sp_float buildAABBTime = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&buildAABBTime);
-			sp_uint paresAABB = ZERO_UINT;
-			SpGlobalPropertiesInscance->add(&paresAABB);
-			sp_float sapAABBTime = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&sapAABBTime);
-			sp_float buildElementsAABBTime = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&buildElementsAABBTime);
+			sp_uint paresSAP = ZERO_UINT;
+			SpGlobalPropertiesInscance->add(&paresSAP);
 
-			sp_float buildSphereTime = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&buildSphereTime);
-			sp_uint paresSphere = ZERO_UINT;
-			SpGlobalPropertiesInscance->add(&paresSphere);
-			sp_float sapSphereTime = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&sapSphereTime);
-			sp_float buildElementsSphereTime = ZERO_FLOAT;
-			SpGlobalPropertiesInscance->add(&buildElementsSphereTime);
-
+			// SAP
+			sp_float buildElementsTime = ZERO_FLOAT;
+			SpGlobalPropertiesInscance->add(&buildElementsTime);
 			sp_float radixSortingTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&radixSortingTime);
+			sp_float sapTime = ZERO_FLOAT;
+			SpGlobalPropertiesInscance->add(&sapTime);
 
+			// GJK
+			sp_uint gjkEpaCount = ZERO_UINT;
+			SpGlobalPropertiesInscance->add(&gjkEpaCount);
 			sp_float gjkEpaTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&gjkEpaTime);
 
+			// SHAPE MATCHING
+			sp_uint shapeMatchingCount = ZERO_UINT;
+			SpGlobalPropertiesInscance->add(&shapeMatchingCount);
 			sp_float shapeMatchingTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&shapeMatchingTime);
 
+			// PCA
 			sp_float pcaTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&pcaTime);
 			sp_uint qtdAlteracoesPCA = ZERO_UINT;
@@ -123,6 +116,7 @@ namespace NAMESPACE_FRONTEND
 			Vec3 eixoPCA = Vec3Zeros;
 			SpGlobalPropertiesInscance->add(&eixoPCA);
 
+			// RENDERING
 			sp_float renderingTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&renderingTime);
 
@@ -131,23 +125,19 @@ namespace NAMESPACE_FRONTEND
 			csvFile
 				.addHeader("FRAME ID")
 
-				->addHeader("TEMPO BUILD DOP18")
-				->addHeader("TEMPO BUILD AABB")
-				->addHeader("TEMPO BUILD SPHERE")
-
-				->addHeader("PARES DOP18")
-				->addHeader("PARES AABB")
-				->addHeader("PARES SPHERE")
-
-				->addHeader("TEMPO SAP DOP18")
-				->addHeader("TEMPO SAP AABB")
-
-				->addHeader("TEMPO BUILD ELEMENTS RADIX DOP18")
-				->addHeader("TEMPO BUILD ELEMENTS RADIX AABB")
-				->addHeader("TEMPO BUILD ELEMENTS RADIX SPHERE")
-
+				->addHeader("TEMPO BUILD VOLUME")
+				
+				->addHeader("TEMPO BUILD ELEMENTS RADIX")
 				->addHeader("TEMPO RADIX")
+				->addHeader("TEMPO PRUNE")
+				->addHeader("TEMPO SAP")
+
+				->addHeader("PARES SAP")
+				
+				->addHeader("QTD GJKEPA")
 				->addHeader("TEMPO GJKEPA")
+
+				->addHeader("QTD SHAPE_MATCHING")
 				->addHeader("TEMPO SHAPE_MATCHING")
 
 				->addHeader("TEMPO PCA")
@@ -170,9 +160,11 @@ namespace NAMESPACE_FRONTEND
 				{
 					// TODO: REMOVE
 					((sp_float*)SpGlobalPropertiesInscance->get(ID_radixSortingTime))[0] = ZERO_FLOAT;
-					((sp_float*)SpGlobalPropertiesInscance->get(ID_gjkEpaTime))[0] = ZERO_FLOAT;
-					((sp_float*)SpGlobalPropertiesInscance->get(ID_shapeMatchingTime))[0] = ZERO_FLOAT;
 					((sp_float*)SpGlobalPropertiesInscance->get(ID_pcaTime))[0] = ZERO_FLOAT;
+					((sp_uint*)SpGlobalPropertiesInscance->get(ID_gjkEpaCount))[0] = ZERO_UINT;
+					((sp_float*)SpGlobalPropertiesInscance->get(ID_gjkEpaTime))[0] = ZERO_FLOAT;
+					((sp_uint*)SpGlobalPropertiesInscance->get(ID_shapeMatchingCount))[0] = ZERO_UINT;
+					((sp_float*)SpGlobalPropertiesInscance->get(ID_shapeMatchingTime))[0] = ZERO_FLOAT;
 					((Vec3*)SpGlobalPropertiesInscance->get(ID_eixoPCA))[0] = Vec3Zeros;
 
 					//const sp_float elapsedTime = Timer::physicTimer()->elapsedTime();
@@ -209,24 +201,24 @@ namespace NAMESPACE_FRONTEND
 				// FRAME ID
 				csvFile.addValue(SpPhysicSettings::instance()->frameId());
 
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildDOP18Time)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildAABBTime)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildSphereTime)));
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildVolumeTime)));
 
-				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresDOP18)));
-				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresAABB)));
-				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresSphere)));
-
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapDOP18Time)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapAABBTime)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_sapSphereTime)));
-
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsDOP18Time)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsAABBTime)));
-				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsSphereTime)));
-
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsTime)));
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_radixSortingTime)));
+				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_pruneTime)));
+
+				sp_float sapTime
+					= *((sp_float*)SpGlobalPropertiesInscance->get(ID_buildElementsTime))
+					+ *((sp_float*)SpGlobalPropertiesInscance->get(ID_radixSortingTime))
+					+ *((sp_float*)SpGlobalPropertiesInscance->get(ID_pruneTime));
+				csvFile.addValue(sapTime);
+
+				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresSAP)));
+				
+				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_gjkEpaCount)));
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_gjkEpaTime)));
+
+				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_shapeMatchingCount)));
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_shapeMatchingTime)));
 
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_pcaTime)));
