@@ -165,6 +165,22 @@ namespace NAMESPACE_FRONTEND
 				->addHeader("FRAME TIME")
 				->newRecord();
 
+			sp_char filenameGroup[512];
+			strReplace(filename, ".csv", "-group.csv", filenameGroup);
+			SpCSVFileWriter csvFileGroup(filenameGroup);
+			csvFileGroup
+				.addHeader("FRAME ID")
+				->addHeader("TEMPO BUILD VOLUME")
+				->addHeader("TEMPO SAP")
+				->addHeader("TEMPO GJKEPA")
+				->addHeader("TEMPO SHAPE_MATCHING")
+				->addHeader("TEMPO PCA")
+				->addHeader("RENDERING TIME")
+				->addHeader("FRAME TIME")
+				->newRecord();
+			sp_float accBuildVolume, accSap, accGJKEPA, accShapeMatching, accPCA, accRendering, accFrameTime;
+			accBuildVolume = accSap = accGJKEPA = accShapeMatching = accPCA = accRendering = accFrameTime = ZERO_FLOAT;
+
 			Timer::init();
 
 			while (isRunning)
@@ -257,6 +273,30 @@ namespace NAMESPACE_FRONTEND
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_renderingTime)));
 				csvFile.addValue(frameTime);
 				csvFile.newRecord();
+
+
+
+				accBuildVolume += *((sp_float*)SpGlobalPropertiesInscance->get(ID_buildVolumeTime));
+				accSap += sapTime;
+				accGJKEPA += *((sp_float*)SpGlobalPropertiesInscance->get(ID_gjkEpaTime));
+				accShapeMatching += *((sp_float*)SpGlobalPropertiesInscance->get(ID_shapeMatchingTime));
+				accPCA += *((sp_float*)SpGlobalPropertiesInscance->get(ID_pcaTime));
+				accRendering += *((sp_float*)SpGlobalPropertiesInscance->get(ID_renderingTime));
+				accFrameTime += frameTime;
+
+				if ((frameId + 1) % 10 == 0)
+				{
+					csvFileGroup.addValue(frameId + 1);
+					csvFileGroup.addValue(accBuildVolume / 10.0f);
+					csvFileGroup.addValue(accSap / 10.0f);
+					csvFileGroup.addValue(accGJKEPA / 10.0f);
+					csvFileGroup.addValue(accShapeMatching / 10.0f);
+					csvFileGroup.addValue(accPCA / 10.0f);
+					csvFileGroup.addValue(accRendering / 10.0f);
+					csvFileGroup.addValue(accFrameTime / 10.0f);
+					csvFileGroup.newRecord();
+					accBuildVolume = accSap = accGJKEPA = accShapeMatching = accPCA = accRendering = accFrameTime = ZERO_FLOAT;
+				}
 
 				if (frameId == maxFrame)
 					isRunning = false;
