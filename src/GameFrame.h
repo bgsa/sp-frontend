@@ -25,6 +25,7 @@
 #include "SpLightManager.h"
 #include "OpenGLFramebuffer.h"
 #include "SpCSVFileReader.h"
+#include "SpApplicationArguments.h"
 
 namespace NAMESPACE_FRONTEND
 {

@@ -13,8 +13,6 @@ namespace NAMESPACE_FRONTEND
 
 		SpEventDispatcher::instance()->addKeyboardListener(this);
 
-		SpPhysicSettings::instance()->disableSimulation();
-
 		// init renderer 
 		SpWorldManagerInstance->current()->renderer = sp_mem_new(OpenGLRendererManager)();
 		SpWorldManagerInstance->current()->renderer->init(&viewer);
@@ -30,7 +28,10 @@ namespace NAMESPACE_FRONTEND
 		worldObjects->init();
 		SpWorldManagerInstance->current()->renderer->addGraphicObject(worldObjects);
 
-		const Vec3 rockScale(2.0f, 2.0f, 2.0f);
+		sp_char* scaleParameter = SpApplicationArgumentsInstace->get(1);
+		sp_float scale = convert(scaleParameter);
+
+		const Vec3 rockScale(2.0f, scale, 2.0f);
 
 		rockList = sp_mem_new(RockList)(rockLength);
 		rockList->translate(0u, { 0.0f, 10.0f, 0.0f });

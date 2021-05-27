@@ -63,7 +63,21 @@ namespace NAMESPACE_FRONTEND
 			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
-			SpPhysicSettings::instance()->boundingVolumeType(BoundingVolumeType::Sphere);
+			sp_char* bvText = SpApplicationArgumentsInstace->get(2);
+			if (std::strcmp(bvText, "DOP18") == 0)
+			{
+				SpPhysicSettings::instance()->boundingVolumeType(BoundingVolumeType::DOP18);
+			}
+			else if (std::strcmp(bvText, "AABB") == 0)
+			{
+				SpPhysicSettings::instance()->boundingVolumeType(BoundingVolumeType::AABB);
+			}
+			else if (std::strcmp(bvText, "SPHERE") == 0)
+			{
+				SpPhysicSettings::instance()->boundingVolumeType(BoundingVolumeType::Sphere);
+			}
+			
+			SpPhysicSettings::instance()->enableSimulation();
 
 			SpProjectManager::init();
 			SpWorldManager::init();
@@ -79,8 +93,6 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void start()
 		{
 #if defined(WINDOWS) || defined(LINUX) || defined(MAC)
-
-			Timer::init();
 
 			sp_float buildBVTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&buildBVTime);
@@ -121,7 +133,11 @@ namespace NAMESPACE_FRONTEND
 			SpGlobalPropertiesInscance->add(&renderingTime);
 
 			// TODO: REMOVER !
-			SpCSVFileWriter csvFile("resultado.csv");
+			sp_size maxFrame;
+			sp_char* temp = SpApplicationArgumentsInstace->get(3);
+			convert(temp, maxFrame);
+			sp_char* filename = SpApplicationArgumentsInstace->get(4);
+			SpCSVFileWriter csvFile(filename);
 			csvFile
 				.addHeader("FRAME ID")
 
@@ -148,6 +164,8 @@ namespace NAMESPACE_FRONTEND
 
 				->addHeader("FRAME TIME")
 				->newRecord();
+
+			Timer::init();
 
 			while (isRunning)
 			{
@@ -199,7 +217,8 @@ namespace NAMESPACE_FRONTEND
 				}
 
 				// FRAME ID
-				csvFile.addValue(SpPhysicSettings::instance()->frameId());
+				sp_size frameId = SpPhysicSettings::instance()->frameId();
+				csvFile.addValue(frameId);
 
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_buildVolumeTime)));
 
@@ -238,6 +257,9 @@ namespace NAMESPACE_FRONTEND
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_renderingTime)));
 				csvFile.addValue(frameTime);
 				csvFile.newRecord();
+
+				if (frameId == maxFrame)
+					isRunning = false;
 
 				SpPhysicSettings::instance()->nextFrame();
 				ALLOC_RELEASE(checkPoint);
