@@ -29,7 +29,8 @@ namespace NAMESPACE_FRONTEND
 		SpWorldManagerInstance->current()->renderer->addGraphicObject(worldObjects);
 
 		sp_char* scaleParameter = SpApplicationArgumentsInstace->get(1);
-		sp_float scale = convert(scaleParameter);
+		sp_float scale;
+		convert(scaleParameter, scale);
 
 		const Vec3 rockScale(2.0f, scale, 2.0f);
 
@@ -50,15 +51,18 @@ namespace NAMESPACE_FRONTEND
 			sp_char value[30];
 
 			csvReader.readValue(value, 30);
-			const sp_float orientationX = convert(value);
+			sp_float orientationX;
+			convert(value, orientationX);
 			rockList->rotate(i, Quat::createRotationAxisX(orientationX));
 
 			csvReader.readValue(value, 30);
-			const sp_float orientationY = convert(value);
+			sp_float orientationY;
+			convert(value, orientationY);
 			rockList->rotate(i, Quat::createRotationAxisY(orientationY));
 
 			csvReader.readValue(value, 30);
-			const sp_float orientationZ = convert(value);
+			sp_float orientationZ;
+			convert(value, orientationZ);
 			rockList->rotate(i, Quat::createRotationAxisZ(orientationZ));
 
 			//const sp_float x = (sp_float)rand.randInt();
