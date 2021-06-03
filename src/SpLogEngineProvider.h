@@ -21,7 +21,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			if (_column != ZERO_UINT)
 			{
-				sp_uint len = strlen(text);
+				sp_uint len = (sp_uint)std::strlen(text);
 
 				if (_column + len > MAX_CHARS)
 				{
@@ -44,7 +44,7 @@ namespace NAMESPACE_FRONTEND
 				if (_next == MAX_LINES)
 					_next = ZERO_UINT;
 
-			_column = strlen(text);
+			_column = (sp_uint)std::strlen(text);
 			std::memcpy(_messages[_next], text, _column);
 			_next++;
 		}

@@ -135,7 +135,7 @@ namespace NAMESPACE_FRONTEND
 
 			_libraries = sp_mem_new(SpVector<SpDynamicLibrary*>)();
 
-			const sp_uint libDirLength = strlen(libDir);
+			const sp_size libDirLength = std::strlen(libDir);
 			sp_uint index = ZERO_UINT;
 
 			while (files[index] != END_OF_STRING)
@@ -150,7 +150,7 @@ namespace NAMESPACE_FRONTEND
 				sp_int length = strIndexOf(&files[index], END_OF_LINE);
 
 				if (length == -1)
-					length = strlen(&files[index]);
+					length = (sp_int) std::strlen(&files[index]);
 				
 				std::memcpy(&file[libDirLength + 1u], &files[index], sizeof(sp_char) * length + sizeof(sp_char));
 				file[libDirLength + 1u + length] = END_OF_STRING;

@@ -83,8 +83,8 @@ namespace imgui_addons
              * reading directories/files
              */
             bool readDIR(std::string path);
-            bool onNavigationButtonClick(int idx);
-            bool onDirClick(int idx);
+            bool onNavigationButtonClick(size_t idx);
+            bool onDirClick(size_t idx);
 
             // Functions that reset state and/or clear file list when reading new directory
             void clearFileList();
@@ -100,7 +100,8 @@ namespace imgui_addons
 
             ImVec2 min_size, max_size, input_combobox_pos, input_combobox_sz;
             DialogMode dialog_mode;
-            int filter_mode, col_items_limit, selected_idx, selected_ext_idx;
+            size_t selected_idx, selected_ext_idx;
+            int filter_mode, col_items_limit;
             float col_width, ext_box_width;
             bool show_hidden, show_inputbar_combobox, is_dir, is_appearing, filter_dirty, validate_file, show_files_with_valid_extensions, show_all_files;
             char input_fn[256];

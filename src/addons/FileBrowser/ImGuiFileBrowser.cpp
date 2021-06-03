@@ -718,7 +718,7 @@ namespace imgui_addons
         ImGui::PopItemWidth();
     }
 
-    bool ImGuiFileBrowser::onNavigationButtonClick(int idx)
+    bool ImGuiFileBrowser::onNavigationButtonClick(size_t idx)
     {
         std::string new_path = "";
 
@@ -766,7 +766,7 @@ namespace imgui_addons
             return false;
     }
 
-    bool ImGuiFileBrowser::onDirClick(int idx)
+    bool ImGuiFileBrowser::onDirClick(size_t idx)
     {
         std::string name;
         std::string new_path(current_path);
