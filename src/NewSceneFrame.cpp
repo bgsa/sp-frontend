@@ -55,7 +55,6 @@ namespace NAMESPACE_FRONTEND
 			SpGame* game = SpProjectManagerInstance->current()->game();
 
 			SpStringId id(name);
-
 			if (game->contaisScenes(id.id))
 				SpUIManagerInstance->addNotification("Scene alread exists!", NotificationType::VALIDATION);
 			else

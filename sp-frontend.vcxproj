@@ -194,10 +194,12 @@
     <ClInclude Include="src\SpProject.h" />
     <ClInclude Include="src\SpProjectManager.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
+    <ClInclude Include="src\SpUIFonts.h" />
     <ClInclude Include="src\SpUIIcons.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
     <ClInclude Include="src\SpStatusBarFrame.h" />
+    <ClInclude Include="src\SpUITextComponent.h" />
     <ClInclude Include="src\WorldObjectList.h" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +210,7 @@
     <ClCompile Include="src\NewSceneFrame.cpp" />
     <ClCompile Include="src\NotificationFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
+    <ClCompile Include="src\SpUIFonts.cpp" />
     <ClCompile Include="src\SpUIIcons.cpp" />
     <ClCompile Include="src\SpUIManager.cpp" />
   </ItemGroup>

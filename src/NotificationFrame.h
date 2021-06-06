@@ -3,6 +3,7 @@
 
 #include "SpFrame.h"
 #include "SpUIIcons.h"
+#include "SpUITextComponent.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -18,6 +19,7 @@ namespace NAMESPACE_FRONTEND
 		: public SpFrame
 	{
 	private:
+		SpUITextComponent text;
 		sp_char name[21];
 
 	public:
@@ -38,6 +40,8 @@ namespace NAMESPACE_FRONTEND
 			std::memcpy(name, "Notification", 12);
 			std::memcpy(&name[12], &address, 8);
 			name[20] = END_OF_STRING;
+
+			text.init();
 		}
 
 		API_INTERFACE void preRender() override

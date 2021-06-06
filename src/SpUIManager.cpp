@@ -16,6 +16,8 @@ namespace NAMESPACE_FRONTEND
 
 	void SpUIManager::release()
 	{
+		SpUIFonts::release();
+
 		if (SpUIManagerInstance != nullptr)
 		{
 			sp_mem_delete(SpUIManagerInstance, SpUIManager);

@@ -48,7 +48,8 @@ namespace NAMESPACE_FRONTEND
 		);
 
 		ImGui::SameLine();
-		ImGui::Text(message);
+
+		text.render(message);
 
 		ImGui::End();
 

@@ -169,10 +169,7 @@ namespace NAMESPACE_FRONTEND
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 			io.ConfigWindowsMoveFromTitleBarOnly = true;
 
-			//io.Fonts->AddFontFromFileTTF("../resources/fonts/16x8pxl-mono.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-			//io.Fonts->AddFontFromFileTTF("../resources/fonts/Dashboard-Regular.otf", 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-			//io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFRegular-Regular.otf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-			//io.Fonts->AddFontFromFileTTF("../resources/fonts/DukasCFSemiBold-Regular.ttf", 20.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+			SpUIFonts::init();
 
 #ifdef OPENGL_ENABLED
 			ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->handler(), true);

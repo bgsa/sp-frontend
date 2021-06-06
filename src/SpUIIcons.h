@@ -36,8 +36,8 @@ namespace NAMESPACE_FRONTEND
 			const sp_float iconSpacing = 5.0f;
 			const sp_float iconWidth = 32.0f + iconSpacing;
 
-			const sp_float imageWidth = icons1->size().width;
-			const sp_float imageHeight = icons1->size().height;
+			const sp_float imageWidth = (sp_float)icons1->size().width;
+			const sp_float imageHeight = (sp_float)icons1->size().height;
 
 			uv1 = ImVec2(((column-1) * iconWidth) / imageWidth, ((row -1) * iconWidth) / imageHeight);
 			uv2 = ImVec2((column * iconWidth) / imageWidth, (row * iconWidth) / imageHeight);
