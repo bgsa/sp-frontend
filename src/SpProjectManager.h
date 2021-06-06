@@ -40,6 +40,8 @@ namespace NAMESPACE_FRONTEND
 			project->name(name);
 			project->type(gameType);
 
+			project->game()->addScenes("Scene 1");
+
 			_current = project;
 
 			return project;

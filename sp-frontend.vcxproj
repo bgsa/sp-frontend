@@ -182,6 +182,8 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
     <ClInclude Include="src\NewProjectFrame.h" />
+    <ClInclude Include="src\NewSceneFrame.h" />
+    <ClInclude Include="src\NotificationFrame.h" />
     <ClInclude Include="src\SpGameSettings.h" />
     <ClInclude Include="src\LogFrame.h" />
     <ClInclude Include="src\ProjectExplorerFrame.h" />
@@ -192,6 +194,7 @@
     <ClInclude Include="src\SpProject.h" />
     <ClInclude Include="src\SpProjectManager.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
+    <ClInclude Include="src\SpUIIcons.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
     <ClInclude Include="src\SpStatusBarFrame.h" />
@@ -202,7 +205,10 @@
     <ClCompile Include="src\GameFrame.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\EditorViewer.cpp" />
+    <ClCompile Include="src\NewSceneFrame.cpp" />
+    <ClCompile Include="src\NotificationFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
+    <ClCompile Include="src\SpUIIcons.cpp" />
     <ClCompile Include="src\SpUIManager.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -18,10 +18,15 @@
 #include "SpWindow.h"
 #include "RendererEditor.h"
 #include "NewProjectFrame.h"
+#include "NotificationFrame.h"
+#include "SpUIIcons.h"
 #include "addons/FileBrowser/ImGuiFileBrowser.h"
 
 namespace NAMESPACE_FRONTEND
 {
+#define SP_UI_MAX_NOTIFICATION 10
+#define SP_UI_NOTIFICATION_LIFETIME 200
+
 	extern sp_bool showLoadProject;
 	
 	void loadProjectDialog_OnClose();
@@ -41,10 +46,11 @@ namespace NAMESPACE_FRONTEND
 		SpStatusBarFrame statusBarFrame;
 		GameFrame gameFrame;
 		NewProjectFrame newProjectFrame;
+		NotificationFrame notifications[SP_UI_MAX_NOTIFICATION];
+		sp_ushort _notificationsLength;
+		sp_uint notificationIndex;
 
 		imgui_addons::ImGuiFileBrowser loadProjectDialog;
-
-		SpVector<SpFrame*> frames;
 
 		inline void renderMainMenuBar()
 		{
@@ -145,6 +151,7 @@ namespace NAMESPACE_FRONTEND
 		}
 
 	public:
+		SpVector<SpFrame*> frames;
 
 		API_INTERFACE void setWindow(SpWindow* window)
 		{
@@ -173,6 +180,8 @@ namespace NAMESPACE_FRONTEND
 			ImGui_ImplOpenGL3_Init(glsl_version);
 #endif
 
+			SpUIIcons::init();
+
 			frames.add(&aboutFrame);
 			frames.add(&toolbarFrame);
 			frames.add(&projectExplorerFrame);
@@ -184,6 +193,15 @@ namespace NAMESPACE_FRONTEND
 
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->init(window);
+
+			// Init all notifications
+			notificationIndex = ZERO_UINT;
+			_notificationsLength = ZERO_USHORT;
+			for (sp_int i = 0; i < SP_UI_MAX_NOTIFICATION; i++)
+			{
+				notifications[i].id = i;
+				notifications[i].init(window);
+			}
 
 			propertiesFrame.selectedObject(1u);
 
@@ -217,6 +235,14 @@ namespace NAMESPACE_FRONTEND
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->renderGUI();
 
+			sp_int idx = ZERO_INT;
+			for (sp_int i = 0; i < SP_UI_MAX_NOTIFICATION; i++)
+				if (notifications[i].isVisible())
+				{
+					notifications[i].index = idx++;
+					notifications[i].renderGUI();
+				}
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
@@ -231,6 +257,37 @@ namespace NAMESPACE_FRONTEND
 		{
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->postRender();
+		}
+
+		API_INTERFACE inline sp_ushort notificationsLength() const
+		{
+			return _notificationsLength;
+		}
+
+		API_INTERFACE inline sp_int addNotification(const sp_char* message, const NotificationType type, const sp_uint lifetime = SP_UI_NOTIFICATION_LIFETIME)
+		{
+			const sp_size messageLength = std::strlen(message);
+
+			std::memcpy(notifications[notificationIndex].message, message, messageLength);
+
+			notifications[notificationIndex].lifetime = lifetime;
+			notifications[notificationIndex].type = type;
+			notifications[notificationIndex].show();
+
+			if (notificationIndex + 1 == SP_UI_MAX_NOTIFICATION)
+				notificationIndex = ZERO_UINT;
+			else
+				notificationIndex++;
+
+			_notificationsLength++;
+
+			return notifications[notificationIndex].id;
+		}
+
+		API_INTERFACE inline void removeNotification(const sp_int id)
+		{
+			notifications[id].hide();
+			_notificationsLength--;
 		}
 
 		API_INTERFACE void onWindowEvent(SpWindowEvent* evt) override
@@ -250,6 +307,10 @@ namespace NAMESPACE_FRONTEND
 		{
 			return "Main Frame";
 		}
+
+		API_INTERFACE static void initialize();
+
+		API_INTERFACE static void release();
 
 		API_INTERFACE void dispose() override
 		{
@@ -271,6 +332,8 @@ namespace NAMESPACE_FRONTEND
 		}
 
 	};
+
+	extern SpUIManager* SpUIManagerInstance;
 }
 
 #endif // SP_UI_MANAGER_HEADER
