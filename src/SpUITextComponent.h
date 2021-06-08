@@ -13,14 +13,15 @@ namespace NAMESPACE_FRONTEND
 		void breakText(const sp_char* text, const sp_size textLength, sp_char* newText)
 		{
 			const sp_float charSize = font->FallbackAdvanceX;
-			const sp_float containerWidth = ImGui::GetContentRegionAvailWidth();
-
+			sp_float containerWidth = ImGui::GetContentRegionAvailWidth();
+			
 			const sp_uint maxCharByLine = (sp_uint)(containerWidth / charSize);
 			sp_uint max = maxCharByLine;
 			
 			sp_uint lastSpace = ZERO_UINT;
 			sp_uint index = ZERO_UINT;
 			sp_uint newTextIndex = ZERO_UINT;
+			sp_uint previousLastSpace = ZERO_UINT;
 
 			while (text[index] != END_OF_STRING)
 			{
@@ -37,6 +38,13 @@ namespace NAMESPACE_FRONTEND
 
 					max += maxCharByLine - (index - lastSpace);
 
+					if (lastSpace == previousLastSpace)
+					{
+						std::memcpy(&newText[lastSpace], "...\0", 4);
+						return;
+					}
+
+					previousLastSpace = lastSpace;
 					index = lastSpace;
 					newTextIndex = lastSpace + 1;
 				}

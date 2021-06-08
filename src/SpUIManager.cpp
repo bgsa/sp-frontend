@@ -3,7 +3,6 @@
 namespace NAMESPACE_FRONTEND
 {
 	SpUIManager* SpUIManagerInstance = nullptr;
-	sp_bool showLoadProject = false;
 
 	void SpUIManager::initialize()
 	{
@@ -16,6 +15,7 @@ namespace NAMESPACE_FRONTEND
 
 	void SpUIManager::release()
 	{
+		SpUINotificationManagerInstance->release();
 		SpUIFonts::release();
 
 		if (SpUIManagerInstance != nullptr)
@@ -25,11 +25,6 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		SpUIIcons::release();
-	}
-
-	void loadProjectDialog_OnClose()
-	{
-		showLoadProject = false;
 	}
 
 }

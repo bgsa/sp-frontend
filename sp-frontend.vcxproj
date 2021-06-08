@@ -181,6 +181,7 @@
     <ClInclude Include="src\addons\FileBrowser\ImGuiFileBrowser.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
+    <ClInclude Include="src\SpIFrameComponent.h" />
     <ClInclude Include="src\NewProjectFrame.h" />
     <ClInclude Include="src\NewSceneFrame.h" />
     <ClInclude Include="src\NotificationFrame.h" />
@@ -196,9 +197,12 @@
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIFonts.h" />
     <ClInclude Include="src\SpUIIcons.h" />
+    <ClInclude Include="src\SpUIImageButton.h" />
     <ClInclude Include="src\SpUIManager.h" />
     <ClInclude Include="src\EditorViewer.h" />
     <ClInclude Include="src\SpStatusBarFrame.h" />
+    <ClInclude Include="src\SpUIMenuBarComponent.h" />
+    <ClInclude Include="src\SpUINotificationManager.h" />
     <ClInclude Include="src\SpUITextComponent.h" />
     <ClInclude Include="src\WorldObjectList.h" />
   </ItemGroup>
@@ -209,10 +213,13 @@
     <ClCompile Include="src\EditorViewer.cpp" />
     <ClCompile Include="src\NewSceneFrame.cpp" />
     <ClCompile Include="src\NotificationFrame.cpp" />
+    <ClCompile Include="src\ProjectExplorerFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
     <ClCompile Include="src\SpUIFonts.cpp" />
     <ClCompile Include="src\SpUIIcons.cpp" />
     <ClCompile Include="src\SpUIManager.cpp" />
+    <ClCompile Include="src\SpUIMenuBarComponent.cpp" />
+    <ClCompile Include="src\SpUINotificationManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

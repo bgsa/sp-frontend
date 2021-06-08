@@ -26,7 +26,7 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 	NAMESPACE_RENDERING::SpOpenGL::init();
 
 	SpUIManager::initialize();
-	SpUIManagerInstance->setWindow(&window);
+	SpUIManagerInstance->window = &window;
 
 	Application app;
 	app.setEngineEditor(SpUIManagerInstance);

@@ -1,29 +1,27 @@
 #include "NotificationFrame.h"
+#include "SpUINotificationManager.h"
 #include "SpUIManager.h"
-
-#define NOTIFICATION_WIDTH  400.0f
-#define NOTIFICATION_HEIGHT 60.0f
 
 namespace NAMESPACE_FRONTEND
 {
 
-	void NotificationFrame::renderGUI()
+	void NotificationFrame::render()
 	{
 		if (!isVisible())
 			return;
 
-		sp_int windowWidth = window()->state()->width;
-		const sp_int windowHeight = window()->state()->height;
+		const sp_float windowWidth = (sp_float)SpUIManagerInstance->window->state()->width;
+		const sp_float windowHeight = (sp_float)SpUIManagerInstance->window->state()->height;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 		ImGui::Begin(name, NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
 
-		const sp_float shift = index * (NOTIFICATION_HEIGHT + 10.0f);
+		const sp_float shift = index * (height() + 10.0f);
 
-		ImGui::SetWindowSize(ImVec2(NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT));
-		ImGui::SetWindowPos(ImVec2((sp_float)windowWidth - NOTIFICATION_WIDTH - 10.0f, (sp_float)windowHeight - NOTIFICATION_HEIGHT - 40.0f - shift));
+		ImGui::SetWindowSize(ImVec2((sp_float)width(), (sp_float)height()));
+		ImGui::SetWindowPos(ImVec2(windowWidth - (sp_float)width() - 10.0f, windowHeight - (sp_float)height() - 40.0f - shift));
 
 		ImVec2 uv1, uv2;
 		switch (type)
@@ -49,7 +47,13 @@ namespace NAMESPACE_FRONTEND
 
 		ImGui::SameLine();
 
+		ImGui::BeginChild("temp", ImVec2(width() - 40.0f, height() - 10.0f), false, 0);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
 		text.render(message);
+
+		ImGui::PopStyleVar();
+		ImGui::EndChild();
 
 		ImGui::End();
 
@@ -59,10 +63,7 @@ namespace NAMESPACE_FRONTEND
 		if (lifetime > 0)
 			lifetime--;
 		else
-			SpUIManagerInstance->removeNotification(id);
+			SpUINotificationManagerInstance->removeNotification(id);
 	}
 
 }
-
-#undef NOTIFICATION_WIDTH
-#undef NOTIFICATION_HEIGHT

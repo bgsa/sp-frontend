@@ -1,7 +1,7 @@
 #ifndef NOTIFICATION_FRAME_HEADER
 #define NOTIFICATION_FRAME_HEADER
 
-#include "SpFrame.h"
+#include "SpIFrameComponent.h"
 #include "SpUIIcons.h"
 #include "SpUITextComponent.h"
 
@@ -16,7 +16,7 @@ namespace NAMESPACE_FRONTEND
 	};
 
 	class NotificationFrame
-		: public SpFrame
+		: public SpIFrameComponent
 	{
 	private:
 		SpUITextComponent text;
@@ -29,10 +29,9 @@ namespace NAMESPACE_FRONTEND
 		sp_uint lifetime = 200;
 		sp_char message[256];
 
-		API_INTERFACE void init(SpWindow* window) override
+		API_INTERFACE void init()
 		{
-			SpFrame::init(window);
-			resize(300, 100);
+			resize(400, 60);
 
 			sp_char address[56];
 			sp_uint l;
@@ -44,20 +43,7 @@ namespace NAMESPACE_FRONTEND
 			text.init();
 		}
 
-		API_INTERFACE void preRender() override
-		{
-		}
-
-		API_INTERFACE void render() override
-		{
-		}
-
-		API_INTERFACE void renderGUI() override;
-
-		API_INTERFACE inline const sp_char* toString() override
-		{
-			return "NotificationFrame";
-		}
+		API_INTERFACE void render() override;
 
 	};
 }

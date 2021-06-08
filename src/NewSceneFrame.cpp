@@ -1,6 +1,7 @@
 #include "NewSceneFrame.h"
 #include "SpProjectManager.h"
 #include "SpUIManager.h"
+#include "SpUINotificationManager.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -56,7 +57,7 @@ namespace NAMESPACE_FRONTEND
 
 			SpStringId id(name);
 			if (game->contaisScenes(id.id))
-				SpUIManagerInstance->addNotification("Scene alread exists!", NotificationType::VALIDATION);
+				SpUINotificationManagerInstance->addNotification("Scene already exists!\0", NotificationType::VALIDATION);
 			else
 			{
 				game->addScenes(name);

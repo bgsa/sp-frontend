@@ -84,7 +84,7 @@ namespace NAMESPACE_FRONTEND
 
 			SpEventDispatcher::instance()->addWindowListener(this);
 
-			editor->setWindow(window);
+			editor->window = window;
 			editor->init();
 
 			SpWorldManagerInstance->current()->initMeshCache();

@@ -2,6 +2,7 @@
 #define SP_STATUS_BAR_FRAME_HEADER
 
 #include "SpFrame.h"
+#include "Timer.h"
 
 namespace NAMESPACE_FRONTEND
 {
