@@ -215,6 +215,7 @@
     <ClCompile Include="src\NotificationFrame.cpp" />
     <ClCompile Include="src\ProjectExplorerFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
+    <ClCompile Include="src\SpStatusBarFrame.cpp" />
     <ClCompile Include="src\SpUIFonts.cpp" />
     <ClCompile Include="src\SpUIIcons.cpp" />
     <ClCompile Include="src\SpUIManager.cpp" />

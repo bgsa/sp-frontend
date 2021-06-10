@@ -17,7 +17,6 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void init(SpWindow* window) override
 		{
 			SpFrame::init(window);
-			resize(window->state()->width, 30);
 			show();
 			localTimer.start();
 		}
@@ -30,31 +29,7 @@ namespace NAMESPACE_FRONTEND
 		{
 		}
 
-		API_INTERFACE void renderGUI() override
-		{
-			if (!isVisible())
-				return;
-
-			const ImVec2 windowSize = ImGui::GetIO().DisplaySize;
-
-			ImGui::Begin("StatusBar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
-				loadState();
-
-				ImGui::SetWindowSize(ImVec2(windowSize.x, 30));
-				ImGui::SetWindowPos(ImVec2(0, windowSize.y - 30));
-
-			ImVec2 itemSize = ImGui::GetItemRectSize();
-
-			sp_char value[30];
-			std::memcpy(value, "FPS:  ", sizeof(sp_char) * 5);
-			SpString::convert(localTimer.elapsedTime(), &value[5]);
-
-			ImGui::Text(value);
-
-			ImGui::End();
-
-			localTimer.update();
-		}
+		API_INTERFACE void renderGUI() override;
 
 		API_INTERFACE inline const sp_char* toString() override
 		{
