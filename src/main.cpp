@@ -7,6 +7,7 @@
 #include "SpThreadPool.h"
 #include "SpGlobalProperties.h"
 #include "SpApplicationArguments.h"
+#include "SpVariablesEnvironment.h"
 
 using namespace NAMESPACE_FRONTEND;
 
@@ -14,6 +15,8 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 {
 	SpStackMemoryAllocator::main()->init(SP_STACK_MEMORY_DEFAULT_SIZE);
 	//	SpThreadPool::instance()->init();
+
+	setVariableEnvirontment("CUDA_CACHE_DISABLE", "1"); // disable cuda cache of kernels built
 
 	SpApplicationArguments::init(parametersLength, parameters);
 	SpGlobalProperties::init();
