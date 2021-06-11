@@ -18,12 +18,14 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 	SpApplicationArguments::init(parametersLength, parameters);
 	SpGlobalProperties::init();
 	SpPhysicSettings::instance()->enableProfiling();
-
+	
 	SpWindowGLFW window;
 	window.init();
 	window.setTitle(WINDOW_TITLE);
 
 	NAMESPACE_RENDERING::SpOpenGL::init();
+
+	GpuContext::init();
 
 	SpUIManager::initialize();
 	SpUIManagerInstance->window = &window;
@@ -37,6 +39,8 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 
 	app.dispose();
 	window.dispose();
+
+	GpuContext::release();
 
 	SpGlobalProperties::dispose();
 	SpApplicationArguments::dispose();

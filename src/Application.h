@@ -26,7 +26,6 @@ namespace NAMESPACE_FRONTEND
 		sp_bool isRunning;
 		SpUIManager* editor;
 		SpWindow* window;
-		GpuContext* gpuContext;
 
 		void initLogger()
 		{
@@ -46,7 +45,6 @@ namespace NAMESPACE_FRONTEND
 			isRunning = true;
 			window = nullptr;
 			editor = nullptr;
-			gpuContext = nullptr;
 		}
 
 		API_INTERFACE void setEngineEditor(SpUIManager* editor)
@@ -60,7 +58,6 @@ namespace NAMESPACE_FRONTEND
 
 			initLogger();
 
-			gpuContext = GpuContext::init();
 			SpGpuRenderingFactoryOpenGL::init();
 
 			sp_char* bvText = SpApplicationArgumentsInstace->get(2);
@@ -329,13 +326,6 @@ namespace NAMESPACE_FRONTEND
 		{
 			SpWorldManager::dispose();
 			SpProjectManager::dispose();
-
-			if (gpuContext != nullptr)
-			{
-				sp_mem_delete(gpuContext, GpuContext);
-				gpuContext = nullptr;
-			}
-
 			SpLogger::dispose();
 		}
 
