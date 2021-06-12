@@ -3,7 +3,7 @@
 
 #include "SpectrumFronend.h"
 #include "OpenGLTexture.h"
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 
 namespace NAMESPACE_FRONTEND
 {

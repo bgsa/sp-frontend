@@ -5,7 +5,7 @@
 #include "SpWindow.h"
 #include "SpIRendererManager.h"
 #include <RendererSettings.h>
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 #include "SpSize.h"
 
 namespace NAMESPACE_FRONTEND

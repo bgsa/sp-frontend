@@ -192,6 +192,7 @@
     <ClInclude Include="src\PropertiesFrame.h" />
     <ClInclude Include="src\SpectrumFronend.h" />
     <ClInclude Include="src\SpFrame.h" />
+    <ClInclude Include="src\SpImGui.h" />
     <ClInclude Include="src\SpLogEngineProvider.h" />
     <ClInclude Include="src\SpMemoryMapViewerFrame.h" />
     <ClInclude Include="src\SpProject.h" />

@@ -2,7 +2,7 @@
 #define SP_UI_IMAGE_BUTTON_HEADER
 
 #include "SpectrumFronend.h"
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 #include "SpUIIcons.h"
 #include "SpPhysicSettings.h"
 

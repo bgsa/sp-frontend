@@ -2,7 +2,7 @@
 #define SP_UI_MENU_BAR_COMPONENT_HEADER
 
 #include "SpectrumFronend.h"
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 #include "SpProjectManager.h"
 #include "ProjectExplorerFrame.h"
 #include "NewProjectFrame.h"

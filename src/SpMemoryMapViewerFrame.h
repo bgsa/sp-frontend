@@ -2,7 +2,7 @@
 #define SP_MEMORY_MAP_VIEWER_FRAME_HEADER
 
 #include "SpIFrameComponent.h"
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 #include "SpCloseButtonUIWindowBehaviour.h"
 
 namespace NAMESPACE_FRONTEND

@@ -2,7 +2,7 @@
 #define SP_UI_FONTS_HEADER
 
 #include "SpectrumFronend.h"
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 
 namespace NAMESPACE_FRONTEND
 {

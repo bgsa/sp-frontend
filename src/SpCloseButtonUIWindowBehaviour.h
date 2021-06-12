@@ -2,7 +2,7 @@
 #define SP_CLOSE_BUTTON_UI_WINDOW_BEHAVIOUR_HEADER
 
 #include "SpectrumFronend.h"
-#include "imgui/imgui.h"
+#include "SpImGui.h"
 
 namespace NAMESPACE_FRONTEND
 {
