@@ -7,12 +7,14 @@
 
 namespace NAMESPACE_FRONTEND
 {
-
 	class SpMemoryMapViewerFrame
 		: public SpIFrameComponent
 	{
 	private:
 		SpCloseButtonUIWindowBehaviour closeButton;
+
+		void renderMenuBar();
+		void renderMap();
 
 	public:
 
@@ -23,18 +25,18 @@ namespace NAMESPACE_FRONTEND
 			if (!isVisible())
 				return;
 
-			ImVec2 windowPos;
-			ImVec2 windowSize;
-
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5.0f, 3.0f));
 
-			if (ImGui::Begin("Memory Map Viewer", NULL, ImGuiWindowFlags_NoCollapse))
+			if (ImGui::Begin("Memory Map Viewer", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
 			{
 				ensureMinSize();
 
 				closeButton.render();
+
+				renderMenuBar();
+				renderMap();
 				
 				ImGui::End();
 			}
@@ -45,6 +47,7 @@ namespace NAMESPACE_FRONTEND
 		}
 
 	};
+
 }
 
 #endif // SP_MEMORY_MAP_VIEWER_FRAME_HEADER

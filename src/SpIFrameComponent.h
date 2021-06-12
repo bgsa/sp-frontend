@@ -68,8 +68,13 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void resize(sp_int width, sp_int height) noexcept
 		{
-			this->_width = width;
-			this->_height = height;
+			this->_width = (_width < _minWidth) 
+				? _minWidth 
+				: width;
+
+			this->_height = (_height < _minHeight)
+				? _minHeight
+				: height;
 		}
 
 		API_INTERFACE inline sp_bool isVisible() const noexcept
