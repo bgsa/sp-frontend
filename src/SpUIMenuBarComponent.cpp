@@ -22,6 +22,8 @@ namespace NAMESPACE_FRONTEND
 
 		newProjectFrame.init(window);
 		aboutFrame.init(window);
+
+		memoryMapViewerFrame.init();
 	}
 
 	void SpUIMenuBarComponent::render()
@@ -48,6 +50,14 @@ namespace NAMESPACE_FRONTEND
 			if (ImGui::BeginMenu("Edit"))
 			{
 				ImGui::MenuItem("Camera", NULL);
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Tools"))
+			{
+				if (ImGui::MenuItem("Memory Map", NULL))
+					memoryMapViewerFrame.show();
+				
 				ImGui::EndMenu();
 			}
 
@@ -113,6 +123,8 @@ namespace NAMESPACE_FRONTEND
 
 		newProjectFrame.renderGUI();
 		aboutFrame.renderGUI();
+
+		memoryMapViewerFrame.render();
 
 		if (showLoadProject)
 		{

@@ -105,6 +105,9 @@
     <ClCompile Include="src\SpStatusBarFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SpMemoryMapViewerFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameFrame.h">
@@ -396,6 +399,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SpIFrameComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpMemoryMapViewerFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpCloseButtonUIWindowBehaviour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

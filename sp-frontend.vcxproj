@@ -181,6 +181,7 @@
     <ClInclude Include="src\addons\FileBrowser\ImGuiFileBrowser.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
+    <ClInclude Include="src\SpCloseButtonUIWindowBehaviour.h" />
     <ClInclude Include="src\SpIFrameComponent.h" />
     <ClInclude Include="src\NewProjectFrame.h" />
     <ClInclude Include="src\NewSceneFrame.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="src\SpectrumFronend.h" />
     <ClInclude Include="src\SpFrame.h" />
     <ClInclude Include="src\SpLogEngineProvider.h" />
+    <ClInclude Include="src\SpMemoryMapViewerFrame.h" />
     <ClInclude Include="src\SpProject.h" />
     <ClInclude Include="src\SpProjectManager.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
@@ -214,6 +216,7 @@
     <ClCompile Include="src\NewSceneFrame.cpp" />
     <ClCompile Include="src\NotificationFrame.cpp" />
     <ClCompile Include="src\ProjectExplorerFrame.cpp" />
+    <ClCompile Include="src\SpMemoryMapViewerFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
     <ClCompile Include="src\SpStatusBarFrame.cpp" />
     <ClCompile Include="src\SpUIFonts.cpp" />

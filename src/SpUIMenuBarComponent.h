@@ -10,6 +10,7 @@
 #include "LogFrame.h"
 #include "PropertiesFrame.h"
 #include "addons/FileBrowser/ImGuiFileBrowser.h"
+#include "SpMemoryMapViewerFrame.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -21,6 +22,7 @@ namespace NAMESPACE_FRONTEND
 		AboutFrame aboutFrame;
 		LogFrame logFrame;
 		PropertiesFrame propertiesFrame;
+		SpMemoryMapViewerFrame memoryMapViewerFrame;
 
 		imgui_addons::ImGuiFileBrowser loadProjectDialog;
 
