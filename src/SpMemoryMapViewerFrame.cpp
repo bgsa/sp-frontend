@@ -21,16 +21,45 @@ namespace NAMESPACE_FRONTEND
 
 		closeButton.onClick = closeButtonClick;
 		closeButton.onClickParameter = this;
+
+		alert.init();
 	}
 
 	void SpMemoryMapViewerFrame::renderMenuBar()
 	{
 		ImGui::BeginMenuBar();
-		if (ImGui::BeginMenu("File"))
+		if (ImGui::BeginMenu("Memory"))
 		{
-			if (ImGui::MenuItem("Close"))
+			if (ImGui::MenuItem("Check Invalid Allocations"))
 			{
-				//Do something
+				sp_bool hasInvalidAllocation = false;
+
+				for (std::pair<sp_size, SpMemoryProfilingDescriptor*> allocation : SpMemoryProfilingInstance->allocations)
+				{
+					const sp_size begin1 = allocation.second->address;
+					const sp_size end1 = begin1 + allocation.second->size * SIZEOF_WORD;
+
+					for (std::pair<sp_size, SpMemoryProfilingDescriptor*> allocation2 : SpMemoryProfilingInstance->allocations)
+					{
+						const sp_size begin2 = allocation2.second->address;
+						const sp_size end2 = begin2 + allocation2.second->size * SIZEOF_WORD;
+
+						// check the memories allocation 1 and 2 overlaps
+						if ((begin2 > begin1 && begin2 < end1) ||
+							(end2 > begin1 && end2 < end1))
+						{
+							hasInvalidAllocation = true;
+							break;
+						}
+					}
+				}
+
+				if (hasInvalidAllocation)
+					alert.setMessage("Invalid allocation found!");
+				else
+					alert.setMessage("No invalid allocation found!");
+
+				alert.show();
 			}
 
 			ImGui::EndMenu();
@@ -73,7 +102,7 @@ namespace NAMESPACE_FRONTEND
 		const ImVec2 mousePos = io.MousePos;
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
 		const sp_float currentScrollPosition = ImGui::GetScrollY();
-		//sp_float maxScrollPosition = ImGui::GetScrollMaxY();
+		const sp_bool _isFocused = isFocused();
 
 		const sp_size firstAddress = SpPoolMemoryAllocator::main()->firstAddress();
 		const sp_size lastAddress = SpPoolMemoryAllocator::main()->currentAddress();
@@ -140,7 +169,8 @@ namespace NAMESPACE_FRONTEND
 			drawList->AddLine(beginMemoryPixel, ImVec2(beginMemoryPixel.x, viewerPos.y + maxRowY), ImGui_ColorBlack, 1.0f);
 
 			// check the tooltip should be rendered
-			if (mousePos.x >= beginMemoryPixel.x && mousePos.x <= endMemoryPixel.x &&
+			if (_isFocused && 
+				mousePos.x >= beginMemoryPixel.x && mousePos.x <= endMemoryPixel.x &&
 				mousePos.y >= beginMemoryPixel.y && mousePos.y <= endMemoryPixel.y)
 				renderTooltip(memoryDescriptor);
 
@@ -162,7 +192,8 @@ namespace NAMESPACE_FRONTEND
 				addressLength = addressLength - maxRowX;
 
 				// check the tooltip should be rendered
-				if (mousePos.x >= beginMemoryPixel.x && mousePos.x <= endMemoryPixel.x &&
+				if (_isFocused && 
+					mousePos.x >= beginMemoryPixel.x && mousePos.x <= endMemoryPixel.x &&
 					mousePos.y >= beginMemoryPixel.y && mousePos.y <= endMemoryPixel.y)
 					renderTooltip(memoryDescriptor);
 			}

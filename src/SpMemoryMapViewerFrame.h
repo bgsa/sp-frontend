@@ -5,6 +5,7 @@
 #include "SpImGui.h"
 #include "SpCloseButtonUIWindowBehaviour.h"
 #include "SpMemoryProfiling.h"
+#include "SpAlertFrame.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -13,6 +14,7 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpCloseButtonUIWindowBehaviour closeButton;
+		SpAlertFrame alert;
 
 		void renderMenuBar();
 		void renderMap();
@@ -42,6 +44,8 @@ namespace NAMESPACE_FRONTEND
 				
 				ImGui::End();
 			}
+
+			alert.render();
 
 			ImGui::PopStyleVar();
 			ImGui::PopStyleVar();

@@ -19,7 +19,7 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline SpIFrameComponent()
 		{
 			_visible = false;
-			_minWidth = _minHeight = 10;
+			_minWidth = _minHeight = ZERO_FLOAT;
 		}
 
 		API_INTERFACE virtual void render() = 0;
@@ -68,11 +68,11 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void resize(sp_int width, sp_int height) noexcept
 		{
-			this->_width = (_width < (sp_int)_minWidth) 
+			this->_width = _minWidth != ZERO_FLOAT && _width < (sp_int)_minWidth
 				? (sp_int)_minWidth
 				: width;
 
-			this->_height = (_height < (sp_int)_minHeight)
+			this->_height = _minHeight != ZERO_FLOAT && _height < (sp_int)_minHeight
 				? (sp_int)_minHeight
 				: height;
 		}
@@ -80,6 +80,11 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline sp_bool isVisible() const noexcept
 		{
 			return _visible;
+		}
+
+		API_INTERFACE inline sp_bool isFocused() const
+		{
+			return ImGui::IsWindowFocused();
 		}
 
 		API_INTERFACE inline void show() noexcept

@@ -58,6 +58,11 @@ namespace NAMESPACE_FRONTEND
 			getUVCoordinatesWarning(uv1, uv2);
 		}
 
+		API_INTERFACE inline void getUVCoordinatesInformation(ImVec2& uv1, ImVec2& uv2)
+		{
+			getUVCoordinates(6, 6, uv1, uv2);
+		}
+
 		API_INTERFACE inline void getUVCoordinatesOk(ImVec2& uv1, ImVec2& uv2)
 		{
 			getUVCoordinates(5, 13, uv1, uv2);
