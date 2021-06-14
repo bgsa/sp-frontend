@@ -1,4 +1,5 @@
 #include "SpMemoryMapViewerFrame.h"
+#include <algorithm>
 
 namespace NAMESPACE_FRONTEND
 {
@@ -16,7 +17,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		_minWidth = 800;
 		_minHeight = 600;
-		resize(_minWidth, _minHeight);
+		resize((sp_int)_minWidth, (sp_int)_minHeight);
 
 		closeButton.onClick = closeButtonClick;
 		closeButton.onClickParameter = this;
@@ -37,8 +38,39 @@ namespace NAMESPACE_FRONTEND
 		ImGui::EndMenuBar();
 	}
 
+	void SpMemoryMapViewerFrame::renderTooltip(SpMemoryProfilingDescriptor* descriptor)
+	{
+		ImGui::BeginTooltip();
+
+		sp_char text[35];
+		sp_size textLength;
+		sp_uint temp;
+		strToMemoryAddress(descriptor->address, text, temp);
+		ImGui::Text("Address: "); ImGui::SameLine(); ImGui::Text(text);
+
+		convert(descriptor->size * SIZEOF_WORD, text, textLength);
+		ImGui::Text("Size: "); ImGui::SameLine(); ImGui::Text(text); ImGui::SameLine(); ImGui::Text("bytes");
+
+		convert(descriptor->line, text, &temp);
+		ImGui::Text("Location: "); 
+		ImGui::SameLine(); 
+		ImGui::Text(descriptor->filename);
+		ImGui::SameLine();
+		ImGui::Text("::");
+		ImGui::SameLine();
+		ImGui::Text(descriptor->functionName);
+		ImGui::SameLine();
+		ImGui::Text("::");
+		ImGui::SameLine();
+		ImGui::Text(text);
+
+		ImGui::EndTooltip();
+	}
+
 	void SpMemoryMapViewerFrame::renderMap()
 	{
+		ImGuiIO& io = ImGui::GetIO();
+		const ImVec2 mousePos = io.MousePos;
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
 		const sp_float currentScrollPosition = ImGui::GetScrollY();
 		//sp_float maxScrollPosition = ImGui::GetScrollMaxY();
@@ -76,13 +108,64 @@ namespace NAMESPACE_FRONTEND
 			const sp_float minRowY = viewerPos.y + (rowIndex * (ROW_HEIGHT + ROW_SPACING)) - currentScrollPosition;
 			const sp_float maxRowY = minRowY + ROW_HEIGHT;
 
-			drawList->AddRectFilled(ImVec2(minRowX, minRowY), ImVec2(maxRowX, maxRowY), IM_COL32(0, 255, 0, 255), 0.0f, 0);
+			drawList->AddRectFilled(ImVec2(minRowX, minRowY), ImVec2(maxRowX, maxRowY), IM_COL32(128, 128, 128, 255), 0.0f, 0);
 
 			sp_char address[35];
 			sp_uint addressLength;
 			strToMemoryAddress(firstAddress + (rowIndex * barWidth), address, addressLength);
 
 			drawList->AddText(ImVec2(minRowX - addressWidth + 10.0f, minRowY + 5.0f), ImGui_ColorWhite, address);
+		}
+
+		for (std::pair<sp_size, SpMemoryProfilingDescriptor*> allocation : SpMemoryProfilingInstance->allocations)
+		{
+			const sp_size address = (allocation.first - firstAddress) - SIZEOF_WORD; // SIZEOF_WORD = size of PoolMemory PageHeader
+			SpMemoryProfilingDescriptor* memoryDescriptor = allocation.second;
+			sp_size addressLength = (memoryDescriptor->size * SIZEOF_WORD) + SIZEOF_WORD; // SIZEOF_WORD = size of PoolMemory PageHeader
+
+			sp_size rowIndex = address / barWidth;
+			const sp_size columnIndex = address % barWidth;
+
+			sp_float minRowX = columnIndex;
+			sp_float maxRowX = std::min(minRowX + (sp_float)addressLength, (sp_float)barWidth);
+			sp_float minRowY = (rowIndex * (ROW_HEIGHT + ROW_SPACING)) - currentScrollPosition;
+			sp_float maxRowY = minRowY + ROW_HEIGHT;
+
+			ImVec2 beginMemoryPixel = ImVec2(viewerPos.x + minRowX, viewerPos.y + minRowY);
+			ImVec2 endMemoryPixel = ImVec2(viewerPos.x + maxRowX, viewerPos.y + maxRowY);
+
+			drawList->AddRectFilled(beginMemoryPixel, endMemoryPixel, IM_COL32(0, 180, 0, 255), 0.0f, 0);
+			
+			// draw the beginning of memory allocation
+			drawList->AddLine(beginMemoryPixel, ImVec2(beginMemoryPixel.x, viewerPos.y + maxRowY), ImGui_ColorBlack, 1.0f);
+
+			// check the tooltip should be rendered
+			if (mousePos.x >= beginMemoryPixel.x && mousePos.x <= endMemoryPixel.x &&
+				mousePos.y >= beginMemoryPixel.y && mousePos.y <= endMemoryPixel.y)
+				renderTooltip(memoryDescriptor);
+
+			addressLength = addressLength - (maxRowX - minRowX);
+			while (addressLength != 0)
+			{
+				rowIndex++;
+
+				minRowX = ZERO_FLOAT;
+				maxRowX = std::min((sp_float)addressLength, (sp_float)barWidth);
+
+				minRowY = (rowIndex * (ROW_HEIGHT + ROW_SPACING)) - currentScrollPosition;
+				maxRowY = minRowY + ROW_HEIGHT;
+
+				beginMemoryPixel = ImVec2(viewerPos.x + minRowX, viewerPos.y + minRowY);
+				endMemoryPixel = ImVec2(viewerPos.x + maxRowX, viewerPos.y + maxRowY);
+
+				drawList->AddRectFilled(beginMemoryPixel, endMemoryPixel, IM_COL32(0, 180, 0, 255), 0.0f, 0);
+				addressLength = addressLength - maxRowX;
+
+				// check the tooltip should be rendered
+				if (mousePos.x >= beginMemoryPixel.x && mousePos.x <= endMemoryPixel.x &&
+					mousePos.y >= beginMemoryPixel.y && mousePos.y <= endMemoryPixel.y)
+					renderTooltip(memoryDescriptor);
+			}
 		}
 
 		ImGui::EndChild();

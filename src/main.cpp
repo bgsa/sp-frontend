@@ -8,11 +8,16 @@
 #include "SpGlobalProperties.h"
 #include "SpApplicationArguments.h"
 #include "SpVariablesEnvironment.h"
+#include "SpMemoryProfiling.h"
 
 using namespace NAMESPACE_FRONTEND;
 
 sp_int main(sp_int parametersLength, sp_char** parameters)
 {
+#ifdef MEMORY_PROFILING_ENABLED
+	SpMemoryProfiling::init();
+#endif
+
 	SpStackMemoryAllocator::main()->init(SP_STACK_MEMORY_DEFAULT_SIZE);
 	//	SpThreadPool::instance()->init();
 
@@ -49,5 +54,7 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 	SpApplicationArguments::dispose();
 
 	SpStackMemoryAllocator::main()->dispose();
+	SpMemoryProfiling::release();
+
 	return 0;
 }

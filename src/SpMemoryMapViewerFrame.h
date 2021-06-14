@@ -4,6 +4,7 @@
 #include "SpIFrameComponent.h"
 #include "SpImGui.h"
 #include "SpCloseButtonUIWindowBehaviour.h"
+#include "SpMemoryProfiling.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -15,6 +16,7 @@ namespace NAMESPACE_FRONTEND
 
 		void renderMenuBar();
 		void renderMap();
+		void renderTooltip(SpMemoryProfilingDescriptor* descriptor);
 
 	public:
 
