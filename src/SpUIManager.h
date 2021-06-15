@@ -26,10 +26,35 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpToolbarFrame toolbarFrame;
-		SpStatusBarFrame statusBarFrame;
 		GameFrame gameFrame;
 
 		SpUIMenuBarComponent mainMenuBar;
+
+		SpStatusBarFrame statusBar;
+		Timer localTimer;
+
+		void renderStatusBar()
+		{
+			statusBar.begin();
+
+			sp_char value[50];
+			std::memcpy(value, "Frame: ", sizeof(sp_char) * 7);
+			SpString::convert(SpPhysicSettings::instance()->frameId(), &value[7]);
+
+			ImGui::Text(value);
+
+			ImGui::SameLine();
+
+			std::memcpy(value, "FPS: ", sizeof(sp_char) * 5);
+			SpString::convert(localTimer.elapsedTime(), &value[5]);
+			value[10] = END_OF_STRING;
+
+			ImGui::Text(value);
+
+			statusBar.end();
+
+			localTimer.update();
+		}
 
 	public:
 		SpWindow* window = nullptr;
@@ -58,13 +83,13 @@ namespace NAMESPACE_FRONTEND
 			SpUINotificationManager::init();
 
 			frames.add(&toolbarFrame);
-			frames.add(&statusBarFrame);
 			frames.add(&gameFrame);
 			
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->init(window);
 
 			mainMenuBar.init(window);
+			statusBar.init();
 		}
 
 		API_INTERFACE void update(sp_float elapsedTime) override
@@ -93,6 +118,8 @@ namespace NAMESPACE_FRONTEND
 
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->renderGUI();
+
+			renderStatusBar();
 
 			SpUINotificationManagerInstance->render();
 

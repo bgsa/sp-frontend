@@ -6,6 +6,7 @@
 #include "SpCloseButtonUIWindowBehaviour.h"
 #include "SpMemoryProfiling.h"
 #include "SpAlertFrame.h"
+#include "SpStatusBarFrame.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -15,10 +16,50 @@ namespace NAMESPACE_FRONTEND
 	private:
 		SpCloseButtonUIWindowBehaviour closeButton;
 		SpAlertFrame alert;
+		SpStatusBarFrame statusBar;
 
 		void renderMenuBar();
 		void renderMap();
 		void renderTooltip(SpMemoryProfilingDescriptor* descriptor);
+
+		void renderStatusBar()
+		{
+			statusBar.beginChild();
+
+			sp_char text[50];
+			sp_size textLength;
+
+			sp_size value = SpPoolMemoryAllocator::main()->memorySize() / 1024 / 1024;
+			convert(value, text, textLength);
+
+			ImGui::Text("Memory (Total): ");
+			ImGui::SameLine();
+			ImGui::Text(text);
+			ImGui::SameLine();
+			ImGui::Text("MB");
+
+			value = SpPoolMemoryAllocator::main()->usedMemorySize() / 1024 / 1024;
+			convert(value, text, textLength);
+
+			ImGui::SameLine();
+			ImGui::Text("Memory (Used): ");
+			ImGui::SameLine();
+			ImGui::Text(text);
+			ImGui::SameLine();
+			ImGui::Text("MB");
+
+			value = SpPoolMemoryAllocator::main()->availableMemorySize() / 1024 / 1024;
+			convert(value, text, textLength);
+
+			ImGui::SameLine();
+			ImGui::Text("Memory (Available): ");
+			ImGui::SameLine();
+			ImGui::Text(text);
+			ImGui::SameLine();
+			ImGui::Text("MB");
+
+			statusBar.endChild();
+		}
 
 	public:
 
@@ -40,8 +81,11 @@ namespace NAMESPACE_FRONTEND
 				closeButton.render();
 
 				renderMenuBar();
+
 				renderMap();
-				
+
+				renderStatusBar();
+
 				ImGui::End();
 			}
 

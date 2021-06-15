@@ -4,42 +4,33 @@
 namespace NAMESPACE_FRONTEND
 {
 
-	void SpStatusBarFrame::renderGUI()
+	void SpStatusBarFrame::begin()
 	{
-		if (!isVisible())
-			return;
-
 		const SpSize<sp_int> windowSize = SpUIManagerInstance->window->state()->availableRegion;
+		const sp_float currentWidth = (sp_float)windowSize.width;
+		const sp_float currentHeight = (sp_float)windowSize.height;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 		ImGui::Begin("StatusBar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
-		loadState();
 
-		ImGui::SetWindowSize(ImVec2((sp_float)windowSize.width, 35.0f));
-		ImGui::SetWindowPos(ImVec2(0, (sp_float)windowSize.height - 30.0f));
+		ImGui::SetWindowSize(ImVec2(currentWidth, 35.0f));
+		ImGui::SetWindowPos(ImVec2(0, currentHeight - 30.0f));
+	}
 
-		ImVec2 itemSize = ImGui::GetItemRectSize();
+	void SpStatusBarFrame::beginChild()
+	{
+		const ImVec2 windowSize = ImGui::GetWindowSize();
+		const ImVec2 windowPos = ImGui::GetWindowPos();
+		const ImVec2 statusBarSize = ImVec2(windowSize.x, 35.0f);
+		ImGuiStyle style = ImGui::GetStyle();
+		
 
-		sp_char value[50];
-		std::memcpy(value, "Frame: ", sizeof(sp_char) * 7);
-		SpString::convert(SpPhysicSettings::instance()->frameId(), &value[7]);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
-		ImGui::Text(value);
+		ImGui::BeginChild("StatusBarChild", statusBarSize, false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiCond_FirstUseEver);
 
-		ImGui::SameLine();
-
-		std::memcpy(value, "FPS: ", sizeof(sp_char) * 5);
-		SpString::convert(localTimer.elapsedTime(), &value[5]);
-		value[10] = END_OF_STRING;
-
-		ImGui::Text(value);
-
-		ImGui::End();
-
-		ImGui::PopStyleVar();
-
-		localTimer.update();
+		ImGui::SetWindowPos(ImVec2(windowPos.x + style.WindowPadding.x, windowPos.y + windowSize.y - style.WindowPadding.y - 30.0f));
 	}
 
 }

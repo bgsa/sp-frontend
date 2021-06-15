@@ -23,6 +23,7 @@ namespace NAMESPACE_FRONTEND
 		closeButton.onClickParameter = this;
 
 		alert.init();
+		statusBar.init();
 	}
 
 	void SpMemoryMapViewerFrame::renderMenuBar()
@@ -106,7 +107,7 @@ namespace NAMESPACE_FRONTEND
 
 		const sp_size firstAddress = SpPoolMemoryAllocator::main()->firstAddress();
 		const sp_size lastAddress = SpPoolMemoryAllocator::main()->currentAddress();
-		const sp_size totalMemory = (lastAddress - firstAddress) / SIZEOF_WORD;
+		const sp_size totalMemory = (lastAddress - firstAddress);
 
 		const sp_float addressWidth = 180.0f;
 		const sp_float verticalScrollBarWidth = 8.0f;
@@ -127,7 +128,7 @@ namespace NAMESPACE_FRONTEND
 		const sp_float viewerHeight = rowCount * (ROW_HEIGHT + ROW_SPACING) - TITLE_BAR_HEIGHT - currentScrollPosition;
 
 		ImGui::SetNextWindowPos(viewerPos);
-		ImGui::BeginChild("MemViewerContainer", ImVec2(viewerWidth, viewerHeight), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+		ImGui::BeginChild("MemViewerContainer", ImVec2(viewerWidth, viewerHeight + 10.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
 
 		for (sp_size rowIndex = 0; rowIndex < rowCount; rowIndex++)
 		{
