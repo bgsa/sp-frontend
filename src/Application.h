@@ -77,7 +77,6 @@ namespace NAMESPACE_FRONTEND
 			SpPhysicSettings::instance()->enableSimulation();
 
 			SpProjectManager::init();
-			std::cout << errno << std::endl;
 			SpWorldManager::init();
 
 			SpEventDispatcher::instance()->addWindowListener(this);

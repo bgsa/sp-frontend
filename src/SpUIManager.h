@@ -77,6 +77,7 @@ namespace NAMESPACE_FRONTEND
 			const sp_char* glsl_version = "#version 130";
 			ImGui_ImplOpenGL3_Init(glsl_version);
 #endif
+			SpUIIcons::init();
 			SpUIFonts::init();
 			SpUINotificationManager::init();
 
