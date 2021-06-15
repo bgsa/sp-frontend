@@ -71,15 +71,13 @@ namespace NAMESPACE_FRONTEND
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 			io.ConfigWindowsMoveFromTitleBarOnly = true;
 
-			SpUIFonts::init();
-
 #ifdef OPENGL_ENABLED
 			ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->handler(), true);
+			errno = NULL; // Linux takes errno=2
 			const sp_char* glsl_version = "#version 130";
 			ImGui_ImplOpenGL3_Init(glsl_version);
 #endif
-
-			SpUIIcons::init();
+			SpUIFonts::init();
 			SpUINotificationManager::init();
 
 			frames.add(&toolbarFrame);
