@@ -44,10 +44,13 @@ namespace NAMESPACE_FRONTEND
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 
+			ImGui::PushID(this);
 			_isClicked = ImGui::ImageButton(textureId, textureSize, uv1, uv2);
+			ImGui::PopID();
 
 			if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
 
 			ImGui::PopStyleColor();
 			ImGui::PopStyleColor();

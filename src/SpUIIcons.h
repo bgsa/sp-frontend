@@ -68,6 +68,11 @@ namespace NAMESPACE_FRONTEND
 			getUVCoordinates(5, 13, uv1, uv2);
 		}
 
+		API_INTERFACE inline void getUVCoordinatesNextFrame(ImVec2& uv1, ImVec2& uv2)
+		{
+			getUVCoordinates(17, 8, uv1, uv2);
+		}
+
 		API_INTERFACE inline void getUVCoordinatesPlay(ImVec2& uv1, ImVec2& uv2)
 		{
 			getUVCoordinates(6, 3, uv1, uv2);

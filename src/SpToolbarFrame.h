@@ -13,6 +13,9 @@ namespace NAMESPACE_FRONTEND
 	private:
 		SpUIImageButton buttonPlay;
 		SpUIImageButton buttonStop;
+		SpUIImageButton buttonNextFrame;
+
+		sp_bool buttonNextFrameWasClicked;
 
 	public:
 
@@ -21,8 +24,11 @@ namespace NAMESPACE_FRONTEND
 			SpFrame::init(window);
 			show();
 
+			buttonNextFrameWasClicked = false;
+
 			buttonPlay.init();
 			buttonStop.init();
+			buttonNextFrame.init();
 		}
 
 		API_INTERFACE void preRender() override
@@ -72,6 +78,25 @@ namespace NAMESPACE_FRONTEND
 					if (buttonPlay.isClicked())
 						SpPhysicSettings::instance()->enableSimulation();
 				}
+
+				ImVec2 uv1, uv2;
+				SpUIIconsInstance->getUVCoordinatesNextFrame(uv1, uv2);
+
+				ImGui::SameLine(0.0f, 0.0f);
+
+				buttonNextFrame.render((void*)(intptr_t)SpUIIconsInstance->icons1->id(), ImVec2(32.0f, 32.0f), uv1, uv2);
+
+				if (buttonNextFrame.isClicked())
+				{
+					buttonNextFrameWasClicked = true;
+					SpPhysicSettings::instance()->enableSimulation();
+				}
+				else
+					if (buttonNextFrameWasClicked)
+					{
+						buttonNextFrameWasClicked = false;
+						SpPhysicSettings::instance()->disableSimulation();
+					}
 
 				ImGui::End();
 			}
