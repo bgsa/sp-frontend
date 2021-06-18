@@ -745,7 +745,7 @@ namespace imgui_addons
             else
             {
                 //Start from i=1 since at 0 lies "MyComputer" which is only virtual and shouldn't be read by readDIR
-                for (int i = 1; i <= idx; i++)
+                for (size_t i = 1; i <= idx; i++)
                     new_path += current_dirlist[i] + "/";
             }
             #else
