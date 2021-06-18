@@ -35,7 +35,7 @@ namespace NAMESPACE_FRONTEND
 
 			sp_char address[56];
 			sp_uint l;
-			convert((sp_uint)(sp_size)this, address, &l);
+			convert((sp_uint)(sp_size)this, address, l);
 			std::memcpy(name, "Notification", 12);
 			std::memcpy(&name[12], &address, 8);
 			name[20] = END_OF_STRING;

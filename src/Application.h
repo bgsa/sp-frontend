@@ -129,6 +129,9 @@ namespace NAMESPACE_FRONTEND
 			sp_float renderingTime = ZERO_FLOAT;
 			SpGlobalPropertiesInscance->add(&renderingTime);
 
+			sp_uint paresReais = ZERO_UINT;
+			SpGlobalPropertiesInscance->add(&paresReais);
+
 			// TODO: REMOVER !
 			sp_size maxFrame;
 			sp_char* temp = SpApplicationArgumentsInstace->get(3);
@@ -136,44 +139,46 @@ namespace NAMESPACE_FRONTEND
 			sp_char* filename = SpApplicationArgumentsInstace->get(4);
 			SpCSVFileWriter csvFile(filename);
 			csvFile
-				.addHeader("FRAME ID")
+				.addHeader("FRAME_ID")
 
-				->addHeader("TEMPO BUILD VOLUME")
+				->addHeader("TEMPO_BUILD_VOLUME")
 				
-				->addHeader("TEMPO BUILD ELEMENTS RADIX")
-				->addHeader("TEMPO RADIX")
-				->addHeader("TEMPO PRUNE")
-				->addHeader("TEMPO SAP")
+				->addHeader("TEMPO_BUILD ELEMENTS RADIX")
+				->addHeader("TEMPO_RADIX")
+				->addHeader("TEMPO_PRUNE")
+				->addHeader("TEMPO_SAP")
 
-				->addHeader("PARES SAP")
+				->addHeader("PARES_SAP")
 				
-				->addHeader("QTD GJKEPA")
-				->addHeader("TEMPO GJKEPA")
+				->addHeader("QTD_GJKEPA")
+				->addHeader("TEMPO_GJKEPA")
 
-				->addHeader("QTD SHAPE_MATCHING")
-				->addHeader("TEMPO SHAPE_MATCHING")
+				->addHeader("QTD_SHAPE_MATCHING")
+				->addHeader("TEMPO_SHAPE_MATCHING")
 
-				->addHeader("TEMPO PCA")
-				->addHeader("QTD ALTERACOES PCA")
-				->addHeader("EIXO PCA")
+				->addHeader("TEMPO_PCA")
+				->addHeader("QTD_ALTERACOES_PCA")
+				->addHeader("EIXO_PCA")
 
-				->addHeader("RENDERING TIME")
+				->addHeader("RENDERING_TIME")
 
-				->addHeader("FRAME TIME")
+				->addHeader("PARES_REAIS")
+
+				->addHeader("FRAME_TIME")
 				->newRecord();
 
 			sp_char filenameGroup[512];
 			strReplace(filename, ".csv", "-group.csv", filenameGroup);
 			SpCSVFileWriter csvFileGroup(filenameGroup);
 			csvFileGroup
-				.addHeader("FRAME ID")
-				->addHeader("TEMPO BUILD VOLUME")
-				->addHeader("TEMPO SAP")
-				->addHeader("TEMPO GJKEPA")
-				->addHeader("TEMPO SHAPE_MATCHING")
-				->addHeader("TEMPO PCA")
-				->addHeader("RENDERING TIME")
-				->addHeader("FRAME TIME")
+				.addHeader("FRAME_ID")
+				->addHeader("TEMPO_BUILD_VOLUME")
+				->addHeader("TEMPO_SAP")
+				->addHeader("TEMPO_GJKEPA")
+				->addHeader("TEMPO_SHAPE_MATCHING")
+				->addHeader("TEMPO_PCA")
+				->addHeader("RENDERING_TIME")
+				->addHeader("FRAME_TIME")
 				->newRecord();
 			sp_float accBuildVolume, accSap, accGJKEPA, accShapeMatching, accPCA, accRendering, accFrameTime;
 			accBuildVolume = accSap = accGJKEPA = accShapeMatching = accPCA = accRendering = accFrameTime = ZERO_FLOAT;
@@ -196,6 +201,7 @@ namespace NAMESPACE_FRONTEND
 					((sp_float*)SpGlobalPropertiesInscance->get(ID_gjkEpaTime))[0] = ZERO_FLOAT;
 					((sp_uint*)SpGlobalPropertiesInscance->get(ID_shapeMatchingCount))[0] = ZERO_UINT;
 					((sp_float*)SpGlobalPropertiesInscance->get(ID_shapeMatchingTime))[0] = ZERO_FLOAT;
+					((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresReais))[0] = ZERO_UINT;
 					((Vec3*)SpGlobalPropertiesInscance->get(ID_eixoPCA))[0] = Vec3Zeros;
 
 					//const sp_float elapsedTime = Timer::physicTimer()->elapsedTime();
@@ -268,6 +274,9 @@ namespace NAMESPACE_FRONTEND
 				csvFile.addValue(axisAsString);
 
 				csvFile.addValue(*((sp_float*)SpGlobalPropertiesInscance->get(ID_renderingTime)));
+
+				csvFile.addValue(*((sp_uint*)SpGlobalPropertiesInscance->get(ID_paresReais)));
+
 				csvFile.addValue(frameTime);
 				csvFile.newRecord();
 

@@ -81,7 +81,7 @@ namespace NAMESPACE_FRONTEND
 		convert(descriptor->size * SIZEOF_WORD, text, textLength);
 		ImGui::Text("Size: "); ImGui::SameLine(); ImGui::Text(text); ImGui::SameLine(); ImGui::Text("bytes");
 
-		convert(descriptor->line, text, &temp);
+		convert(descriptor->line, text, temp);
 		ImGui::Text("Location: "); 
 		ImGui::SameLine(); 
 		ImGui::Text(descriptor->filename);
