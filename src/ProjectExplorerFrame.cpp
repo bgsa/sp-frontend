@@ -38,7 +38,7 @@ namespace NAMESPACE_FRONTEND
 			if (scenesOpened)
 			{
 				SpVector<SpScene*>* scenes = project->game()->scenes();
-				const sp_uint canDeleteScene = scenes->length() > ONE_UINT;
+				const sp_bool canDeleteScene = scenes->length() > ONE_UINT;
 
 				for (SpVectorItem<SpScene*>* item = scenes->begin(); item != nullptr; item = item->next())
 				{
@@ -67,6 +67,13 @@ namespace NAMESPACE_FRONTEND
 							ImGui::PopStyleVar();
 						}
 						ImGui::EndPopup();
+					}
+
+					for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
+					{
+						const SpGameObject gameObject = scene->gameObject(i);
+						ImGui::TreeNode(gameObject.name());
+						ImGui::TreePop();
 					}
 
 					if (sceneOpened)

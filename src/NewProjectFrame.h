@@ -21,7 +21,7 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE void init(SpWindow* window) override
 		{
 			SpFrame::init(window);
-			resize(500, 260);
+			resize(500, 300);
 			game2DSelected = false;
 			game3DSelected = false;
 		}
@@ -68,8 +68,7 @@ namespace NAMESPACE_FRONTEND
 
 			ImGui::InputText("##project-name", name, sizeof(name));
 				
-			if (isFirstLoad())
-				ImGui::SetKeyboardFocusHere(0);
+			//if (isFirstLoad()) ImGui::SetKeyboardFocusHere(0);
 
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 

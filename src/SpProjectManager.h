@@ -40,7 +40,8 @@ namespace NAMESPACE_FRONTEND
 			project->name(name);
 			project->type(gameType);
 
-			project->game()->addScenes("Scene 1");
+			SpScene* scene = project->game()->addScenes("Scene 1");
+			scene->addGameObject(SP_GAME_OBJECT_TYPE_CAMERA, "Camera 1");
 
 			_current = project;
 
