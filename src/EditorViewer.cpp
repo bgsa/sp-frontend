@@ -107,12 +107,12 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::rotateX(sp_float angle)
 	{
 		angle *= _velocity;
-		sp_float z = position.z;
+		const sp_float z = position.z;
 
 		Vec3 n;
 		normalize(_right, n);
 
-		position = Quat::createRotate(angle, n).rotate(position);
+		rotate(Quat::createRotate(angle, n), position, position);
 
 		if (sign(position.z) != sign(z))
 			_up = -_up;
@@ -122,15 +122,17 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::rotateY(sp_float angle)
 	{
-		angle *= _velocity;
-		position = Quat::createRotationAxisY(angle).rotate(position);
+		angle *= _velocity;		
+		rotate(Quat::createRotationAxisY(angle), position, position);
+
 		updateViewMatrix();
 	}
 
 	void EditorViewer::rotateZ(sp_float angle)
 	{
 		angle *= _velocity;
-		position = Quat::createRotate(angle, _forward).rotate(position);
+		rotate(Quat::createRotate(angle, _forward), position, position);
+
 		updateViewMatrix();
 	}
 
@@ -178,8 +180,8 @@ namespace NAMESPACE_FRONTEND
 			//if (evt->mouse->isMiddleButtonPressed())
 			if (controlPressed)
 			{
-				rotateY(degreesToRadians(evt->state.previousX - evt->state.x));
-				rotateX(degreesToRadians(evt->state.previousY - evt->state.y));
+				rotateY(radians((sp_float)evt->state.previousX - evt->state.x));
+				rotateX(radians((sp_float)evt->state.previousY - evt->state.y));
 			}
 			break;
 

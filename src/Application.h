@@ -74,6 +74,7 @@ namespace NAMESPACE_FRONTEND
 				SpPhysicSettings::instance()->boundingVolumeType(BoundingVolumeType::Sphere);
 			}
 
+			//SpPhysicSettings::instance()->disableSimulation();
 			SpPhysicSettings::instance()->enableSimulation();
 
 			SpProjectManager::init();

@@ -26,7 +26,8 @@ namespace NAMESPACE_FRONTEND
 		
 		worldObjects = sp_mem_new(WorldObjectList)(worldObjectsLength);
 		worldObjects->init();
-		SpWorldManagerInstance->current()->renderer->addGraphicObject(worldObjects);
+		SpWorld* world = SpWorldManagerInstance->current();
+		world->renderer->addGraphicObject(worldObjects);
 
 		sp_char* scaleParameter = SpApplicationArgumentsInstace->get(1);
 		sp_float scale;
@@ -35,14 +36,16 @@ namespace NAMESPACE_FRONTEND
 		const Vec3 rockScale(2.0f, scale, 2.0f);
 
 		rockList = sp_mem_new(RockList)(rockLength);
-		rockList->translate(0u, { 0.0f, 10.0f, 0.0f });
+		//rockList->rotate(0u, Quat::createRotationAxisX(radians(90)));
 		rockList->scale(0u, rockScale);
-		rockList->rotate(0u, Quat::createRotate(degreesToRadians(10), Vec3(1.0f, 0.0f, 0.0f)));
-		
-		//const sp_uint boxSize = 20u;
-		//const sp_uint boxSize = 50u;
-		//Randomizer rand(0, boxSize);
-		//sp_uint halfSpace = divideBy2(boxSize);
+		//rockList->translate(0u, { 0.0f, 1.0f, 0.0f });
+		//rockList->translate(0u, { 0.0f, 0.0f, 0.0f });
+		rockList->translate(0u, { 0.0f, 10.0f, 0.0f });
+
+		//rockList->rotate(1u, Quat::createRotationAxisZ(radians(90)));
+		//rockList->scale(1u, rockScale);
+		//rockList->translate(1u, { -4.0f, 1.0f, 5.0f });
+		//rockList->translate(1u, { -4.0f, 100.0f, 5.0f });
 
 		SpCSVFileReader csvReader("seed.csv");
 
@@ -65,9 +68,6 @@ namespace NAMESPACE_FRONTEND
 			convert(value, orientationZ);
 			rockList->rotate(i, Quat::createRotationAxisZ(orientationZ));
 
-			//const sp_float x = (sp_float)rand.randInt();
-			//const sp_float z = (sp_float)rand.randInt();
-			//rockList->translate(i, { x - halfSpace, multiplyBy2(i) + 10.0f, z - halfSpace });
 			rockList->translate(i, { 0.0f, multiplyBy16(i) + 10.0f, 0.0f });
 
 			rockList->scale(i, rockScale);
@@ -88,6 +88,10 @@ namespace NAMESPACE_FRONTEND
 
 		SpPhysicSettings* settings = SpPhysicSettings::instance();
 		
+		//rockList->rigidBody3D(0)->currentState.addForce(settings->gravityForce());
+		//rockList->rigidBody3D(1)->currentState.addForce(settings->gravityForce());
+		//rockList->rotate(0, Quat::createRotationAxisZ(radians(1.0f)));
+
 		for (sp_uint i = 0u; i < rockList->length(); i++)
 		{
 			rockList->rigidBody3D(i)->currentState.addForce(settings->gravityForce());
@@ -208,7 +212,7 @@ namespace NAMESPACE_FRONTEND
 		}
 		case SP_KEYBOARD_KEY_SPACE:
 			static int rot = 2;
-			Quat q = Quat::createRotationAxisZ(degreesToRadians(rot));
+			Quat q = Quat::createRotationAxisZ(radians(rot));
 			rockList->rotate(0u, q);
 			//rot++;
 			break;

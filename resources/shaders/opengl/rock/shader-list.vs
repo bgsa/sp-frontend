@@ -13,29 +13,42 @@ flat out vec3 normalCoord;
 out vec3 eyeCoord;
 out vec4 fragmentColor;
 
-mat4 Quat_ToMat4(vec4 q)
+struct Quat
 {
-	float v = q.x;
-	q.x = q.z;
-	q.z = v;
-	
-	float qxx = (q.x * q.x);
-	float qyy = (q.y * q.y);
-	float qzz = (q.z * q.z);
-	float qxz = (q.x * q.z);
-	float qxy = (q.x * q.y);
-	float qyz = (q.y * q.z);
-	float qwx = (q.w * q.x);
-	float qwy = (q.w * q.y);
-	float qwz = (q.w * q.z);
+	float w, x, y, z;
+};
 
-	return 
-		mat4(
-			1.0 - 2.0 * (qyy +  qzz),  2.0 * (qxy - qwz),        2.0 * (qxz + qwy),        0.0,
-			2.0 * (qxy + qwz),         1.0 - 2.0 * (qxx +  qzz), 2.0 * (qyz - qwx),        0.0,
-			2.0 * (qxz - qwy),         2.0 * (qyz + qwx),        1.0 - 2.0 * (qxx +  qyy), 0.0,
-			0.0,                       0.0,                      0.0,                      1.0
-		);
+Quat conjugate(Quat q)
+{
+	Quat c;
+	c.w =  q.w;
+	c.x = -q.x;
+	c.y = -q.y;
+	c.z = -q.z;
+	return c;
+}
+
+
+mat4 Quat_ToMat4(Quat q)
+{
+	q = conjugate(q);
+
+	float ww = q.w * q.w;
+	float xx = q.x * q.x;
+	float yy = q.y * q.y;
+	float zz = q.z * q.z;
+
+	// invs (inverse square length) is only required if quaternion is not already normalised
+	float invs = 1.0 / (xx + yy + zz + ww);
+
+	mat4 temp = mat4(
+		(xx - yy - zz + ww) * invs              , 2.0 * ((q.x * q.y) - (q.z * q.w)) * invs, 2.0 * ((q.x * q.z) + (q.y * q.w)) * invs, 0.0,
+		2.0 * ((q.x * q.y) + (q.z * q.w)) * invs, (-xx + yy - zz + ww) * invs             , 2.0 * ((q.y * q.z) - (q.x * q.w)) * invs, 0.0,
+		2.0 * ((q.x * q.z) - (q.y * q.w)) * invs, 2.0 * ((q.y * q.z) + (q.x * q.w)) * invs, (-xx - yy + zz + ww) * invs             , 0.0,
+		0.0                                     , 0.0                                     , 0.0                                     , 1.0
+	);
+	
+	return temp;
 }
 
 mat4 Mat4_Translate(vec3 position)
@@ -60,12 +73,11 @@ mat4 Mat4_Scale(vec3 scaleVector)
 	return result;
 }
 
-mat4 SpTransform_ToMat4(vec3 position, vec3 scale, vec4 orientation)
+mat4 SpTransform_ToMat4(vec3 position, vec3 scale, Quat orientation)
 {
-	return
-		Mat4_Translate(position)
-		* Quat_ToMat4(orientation) 
-		* Mat4_Scale(scale);
+	return Mat4_Translate(position)
+		*  Quat_ToMat4(orientation) 
+		*  Mat4_Scale(scale);
 }
 
 mat4 buildTransformationMatrix()
@@ -75,28 +87,36 @@ mat4 buildTransformationMatrix()
 	int offset = int(float(temp) / 4.0);
 	bool shift  = int(index % 2) != 0; // shift two backward
 	
-	vec4 orientation;
+	vec4 orientationTemp;
 	vec3 position;
 	vec3 scaleVec;
+	Quat orientation;
 	
 	if (shift)
 	{
-		orientation       = texelFetch(transformMatrix, index - offset - 1);
+		orientationTemp   = texelFetch(transformMatrix, index - offset - 1);
 		vec4 positionTemp = texelFetch(transformMatrix, index - offset    );
 		vec4 scaleTemp    = texelFetch(transformMatrix, index - offset + 1);
 		
-		orientation = vec4(orientation.z , orientation.w , positionTemp.x, positionTemp.y);
-		position    = vec3(positionTemp.z, positionTemp.w, scaleTemp.x                   );
-		scaleVec    = vec3(scaleTemp.y   , scaleTemp.z   , scaleTemp.w                   );
+		orientation.w = orientationTemp.z;
+		orientation.x = orientationTemp.w;
+		orientation.y = positionTemp.x;
+		orientation.z = positionTemp.y;
+		
+		position    = vec3(positionTemp.z, positionTemp.w, scaleTemp.x);
+		scaleVec    = vec3(scaleTemp.y   , scaleTemp.z   , scaleTemp.w);
 	}
 	else
 	{
-		orientation       = texelFetch(transformMatrix, index - offset);
+		orientationTemp   = texelFetch(transformMatrix, index - offset);
 		vec4 positionTemp = texelFetch(transformMatrix, index - offset + 1);
 		vec4 scaleTemp    = texelFetch(transformMatrix, index - offset + 2);
 		
-		orientation = vec4(orientation.w, orientation.x, orientation.y, orientation.z);
-		//orientation = vec4(orientation.x, orientation.y, orientation.z, orientation.w);
+		orientation.w = orientationTemp.x;
+		orientation.x = orientationTemp.y;
+		orientation.y = orientationTemp.z;
+		orientation.z = orientationTemp.w;
+
 		position = positionTemp.xyz;
 		scaleVec = vec3(positionTemp.w, scaleTemp.x, scaleTemp.y);
 	}
