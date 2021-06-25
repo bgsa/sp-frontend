@@ -1,4 +1,5 @@
 #include "SpUIMenuBarComponent.h"
+#include "SpUIManager.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -80,6 +81,32 @@ namespace NAMESPACE_FRONTEND
 						logFrame.hide();
 					else
 						logFrame.show();
+
+
+				
+				if (ImGui::BeginMenu("Viewports", true))
+				{
+					if (ImGui::MenuItem("New Viewport", NULL, false))
+						SpUIManagerInstance->addViewport();
+
+					for (SpVectorItem<SpUIViewport*>* item = SpUIManagerInstance->viewports.begin(); item != nullptr; item = item->next())
+					{
+						SpUIViewport* viewport = item->value();
+
+						sp_char title[SP_SCENE_NAME_MAX_LENGTH + 30];
+						viewport->getTitle(title, SP_SCENE_NAME_MAX_LENGTH + 30);
+
+						if (ImGui::MenuItem(title, NULL, viewport->isVisible(), true))
+						{
+							if (viewport->isVisible())
+								viewport->hide();
+							else
+								viewport->show();
+						}
+					}
+
+					ImGui::EndMenu();
+				}
 
 				ImGui::EndMenu();
 			}

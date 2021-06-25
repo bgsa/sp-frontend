@@ -17,6 +17,7 @@
 #include "SpUIIcons.h"
 #include "SpUIMenuBarComponent.h"
 #include "SpUINotificationManager.h"
+#include "SpUIViewport.h"
 
 namespace NAMESPACE_FRONTEND
 {	
@@ -59,6 +60,7 @@ namespace NAMESPACE_FRONTEND
 	public:
 		SpWindow* window = nullptr;
 		SpVector<SpFrame*> frames;
+		SpVector<SpUIViewport*> viewports;
 
 		API_INTERFACE void init() override
 		{
@@ -96,6 +98,17 @@ namespace NAMESPACE_FRONTEND
 			gameFrame.update(elapsedTime);
 		}
 
+		API_INTERFACE inline SpUIViewport* addViewport()
+		{
+			SpUIViewport* newViewport = sp_mem_new(SpUIViewport)();
+			newViewport->init();
+			newViewport->show();
+
+			viewports.add(newViewport);
+
+			return newViewport;
+		}
+
 		API_INTERFACE void preRender() override
 		{
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
@@ -119,6 +132,9 @@ namespace NAMESPACE_FRONTEND
 				item->value()->renderGUI();
 
 			renderStatusBar();
+
+			for (SpVectorItem<SpUIViewport*>* item = viewports.begin(); item != NULL; item = item->next())
+				item->value()->render();
 
 			SpUINotificationManagerInstance->render();
 
@@ -162,6 +178,11 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE void dispose() override
 		{
+			for (SpVectorItem<SpUIViewport*>* item = viewports.begin(); item != NULL; item = item->next())
+			{
+				sp_mem_delete(item->value(), SpUIViewport);
+			}
+
 			if (frames.length() > ZERO_UINT)
 			{
 				for (SpVectorItem<SpFrame*>* item = frames.last(); item != NULL; item = item->previous())

@@ -208,6 +208,7 @@
     <ClInclude Include="src\SpUIMenuBarComponent.h" />
     <ClInclude Include="src\SpUINotificationManager.h" />
     <ClInclude Include="src\SpUITextComponent.h" />
+    <ClInclude Include="src\SpUIViewport.h" />
     <ClInclude Include="src\WorldObjectList.h" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +216,7 @@
     <ClCompile Include="src\GameFrame.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\EditorViewer.cpp" />
+    <ClCompile Include="src\NewProjectFrame.cpp" />
     <ClCompile Include="src\NewSceneFrame.cpp" />
     <ClCompile Include="src\NotificationFrame.cpp" />
     <ClCompile Include="src\ProjectExplorerFrame.cpp" />
