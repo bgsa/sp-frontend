@@ -50,6 +50,18 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		/// <summary>
+		/// Check the window was resized
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_bool wasResized() const
+		{
+			ImVec2 currentSize = ImGui::GetWindowSize();
+
+			return currentSize.x != _width 
+				|| currentSize.y != _height;
+		}
+
+		/// <summary>
 		/// Ensure the minimum size for the frame is set
 		/// </summary>
 		/// <returns></returns>
@@ -66,13 +78,33 @@ namespace NAMESPACE_FRONTEND
 			ImGui::SetWindowSize(currentSize);
 		}
 
-		API_INTERFACE inline void resize(sp_int width, sp_int height) noexcept
+		API_INTERFACE inline sp_bool begin(const sp_char*title, sp_bool* opened = 0, const ImGuiWindowFlags flags= 0)
 		{
-			this->_width = _minWidth != ZERO_FLOAT && _width < (sp_int)_minWidth
+			const sp_bool isOpened = ImGui::Begin(title, opened, flags);
+
+			ensureMinSize();
+
+			if (wasResized())
+			{
+				ImVec2 currentSize = ImGui::GetWindowSize();
+				resize((sp_int)currentSize.x, (sp_int)currentSize.y);
+			}
+
+			return isOpened;
+		}
+
+		API_INTERFACE inline void end()
+		{
+			ImGui::End();
+		}
+
+		API_INTERFACE inline virtual void resize(const sp_int width, const sp_int height) noexcept
+		{
+			this->_width = _minWidth != ZERO_FLOAT && _width < (sp_int)_minWidth && width < _minWidth 
 				? (sp_int)_minWidth
 				: width;
 
-			this->_height = _minHeight != ZERO_FLOAT && _height < (sp_int)_minHeight
+			this->_height = _minHeight != ZERO_FLOAT && _height < (sp_int)_minHeight && height < _minHeight
 				? (sp_int)_minHeight
 				: height;
 		}
