@@ -26,60 +26,13 @@ namespace NAMESPACE_FRONTEND
 		{
 			if (ImGui::TreeNode("Scenes"))
 			{
-				if (ImGui::BeginPopupContextItem())
-				{
-					if (ImGui::MenuItem("New Scene"))
-					{
-						newSceneFrame.show();
-					}
-					ImGui::EndPopup();
-				}
+				renderScenesContextMenu();
 
 				SpVector<SpScene*>* scenes = project->game()->scenes();
 				const sp_bool canDeleteScene = scenes->length() > ONE_UINT;
 
 				for (SpVectorItem<SpScene*>* sceneItem = scenes->begin(); sceneItem != nullptr; sceneItem = sceneItem->next())
-				{
-					SpScene* scene = sceneItem->value();
-
-					if (ImGui::TreeNode(scene->name()))
-					{
-						if (ImGui::BeginPopupContextItem())
-						{
-							if (ImGui::MenuItem("Add GameObject"))
-							{
-
-							}
-
-							if (canDeleteScene)
-							{
-								if (ImGui::MenuItem("Delete"))
-								{
-									project->game()->removeScene(sceneItem);
-								}
-							}
-							else
-							{
-								ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-								ImGui::Text("Delete");
-								ImGui::PopStyleVar();
-							}
-							ImGui::EndPopup();
-						}
-
-						for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
-						{
-							const SpGameObject* gameObject = scene->gameObject(i);
-
-							if (ImGui::TreeNodeEx(gameObject->name(), ImGuiTreeNodeFlags_Leaf))
-							{
-								ImGui::TreePop();
-							}
-						}
-
-						ImGui::TreePop();
-					}
-				}
+					renderSceneNode(sceneItem, canDeleteScene);
 
 				ImGui::TreePop(); // close Scenes Node
 			}
