@@ -3,6 +3,7 @@
 
 #include "SpIFrameComponent.h"
 #include "SpViewport.h"
+#include "SpUIColorPicker.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -11,6 +12,7 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpViewport viewport;
+		SpUIColorPicker colorPicker;
 		
 	public:
 
@@ -22,6 +24,9 @@ namespace NAMESPACE_FRONTEND
 		{
 			_minWidth = _minHeight = 300.0f;
 			SpIFrameComponent::resize(400, 300);
+
+			colorPicker.init();
+			colorPicker.color(viewport.backgroundColor());
 		}
 
 		API_INTERFACE inline void resize(const sp_int width, const sp_int height) noexcept override
@@ -165,8 +170,13 @@ namespace NAMESPACE_FRONTEND
 					ImGui::EndMenu();
 				}
 
+				if (ImGui::MenuItem("Background Color", nullptr, false, true))
+					colorPicker.show();
+
 				ImGui::EndPopup();
 			}
+
+			colorPicker.render();
 
 			end();
 			ImGui::PopStyleVar();

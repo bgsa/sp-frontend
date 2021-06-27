@@ -199,6 +199,7 @@
     <ClInclude Include="src\SpProject.h" />
     <ClInclude Include="src\SpProjectManager.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
+    <ClInclude Include="src\SpUIColorPicker.h" />
     <ClInclude Include="src\SpUIFonts.h" />
     <ClInclude Include="src\SpUIIcons.h" />
     <ClInclude Include="src\SpUIImageButton.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="src\SpMemoryMapViewerFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
     <ClCompile Include="src\SpStatusBarFrame.cpp" />
+    <ClCompile Include="src\SpUIColorPicker.cpp" />
     <ClCompile Include="src\SpUIFonts.cpp" />
     <ClCompile Include="src\SpUIIcons.cpp" />
     <ClCompile Include="src\SpUIManager.cpp" />
