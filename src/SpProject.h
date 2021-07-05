@@ -105,11 +105,11 @@ namespace NAMESPACE_FRONTEND
 			switch (projectType)
 			{
 			case 2:
-				_game = sp_mem_new(SpGame2D)();
+				_game = SpGameInstance = sp_mem_new(SpGame2D)();
 				break;
 
 			case 3:
-				_game = sp_mem_new(SpGame3D)();
+				_game = SpGameInstance = sp_mem_new(SpGame3D)();
 				break;
 
 			default:

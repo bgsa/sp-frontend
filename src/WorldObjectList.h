@@ -127,29 +127,28 @@ namespace NAMESPACE_RENDERING
 				->buildFromFile(GL_FRAGMENT_SHADER, "resources/shaders/opengl/world-objects/shader-list.fs")
 				->link();
 
-			projectionMatrixLocation = shader->getUniform("projectionMatrix");
-			viewMatrixLocation = shader->getUniform("viewMatrix");
-			transformOffsetLocation = shader->getUniform("transformOffset");
+			projectionMatrixLocation = shader->uniform("projectionMatrix");
+			viewMatrixLocation = shader->uniform("viewMatrix");
+			transformOffsetLocation = shader->uniform("transformOffset");
 
-			lightColorLocation = shader->getUniform("LightColor");
-			lightPositionLocation = shader->getUniform("LightPosition");
-			lightEnvironmentLocation = shader->getUniform("EnvironmentLightColor");
-			shininessFactorLocation = shader->getUniform("ShininessFactor");
+			lightColorLocation = shader->uniform("LightColor");
+			lightPositionLocation = shader->uniform("LightPosition");
+			lightEnvironmentLocation = shader->uniform("EnvironmentLightColor");
+			shininessFactorLocation = shader->uniform("ShininessFactor");
 
-			positionAttribute = shader->getAttribute("Position");
+			positionAttribute = shader->attribute("Position");
 		}
 
 		API_INTERFACE void render(const SpRenderData& renderData) override
 		{
-			shader
-				->enable()
-				->setUniform<Mat4>(projectionMatrixLocation, renderData.projectionMatrix)
-				->setUniform<Mat4>(viewMatrixLocation, renderData.viewMatrix)
-				->setUniform3<sp_float>(lightEnvironmentLocation, SpLightManager::instance()->environmentLight)
-				->setUniform3<sp_float>(lightPositionLocation, SpLightManager::instance()->lights(0u)->position())
-				->setUniform3<sp_float>(lightColorLocation, SpLightManager::instance()->lights(0u)->color())
-				->setUniform<sp_float>(shininessFactorLocation, 1000.0f)
-				->setUniform<sp_uint>(transformOffsetLocation, physicIndex);
+			shader->enable();
+			shader->setUniform(projectionMatrixLocation, renderData.projectionMatrix);
+			shader->setUniform(viewMatrixLocation, renderData.viewMatrix);
+			shader->setUniform3<sp_float>(lightEnvironmentLocation, SpLightManager::instance()->environmentLight);
+			shader->setUniform3<sp_float>(lightPositionLocation, SpLightManager::instance()->lights(0u)->position());
+			shader->setUniform3<sp_float>(lightColorLocation, SpLightManager::instance()->lights(0u)->color());
+			shader->setUniform(shininessFactorLocation, 1000.0f);
+			shader->setUniform(transformOffsetLocation, physicIndex);
 
 			_buffer->use();
 			glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
