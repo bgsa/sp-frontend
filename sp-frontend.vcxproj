@@ -190,7 +190,7 @@
     <ClInclude Include="src\SpGameSettings.h" />
     <ClInclude Include="src\LogFrame.h" />
     <ClInclude Include="src\ProjectExplorerFrame.h" />
-    <ClInclude Include="src\PropertiesFrame.h" />
+    <ClInclude Include="src\SpPropertiesFrame.h" />
     <ClInclude Include="src\SpectrumFronend.h" />
     <ClInclude Include="src\SpFrame.h" />
     <ClInclude Include="src\SpImGui.h" />
@@ -223,6 +223,7 @@
     <ClCompile Include="src\ProjectExplorerFrame.cpp" />
     <ClCompile Include="src\SpMemoryMapViewerFrame.cpp" />
     <ClCompile Include="src\SpProjectManager.cpp" />
+    <ClCompile Include="src\SpPropertiesFrame.cpp" />
     <ClCompile Include="src\SpStatusBarFrame.cpp" />
     <ClCompile Include="src\SpUIColorPicker.cpp" />
     <ClCompile Include="src\SpUIFonts.cpp" />

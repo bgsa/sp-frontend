@@ -5,7 +5,7 @@
 #include "SpProject.h"
 #include "FileSystem.h"
 #include "nlohmann/json.hpp"
-#include "SpRenderingFactoryOpenGL.h"
+#include "SpRenderingAPIOpenGL.h"
 
 #define SP_FILENAME_PROJECT_SUFFIX ".spp"
 
@@ -39,7 +39,7 @@ namespace NAMESPACE_FRONTEND
 			project->name(name);
 			project->type(gameType);
 
-			project->game()->renderingApi(SP_RENDERING_API_OPENGL, sp_mem_new(SpRenderingFactoryOpenGL));
+			project->game()->renderingApi(SP_RENDERING_API_OPENGL, sp_mem_new(SpRenderingAPIOpenGL));
 
 			SpScene* scene = project->game()->addScenes("Scene 1");
 			scene->addGameObject(SP_GAME_OBJECT_TYPE_CAMERA, "Camera 1");

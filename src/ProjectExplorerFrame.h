@@ -49,69 +49,7 @@ namespace NAMESPACE_FRONTEND
 
 		void renderGameObjectsContextMenu(SpScene* scene);
 
-		void renderSceneNode(SpVectorItem<SpScene*>* sceneItem, const sp_bool canDeleteScene)
-		{
-			SpScene* scene = sceneItem->value();
-
-			if (ImGui::TreeNode(scene->name()))
-			{
-				renderSceneContextMenu(sceneItem, canDeleteScene);
-
-				if (ImGui::TreeNode("Game Objects"))
-				{
-					renderGameObjectsContextMenu(scene);
-
-					for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
-					{
-						const SpGameObject* gameObject = scene->gameObject(i);
-
-						if (ImGui::TreeNodeEx(gameObject->name(), ImGuiTreeNodeFlags_Leaf))
-						{
-							ImGui::TreePop();
-						}
-					}
-
-					ImGui::TreePop();
-				}
-
-				if (ImGui::TreeNode("Meshes"))
-				{
-					for (sp_size i = 0; i < scene->meshManager()->length(); i++)
-					{
-						sp_char* name = scene->meshManager()->name(i);
-
-						if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-						{
-							ImGui::TreePop();
-						}
-					}
-
-					ImGui::TreePop();
-				}
-
-				if (ImGui::TreeNode("Shaders"))
-				{
-					for (SpVectorItem<SpShader*>* item = scene->shaders.begin(); item != nullptr; item = item->next())
-					{
-						const sp_char* name = item->value()->name();
-
-						if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-						{
-							ImGui::TreePop();
-						}
-					}
-
-					ImGui::TreePop();
-				}
-
-				if (ImGui::TreeNode("Scripts"))
-				{
-					ImGui::TreePop();
-				}
-
-				ImGui::TreePop();
-			}
-		}
+		void renderSceneNode(SpVectorItem<SpScene*>* sceneItem, const sp_bool canDeleteScene);
 
 	public:
 

@@ -114,6 +114,9 @@
     <ClCompile Include="src\SpUIColorPicker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SpPropertiesFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameFrame.h">
@@ -125,7 +128,7 @@
     <ClInclude Include="src\ProjectExplorerFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PropertiesFrame.h">
+    <ClInclude Include="src\SpPropertiesFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SpectrumFronend.h">

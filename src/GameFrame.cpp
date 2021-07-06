@@ -211,7 +211,7 @@ namespace NAMESPACE_FRONTEND
 			break;
 		}
 		case SP_KEYBOARD_KEY_SPACE:
-			static int rot = 2;
+			static sp_float rot = 2;
 			Quat q = Quat::createRotationAxisZ(radians(rot));
 			rockList->rotate(0u, q);
 			//rot++;

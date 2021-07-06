@@ -175,7 +175,7 @@ namespace NAMESPACE_FRONTEND
 				mousePos.y >= beginMemoryPixel.y && mousePos.y <= endMemoryPixel.y)
 				renderTooltip(memoryDescriptor);
 
-			addressLength = addressLength - (maxRowX - minRowX);
+			addressLength = addressLength - (sp_size)(maxRowX - minRowX);
 			while (addressLength != 0)
 			{
 				rowIndex++;
@@ -190,7 +190,7 @@ namespace NAMESPACE_FRONTEND
 				endMemoryPixel = ImVec2(viewerPos.x + maxRowX, viewerPos.y + maxRowY);
 
 				drawList->AddRectFilled(beginMemoryPixel, endMemoryPixel, IM_COL32(0, 180, 0, 255), 0.0f, 0);
-				addressLength = addressLength - maxRowX;
+				addressLength = addressLength - (sp_size)maxRowX;
 
 				// check the tooltip should be rendered
 				if (_isFocused && 

@@ -1,19 +1,65 @@
-#ifndef PROPERTIES_FRAME_HEADER
-#define PROPERTIES_FRAME_HEADER
+#ifndef SP_PROPERTIES_FRAME_HEADER
+#define SP_PROPERTIES_FRAME_HEADER
 
-#include "SpFrame.h"
+#include "SpIFrameComponent.h"
 #include "SpPhysicSimulator.h"
 #include "SpVector.h"
 #include "SpMap.h"
 #include "SpPropertyInfo.h"
+#include "SpScene.h"
 
 namespace NAMESPACE_FRONTEND
 {
-	class PropertiesFrame
-		: public SpFrame
+	class SpPropertiesFrame
+		: public SpIFrameComponent
 	{
 	private:
-		sp_uint _selectedObject;
+		SpScene* _scene;
+		sp_uint _selectedGameObject;
+
+		inline void renderProperties()
+		{
+			sp_char* name = _scene->gameObject(_selectedGameObject)->name();
+			ImGui::Text(name);
+
+			SpTransform* transform = _scene->transform(_selectedGameObject);
+
+			ImGui::SetNextTreeNodeOpen(true);
+			if (ImGui::TreeNode("Transform"))
+			{
+				ImGui::Text("Position");
+				ImGui::PushItemWidth(80.0f);
+				ImGui::InputFloat("X##position", (sp_float*)&transform->position.x, 0.0f, 0.0f, 4);
+				ImGui::SameLine();
+				ImGui::InputFloat("Y##position", (sp_float*)&transform->position.y, 0.0f, 0.0f, 4);
+				ImGui::SameLine();
+				ImGui::InputFloat("Z##position", (sp_float*)&transform->position.z, 0.0f, 0.0f, 4);
+				ImGui::PopItemWidth();
+
+				Vec3 angles;
+				eulerAnglesXYZ(transform->orientation, angles);
+				ImGui::Text("Orientation");
+				ImGui::PushItemWidth(80.0f);
+				ImGui::InputFloat("X##orientation", (sp_float*)&angles.x, 0.0f, 0.0f, 2);
+				ImGui::SameLine();
+				ImGui::InputFloat("Y##orientation", (sp_float*)&angles.y, 0.0f, 0.0f, 2);
+				ImGui::SameLine();
+				ImGui::InputFloat("Z##orientation", (sp_float*)&angles.z, 0.0f, 0.0f, 2);
+				ImGui::PopItemWidth();
+				fromEulerAngles(angles.x, angles.y, angles.z, transform->orientation);
+
+				ImGui::Text("Scale");
+				ImGui::PushItemWidth(80.0f);
+				ImGui::InputFloat("X##scale", (sp_float*)&transform->scaleVector.x, 0.0f, 0.0f, 4);
+				ImGui::SameLine();
+				ImGui::InputFloat("Y##scale", (sp_float*)&transform->scaleVector.y, 0.0f, 0.0f, 4);
+				ImGui::SameLine();
+				ImGui::InputFloat("Z##scale", (sp_float*)&transform->scaleVector.z, 0.0f, 0.0f, 4);
+				ImGui::PopItemWidth();
+
+				ImGui::TreePop();
+			}
+		}
 
 		inline void renderVec3Property(const sp_char* name,  const Vec3& value)
 		{
@@ -115,7 +161,7 @@ namespace NAMESPACE_FRONTEND
 
 		inline void renderPhysicProperties()
 		{
-			const SpRigidBody3D* rigidBody = SpWorldManagerInstance->current()->rigidBody3D(_selectedObject);
+			const SpRigidBody3D* rigidBody = SpWorldManagerInstance->current()->rigidBody3D(_selectedGameObject);
 
 			renderProperty("Static", rigidBody->isStatic());
 
@@ -135,68 +181,29 @@ namespace NAMESPACE_FRONTEND
 
 	public:
 
-		API_INTERFACE void init(SpWindow* window) override
+		API_INTERFACE void init()
 		{
-			SpFrame::init(window);
-			resize(300, 600);
+			_minWidth = 100.0f;
+
 			show();
 
-			_selectedObject = SP_UINT_MAX;
+			_selectedGameObject = SP_UINT_MAX;
 		}
 
-		API_INTERFACE inline sp_uint selectedObject()
+		API_INTERFACE inline sp_uint selectedGameObject()
 		{
-			return _selectedObject;
+			return _selectedGameObject;
 		}
 
-		API_INTERFACE inline void selectedObject(sp_uint globalIndex)
+		API_INTERFACE inline void selectedGameObject(SpScene* scene, const sp_uint objectIndex)
 		{
-			_selectedObject = globalIndex;
+			_scene = scene;
+			_selectedGameObject = objectIndex;
 		}
 
-		API_INTERFACE void preRender() override
-		{
-		}
-
-		API_INTERFACE void render() override
-		{
-		}
-
-		API_INTERFACE void renderGUI() override
-		{
-			if (!isVisible())
-				return;
-
-			if (_selectedObject == SP_UINT_MAX)
-				return;
-
-			resize(width(), height() - 25);
-
-			if (ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoCollapse))
-			{
-				loadState();
-
-				ImGui::SetWindowSize(ImVec2((sp_float)width(), (sp_float)height()));
-				ImGui::SetWindowPos(ImVec2((sp_float)(window()->state()->width - width()), 25.0f));
-
-				ImGui::Columns(2, "Bar");
-
-				renderPhysicProperties();
-
-				ImGui::End();
-			}
-		}
-
-		API_INTERFACE inline const sp_char* toString() override
-		{
-			return "PropertiesFrame";
-		}
-
-		~PropertiesFrame()
-		{
-		}
+		API_INTERFACE void render() override;
 
 	};
 }
 
-#endif // PROPERTIES_FRAME_HEADER
+#endif // SP_PROPERTIES_FRAME_HEADER

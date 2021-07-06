@@ -14,12 +14,10 @@ namespace NAMESPACE_FRONTEND
 	{
 		this->window = window;
 
-		propertiesFrame.selectedObject(1u);
 		loadProjectDialog.onClose = &loadProjectDialog_OnClose;
 
 		projectExplorerFrame.init(window);
 		logFrame.init(window);
-		propertiesFrame.init(window);
 
 		newProjectFrame.init(window);
 		aboutFrame.init(window);
@@ -70,11 +68,11 @@ namespace NAMESPACE_FRONTEND
 					else
 						projectExplorerFrame.show();
 
-				if (ImGui::MenuItem("Properties", NULL, propertiesFrame.isVisible()))
-					if (propertiesFrame.isVisible())
-						propertiesFrame.hide();
+				if (ImGui::MenuItem("Properties", NULL, SpUIManagerInstance->propertiesFrame.isVisible()))
+					if (SpUIManagerInstance->propertiesFrame.isVisible())
+						SpUIManagerInstance->propertiesFrame.hide();
 					else
-						propertiesFrame.show();
+						SpUIManagerInstance->propertiesFrame.show();
 
 				if (ImGui::MenuItem("Log", NULL, logFrame.isVisible()))
 					if (logFrame.isVisible())
@@ -146,7 +144,6 @@ namespace NAMESPACE_FRONTEND
 
 		projectExplorerFrame.renderGUI();
 		logFrame.renderGUI();
-		propertiesFrame.renderGUI();
 
 		newProjectFrame.renderGUI();
 		aboutFrame.renderGUI();

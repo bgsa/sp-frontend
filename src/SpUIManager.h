@@ -18,6 +18,7 @@
 #include "SpUIMenuBarComponent.h"
 #include "SpUINotificationManager.h"
 #include "SpUIViewport.h"
+#include "SpPropertiesFrame.h"
 
 namespace NAMESPACE_FRONTEND
 {	
@@ -59,6 +60,7 @@ namespace NAMESPACE_FRONTEND
 
 	public:
 		SpWindow* window = nullptr;
+		SpPropertiesFrame propertiesFrame;
 		SpVector<SpFrame*> frames;
 		SpVector<SpUIViewport*> viewports;
 
@@ -91,6 +93,7 @@ namespace NAMESPACE_FRONTEND
 
 			mainMenuBar.init(window);
 			statusBar.init();
+			propertiesFrame.init();
 		}
 
 		API_INTERFACE void update(sp_float elapsedTime) override
@@ -127,6 +130,7 @@ namespace NAMESPACE_FRONTEND
 			ImGui::NewFrame();
 
 			mainMenuBar.render();
+			propertiesFrame.render();
 
 			for (SpVectorItem<SpFrame*>* item = frames.begin(); item != NULL; item = item->next())
 				item->value()->renderGUI();
