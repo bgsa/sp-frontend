@@ -6,7 +6,7 @@
 #include "GraphicObject3DList.h"
 #include "IGraphicObjectRenderer.h"
 #include "OpenGLBuffer.h"
-#include "OpenGLShader.h"
+#include "SpShaderOpenGL.h"
 #include "SpPhysicObjectList.h"
 #include "SpLightManager.h"
 
@@ -17,7 +17,7 @@ namespace NAMESPACE_RENDERING
 		, public SpPhysicObjectList
 	{
 	private:
-		OpenGLShader* shader;
+		SpShaderOpenGL* shader;
 
 		sp_int lightEnvironmentLocation;
 		sp_int lightPositionLocation;
@@ -121,7 +121,7 @@ namespace NAMESPACE_RENDERING
 		{
 			buildMesh();
 
-			shader = sp_mem_new(OpenGLShader)();
+			shader = sp_mem_new(SpShaderOpenGL)();
 			shader
 				->buildFromFile(GL_VERTEX_SHADER, "resources/shaders/opengl/world-objects/shader-list.vs")
 				->buildFromFile(GL_FRAGMENT_SHADER, "resources/shaders/opengl/world-objects/shader-list.fs")
@@ -189,7 +189,7 @@ namespace NAMESPACE_RENDERING
 
 			if (shader != nullptr)
 			{
-				sp_mem_delete(shader, OpenGLShader);
+				sp_mem_delete(shader, SpShaderOpenGL);
 				shader = nullptr;
 			}
 		}
