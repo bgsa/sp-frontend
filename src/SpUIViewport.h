@@ -54,6 +54,9 @@ namespace NAMESPACE_FRONTEND
 		/// <returns>void</returns>
 		API_INTERFACE inline void scene(SpScene* scene)
 		{
+			if (!scene->isLoaded())
+				scene->load();
+
 			viewport.scene = scene;
 		}
 

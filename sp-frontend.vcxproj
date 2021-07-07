@@ -214,6 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\addons\FileBrowser\ImGuiFileBrowser.cpp" />
+    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\GameFrame.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\EditorViewer.cpp" />

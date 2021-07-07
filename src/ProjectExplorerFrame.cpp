@@ -30,8 +30,9 @@ namespace NAMESPACE_FRONTEND
 					planeName[6 + len] = END_OF_STRING;
 
 					SpGameObject* gameObject = scene->addGameObject(SP_GAME_OBJECT_TYPE_PLANE, planeName);
-					SpRenderableObject* renderableObject = scene->renderableObjectManager()->get(gameObject->index());
+					SpRenderableObject* renderableObject = scene->renderableObjectManager()->get(gameObject->managerIndex());
 					renderableObject->type(SP_RENDERABLE_OBJECT_TYPE_PLANE);
+					renderableObject->gameObjectIndex = gameObject->index();
 					renderableObject->meshDataIndex = SP_MESH_INDEX_PLANE;
 					renderableObject->shaderIndex = 0;
 

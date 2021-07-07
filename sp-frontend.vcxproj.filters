@@ -117,6 +117,9 @@
     <ClCompile Include="src\SpPropertiesFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameFrame.h">
@@ -147,9 +150,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ProjectExplorerFrame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PropertiesFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SpectrumFronend.h">
