@@ -8,6 +8,8 @@
 #include "SpPropertyInfo.h"
 #include "SpScene.h"
 
+#include "SpCameraPropertiesFrame.h"
+
 namespace NAMESPACE_FRONTEND
 {
 	class SpPropertiesFrame
@@ -17,9 +19,10 @@ namespace NAMESPACE_FRONTEND
 		SpScene* _scene;
 		sp_uint _selectedGameObject;
 
-		inline void renderProperties()
+		inline void renderGameObjectProperties()
 		{
-			sp_char* name = _scene->gameObject(_selectedGameObject)->name();
+			SpGameObject* gameObject = _scene->gameObject(_selectedGameObject);
+			sp_char* name = gameObject->name();
 			ImGui::Text(name);
 
 			SpTransform* transform = _scene->transform(_selectedGameObject);
@@ -38,15 +41,20 @@ namespace NAMESPACE_FRONTEND
 
 				Vec3 angles;
 				eulerAnglesXYZ(transform->orientation, angles);
+				sp_float angleX = degree(angles.x);
+				sp_float angleY = degree(angles.y);
+				sp_float angleZ = degree(angles.z);
+
 				ImGui::Text("Orientation");
 				ImGui::PushItemWidth(80.0f);
-				ImGui::InputFloat("X##orientation", (sp_float*)&angles.x, 0.0f, 0.0f, 2);
+				ImGui::InputFloat("X##orientation", &angleX,  0.0f, 0.0f, 2);
 				ImGui::SameLine();
-				ImGui::InputFloat("Y##orientation", (sp_float*)&angles.y, 0.0f, 0.0f, 2);
+				ImGui::InputFloat("Y##orientation", &angleY, 0.0f, 0.0f, 2);
 				ImGui::SameLine();
-				ImGui::InputFloat("Z##orientation", (sp_float*)&angles.z, 0.0f, 0.0f, 2);
+				ImGui::InputFloat("Z##orientation", &angleZ, 0.0f, 0.0f, 2);
 				ImGui::PopItemWidth();
-				fromEulerAngles(angles.x, angles.y, angles.z, transform->orientation);
+
+				fromEulerAngles(radians(angleX), radians(angleY), radians(angleZ), transform->orientation);
 
 				ImGui::Text("Scale");
 				ImGui::PushItemWidth(80.0f);
@@ -58,6 +66,17 @@ namespace NAMESPACE_FRONTEND
 				ImGui::PopItemWidth();
 
 				ImGui::TreePop();
+			}
+
+			switch (gameObject->type())
+			{
+			case SP_GAME_OBJECT_TYPE_CAMERA:
+				SpCameraPropertiesFrame cameraProperties;
+				cameraProperties.renderProperties(_scene, _selectedGameObject);
+				break;
+
+			default:
+				break;
 			}
 		}
 

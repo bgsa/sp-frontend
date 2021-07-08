@@ -182,6 +182,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
     <ClInclude Include="src\SpAlertFrame.h" />
+    <ClInclude Include="src\SpCameraPropertiesFrame.h" />
     <ClInclude Include="src\SpCloseButtonUIWindowBehaviour.h" />
     <ClInclude Include="src\SpIFrameComponent.h" />
     <ClInclude Include="src\NewProjectFrame.h" />

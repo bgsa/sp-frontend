@@ -7,6 +7,7 @@
 #include "NewSceneFrame.h"
 #include "SpShader.h"
 #include "SpGame.h"
+#include "SpGameObjectFactoryPlane.h"
 
 namespace NAMESPACE_FRONTEND
 {

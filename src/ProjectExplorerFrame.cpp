@@ -11,47 +11,15 @@ namespace NAMESPACE_FRONTEND
 		{
 			if (ImGui::BeginMenu("Add", true))
 			{
-				if (ImGui::MenuItem("Camera", NULL, false, true))
+				for (SpVectorItem<SpPair<sp_uint, SpGameObjectType*>>* item = scene->gameObjectsTypeList.begin(); item != nullptr; item = item->next())
 				{
+					SpGameObjectType* gameObjectType = item->value().value;
+					sp_char* name = gameObjectType->name();
 
-				}
-
-				if (ImGui::MenuItem("Cube", NULL, false, true))
-				{
-
-				}
-
-				if (ImGui::MenuItem("Plane", NULL, false, true))
-				{
-					sp_char planeName[100];
-					std::memcpy(planeName, "Plane ", sizeof(sp_char) * 6);
-					sp_size len;
-					convert(SpPhysicSettings::instance()->frameId(), &planeName[6], len);
-					planeName[6 + len] = END_OF_STRING;
-
-					SpGameObject* gameObject = scene->addGameObject(SP_GAME_OBJECT_TYPE_PLANE, planeName);
-					SpRenderableObject* renderableObject = scene->renderableObjectManager()->get(gameObject->managerIndex());
-					renderableObject->type(SP_RENDERABLE_OBJECT_TYPE_PLANE);
-					renderableObject->gameObjectIndex = gameObject->index();
-					renderableObject->meshDataIndex = SP_MESH_INDEX_PLANE;
-					renderableObject->shaderIndex = 0;
-
-					SpMeshData* meshData = scene->meshManager()->get(0);
-					const sp_size arrayBufferSize = sizeof(SpMeshAttribute) * meshData->attributesLength;
-					const sp_int staticDraw = SpGameInstance->renderingAPI()->bufferUsageTypeStaticDraw();
-
-					SpGpuBuffer* gpuVertexBuffer 
-						= SpGameInstance->renderingAPI()->createArrayBuffer()
-						->use()
-						->updateData(arrayBufferSize, (sp_float*) meshData->attributes, staticDraw);
-
-					SpGpuBuffer* gpuIndexBuffer
-						= SpGameInstance->renderingAPI()->createElementArrayBuffer()
-						->use()
-						->updateData(meshData->facesLength * 3 * sizeof(sp_size), meshData->faceIndexes, staticDraw);
-
-					renderableObject->buffers.add(gpuVertexBuffer);
-					renderableObject->buffers.add(gpuIndexBuffer);
+					if (ImGui::MenuItem(name, NULL, false, true))
+					{
+						gameObjectType->factory()->create(scene);
+					}
 				}
 
 				ImGui::EndMenu();

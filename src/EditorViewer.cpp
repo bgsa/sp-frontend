@@ -43,11 +43,11 @@ namespace NAMESPACE_FRONTEND
 	{
 		sp_float newFieldOfView = _fieldOfView - (_fieldOfView * scale * _velocity);
 
-		if (newFieldOfView <= SP_MIN_FIELD_OF_VIEW || newFieldOfView >= SP_MAX_FIELD_OF_VIEW)
+		if (newFieldOfView <= SP_CAMERA_MIN_FIELD_OF_VIEW || newFieldOfView >= SP_CAMERA_MAX_FIELD_OF_VIEW)
 			return;
 
-		_fieldOfView = newFieldOfView;
-		setProjectionPerspective(_fieldOfView, aspectRatio, nearFrustum, farFrustum);
+		fieldOfView(newFieldOfView);
+		setProjectionPerspective(aspectRatio, nearFrustum, farFrustum);
 	}
 
 	void EditorViewer::moveForward(sp_float distance)

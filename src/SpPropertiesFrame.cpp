@@ -32,7 +32,7 @@ namespace NAMESPACE_FRONTEND
 			ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
 
 		if (_selectedGameObject != SP_UINT_MAX && _scene != nullptr)
-			renderProperties();
+			renderGameObjectProperties();
 
 		end();
 		ImGui::PopStyleColor();
