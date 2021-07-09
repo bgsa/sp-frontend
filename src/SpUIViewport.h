@@ -13,8 +13,94 @@ namespace NAMESPACE_FRONTEND
 	private:
 		SpViewport viewport;
 		SpUIColorPicker colorPicker;
+
+		SpShader* linesShader;
+		SpGpuBuffer* linesBuffer;
+
+		inline void drawNavigation()
+		{
+			SpRenderingAPI* api = SpGameInstance->renderingAPI();
+			const sp_uint usageType = api->bufferUsageTypeDynamicDraw();
+			const sp_uint typeFloatId = api->typeFloatId();
+			const sp_uint linesId = api->typeLinesId();
+			const sp_int uintId = api->typeUIntId();
+			const sp_float lineSize = 0.1f;
+			SpCamera* camera = scene()->cameras()->get(scene()->activeCameraIndex());
+			Vec3 lineCenter = camera->position();
+			Vec3 target = camera->target();
+
+			const sp_float aspectRatio = 1.0f - viewport.aspectRatio();
+
+			Vec3 directionToZ;
+			normalize(target - camera->position(), directionToZ);
+			lineCenter += (directionToZ * 2.0f);
+			lineCenter += (camera->right() * -0.99f) + (camera->right() * aspectRatio);
+			lineCenter += (camera->up() * -0.9f);
+
+			sp_float bufferData[42] = {
+				lineCenter.x, lineCenter.y, lineCenter.z, 1.0f, 0.0f, 0.0f, 1.0f,
+				lineCenter.x + lineSize, lineCenter.y, lineCenter.z, 1.0f, 0.0f, 0.0f, 1.0f,
+
+				lineCenter.x, lineCenter.y, lineCenter.z, 0.0f, 1.0f, 0.0f, 1.0f,
+				lineCenter.x, lineCenter.y + lineSize, lineCenter.z, 0.0f, 1.0f, 0.0f, 1.0f,
+
+				lineCenter.x, lineCenter.y, lineCenter.z, 0.0f, 0.0f, 1.0f, 1.0f,
+				lineCenter.x, lineCenter.y, lineCenter.z + lineSize, 0.0f, 0.0f, 1.0f, 1.0f
+			};
+			const sp_size bufferStride = sizeof(sp_float) * 7;
+
+			if (linesShader == nullptr)
+			{
+				linesShader = scene()->shaders.find(1)->value();
+
+				linesBuffer = api
+					->createArrayBuffer()
+					->use()
+					->updateData(sizeof(bufferData), bufferData, usageType);
+
+				linesShader->enableVertexAttribute(0, 3, typeFloatId, false, bufferStride, 0);
+				linesShader->enableVertexAttribute(1, 4, typeFloatId, false, bufferStride, (void*)(sizeof(sp_float) * 3));
+
+				linesBuffer->disable();
+			}
+			
+			api->disableDepthTest();
+			viewport.framebuffer()->use();
+			linesShader
+				->enable()
+				->setUniform(0, camera->getProjectionMatrix())
+				->setUniform(1, camera->getViewMatrix());
+
+			linesBuffer
+				->use()
+				->updateData(sizeof(bufferData), bufferData, usageType);
+
+			linesShader->enableVertexAttribute(0, 3, typeFloatId, false, bufferStride, 0);
+			linesShader->enableVertexAttribute(1, 4, typeFloatId, false, bufferStride, (void*)(sizeof(sp_float) * 3));
+
+			linesShader->drawArray(linesId, 0, 6);
+
+			linesShader->disable();
+			viewport.framebuffer()->disable();
+			api->enableDepthTest();
+		}
 		
+		inline void drawViewportContent()
+		{
+			viewport.render();
+
+			drawNavigation();
+
+			SpSize<sp_int> size = viewport.size();
+			ImGui::Image((void*)(intptr_t)viewport.framebuffer()->colorTexture(), ImVec2((sp_float)size.width, (sp_float)size.height), ImVec2(0, 1), ImVec2(1, 0));
+		}
+
 	public:
+
+		API_INTERFACE inline SpUIViewport()
+		{
+			linesShader = nullptr;
+		}
 
 		/// <summary>
 		/// Initialize the UI Viewport
@@ -58,6 +144,7 @@ namespace NAMESPACE_FRONTEND
 				scene->load();
 
 			viewport.scene = scene;
+			viewport.activeCameraIndex = scene->activeCameraIndex();
 		}
 
 		/// <summary>
@@ -130,10 +217,8 @@ namespace NAMESPACE_FRONTEND
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2Zeros);
 			begin(viewportTitle, NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
 
-			viewport.render();
-
-			SpSize<sp_int> size = viewport.size();
-			ImGui::Image((void*)(intptr_t)viewport.framebuffer()->colorTexture(), ImVec2((sp_float)size.width, (sp_float)size.height), ImVec2(0, 1), ImVec2(1, 0));
+			if (viewport.scene != nullptr)
+				drawViewportContent();
 
 			if (ImGui::BeginPopupContextWindow())
 			{
@@ -148,7 +233,7 @@ namespace NAMESPACE_FRONTEND
 						const sp_bool sceneSelected = item->value() == viewport.scene;
 
 						if (ImGui::MenuItem(item->value()->name(), nullptr, sceneSelected, !sceneSelected))
-							viewport.scene = item->value();
+							this->scene(item->value());
 					}
 
 					ImGui::EndMenu();

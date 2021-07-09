@@ -17,10 +17,10 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::lookAtHorizontal(sp_float angle)
 	{
-		target = Vec3(
-			position[0] + _forward[0] * sp_cos(angle) + _forward[2] * sp_sin(angle),
-			target[1],
-			position[2] + _forward[2] * sp_cos(angle) + (position[0] - target[0]) * sp_sin(angle)
+		_target = Vec3(
+			_position[0] + _forward[0] * sp_cos(angle) + _forward[2] * sp_sin(angle),
+			_target[1],
+			_position[2] + _forward[2] * sp_cos(angle) + (_position[0] - _target[0]) * sp_sin(angle)
 		);
 
 		updateViewMatrix();
@@ -30,10 +30,10 @@ namespace NAMESPACE_FRONTEND
 	{
 		angle *= _invertY;
 
-		target = Vec3(
-			target[0],
-			position[1] + _forward[1] * sp_cos(angle) + (position[2] - target[2]) * sp_sin(angle),
-			position[2] + _forward[1] * sp_sin(angle) + _forward[2] * sp_cos(angle)
+		_target = Vec3(
+			_target[0],
+			_position[1] + _forward[1] * sp_cos(angle) + (_position[2] - _target[2]) * sp_sin(angle),
+			_position[2] + _forward[1] * sp_sin(angle) + _forward[2] * sp_cos(angle)
 		);
 
 		updateViewMatrix();
@@ -57,8 +57,8 @@ namespace NAMESPACE_FRONTEND
 		
 		directionToMove *= (distance * _velocity);
 
-		position -= directionToMove;
-		target -= directionToMove;
+		_position -= directionToMove;
+		_target -= directionToMove;
 
 		updateViewMatrix();
 	}
@@ -70,8 +70,8 @@ namespace NAMESPACE_FRONTEND
 
 		directionToMove *= (distance * _velocity);
 
-		position += directionToMove;
-		target += directionToMove;
+		_position += directionToMove;
+		_target += directionToMove;
 
 		updateViewMatrix();
 	}
@@ -84,8 +84,8 @@ namespace NAMESPACE_FRONTEND
 
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
-		position += distanceToMove;
-		target += distanceToMove;
+		_position += distanceToMove;
+		_target += distanceToMove;
 
 		updateViewMatrix();
 	}
@@ -98,8 +98,8 @@ namespace NAMESPACE_FRONTEND
 		
 		Vec3 distanceToMove = directionToMove * distance * _velocity;
 
-		position -= distanceToMove;
-		target -= distanceToMove;
+		_position -= distanceToMove;
+		_target -= distanceToMove;
 
 		updateViewMatrix();
 	}
@@ -107,14 +107,14 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::rotateX(sp_float angle)
 	{
 		angle *= _velocity;
-		const sp_float z = position.z;
+		const sp_float z = _position.z;
 
 		Vec3 n;
 		normalize(_right, n);
 
-		rotate(Quat::createRotate(angle, n), position, position);
+		rotate(Quat::createRotate(angle, n), _position, _position);
 
-		if (sign(position.z) != sign(z))
+		if (sign(_position.z) != sign(z))
 			_up = -_up;
 
 		updateViewMatrix();
@@ -123,7 +123,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::rotateY(sp_float angle)
 	{
 		angle *= _velocity;		
-		rotate(Quat::createRotationAxisY(angle), position, position);
+		rotate(Quat::createRotationAxisY(angle), _position, _position);
 
 		updateViewMatrix();
 	}
@@ -131,7 +131,7 @@ namespace NAMESPACE_FRONTEND
 	void EditorViewer::rotateZ(sp_float angle)
 	{
 		angle *= _velocity;
-		rotate(Quat::createRotate(angle, _forward), position, position);
+		rotate(Quat::createRotate(angle, _forward), _position, _position);
 
 		updateViewMatrix();
 	}
