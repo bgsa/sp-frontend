@@ -47,7 +47,7 @@ namespace NAMESPACE_FRONTEND
 			return;
 
 		fieldOfView(newFieldOfView);
-		setProjectionPerspective(aspectRatio, nearFrustum, farFrustum);
+		setProjectionPerspective(_aspectRatio, _nearFrustum, _farFrustum);
 	}
 
 	void EditorViewer::moveForward(sp_float distance)
