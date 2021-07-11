@@ -97,7 +97,27 @@ namespace NAMESPACE_FRONTEND
 					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
 					{
 						if (ImGui::IsItemClicked())
-							SpUIManagerInstance->propertiesFrame.selectedGameObject(scene, i);
+							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameGameObject, i);
+
+						ImGui::TreePop();
+					}
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Cameras"))
+			{
+				SpCameraManager* cameraManager = scene->camerasManager();
+
+				for (sp_size i = 0; i < cameraManager->length(); i++)
+				{
+					sp_char* name = cameraManager->name(i);
+
+					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+					{
+						if (ImGui::IsItemClicked())
+							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameCamera, i);
 
 						ImGui::TreePop();
 					}

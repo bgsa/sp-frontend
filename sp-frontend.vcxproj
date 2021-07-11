@@ -182,7 +182,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GameFrame.h" />
     <ClInclude Include="src\SpAlertFrame.h" />
-    <ClInclude Include="src\SpCameraPropertiesFrame.h" />
+    <ClInclude Include="src\SpPropertiesFrameComponentCamera.h" />
     <ClInclude Include="src\SpCloseButtonUIWindowBehaviour.h" />
     <ClInclude Include="src\SpIFrameComponent.h" />
     <ClInclude Include="src\NewProjectFrame.h" />
@@ -199,6 +199,8 @@
     <ClInclude Include="src\SpMemoryMapViewerFrame.h" />
     <ClInclude Include="src\SpProject.h" />
     <ClInclude Include="src\SpProjectManager.h" />
+    <ClInclude Include="src\SpPropertiesFrameComponent.h" />
+    <ClInclude Include="src\SpPropertiesFrameComponentGameObject.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIColorPicker.h" />
     <ClInclude Include="src\SpUIFonts.h" />

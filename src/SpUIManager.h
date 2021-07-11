@@ -19,6 +19,8 @@
 #include "SpUINotificationManager.h"
 #include "SpUIViewport.h"
 #include "SpPropertiesFrame.h"
+#include "SpPropertiesFrameComponentCamera.h"
+#include "SpPropertiesFrameComponentGameObject.h"
 
 namespace NAMESPACE_FRONTEND
 {	
@@ -61,6 +63,8 @@ namespace NAMESPACE_FRONTEND
 	public:
 		SpWindow* window = nullptr;
 		SpPropertiesFrame propertiesFrame;
+		SpPropertiesFrameComponentCamera propertiesFrameCamera;
+		SpPropertiesFrameComponentGameObject propertiesFrameGameObject;
 		SpVector<SpFrame*> frames;
 		SpVector<SpUIViewport*> viewports;
 

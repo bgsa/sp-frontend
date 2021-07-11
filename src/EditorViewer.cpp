@@ -17,123 +17,122 @@ namespace NAMESPACE_FRONTEND
 
 	void EditorViewer::lookAtHorizontal(sp_float angle)
 	{
-		_target = Vec3(
-			_position[0] + _forward[0] * sp_cos(angle) + _forward[2] * sp_sin(angle),
-			_target[1],
-			_position[2] + _forward[2] * sp_cos(angle) + (_position[0] - _target[0]) * sp_sin(angle)
-		);
+		const Vec3 camPos = position();
+		const Vec3 camTar = target();
+		const Vec3 camFor = forward();
 
-		updateViewMatrix();
+		target(Vec3(
+			camPos.x + camFor.x * sp_cos(angle) + camFor.z * sp_sin(angle),
+			camTar.y,
+			camPos.z + camFor.z * sp_cos(angle) + (camPos.x - camTar.x) * sp_sin(angle)
+		));
 	}
 
 	void EditorViewer::lookAtVertical(sp_float angle)
 	{
-		angle *= _invertY;
+		const Vec3 camPos = position();
+		const Vec3 camTar = target();
+		const Vec3 camFor = forward();
 
-		_target = Vec3(
-			_target[0],
-			_position[1] + _forward[1] * sp_cos(angle) + (_position[2] - _target[2]) * sp_sin(angle),
-			_position[2] + _forward[1] * sp_sin(angle) + _forward[2] * sp_cos(angle)
-		);
+		angle *= Y();
 
-		updateViewMatrix();
+		target (Vec3(
+			camTar.x,
+			camPos.x + camFor.y * sp_cos(angle) + (camPos.z - camTar.z) * sp_sin(angle),
+			camPos.z + camFor.y * sp_sin(angle) + camFor.z * sp_cos(angle)
+		));
 	}
 
 	void EditorViewer::zoom(sp_float scale)
 	{
-		sp_float newFieldOfView = _fieldOfView - (_fieldOfView * scale * _velocity);
+		sp_float newFieldOfView = fieldOfView() - (fieldOfView() * scale * velocity());
 
 		if (newFieldOfView <= SP_CAMERA_MIN_FIELD_OF_VIEW || newFieldOfView >= SP_CAMERA_MAX_FIELD_OF_VIEW)
 			return;
 
 		fieldOfView(newFieldOfView);
-		setProjectionPerspective(_aspectRatio, _nearFrustum, _farFrustum);
 	}
 
 	void EditorViewer::moveForward(sp_float distance)
 	{
 		Vec3 directionToMove;
-		normalize(_forward, directionToMove);
+		normalize(forward(), directionToMove);
 		
-		directionToMove *= (distance * _velocity);
+		directionToMove *= (distance * velocity());
 
-		_position -= directionToMove;
-		_target -= directionToMove;
-
-		updateViewMatrix();
+		position(position() - directionToMove);
+		target(target() - directionToMove);
 	}
 
 	void EditorViewer::moveBackward(sp_float distance)
 	{
 		Vec3 directionToMove;
-		normalize(_forward, directionToMove);
+		normalize(forward(), directionToMove);
 
-		directionToMove *= (distance * _velocity);
+		directionToMove *= (distance * velocity());
 
-		_position += directionToMove;
-		_target += directionToMove;
-
-		updateViewMatrix();
+		position(position() + directionToMove);
+		target(target() + directionToMove);
 	}
 
 	void EditorViewer::moveLeft(sp_float distance)
 	{
 		Vec3 directionToMove;
-		cross(_up, _forward, directionToMove);
+		cross(up(), forward(), directionToMove);
 		normalize(directionToMove);
 
-		Vec3 distanceToMove = directionToMove * distance * _velocity;
+		Vec3 distanceToMove = directionToMove * distance * velocity();
 
-		_position += distanceToMove;
-		_target += distanceToMove;
-
-		updateViewMatrix();
+		position(position() + directionToMove);
+		target(target() + directionToMove);
 	}
 
 	void EditorViewer::moveRight(sp_float distance)
 	{
 		Vec3 directionToMove;
-		cross(_up, _forward, directionToMove);
+		cross(up(), forward(), directionToMove);
 		normalize(directionToMove);
 		
-		Vec3 distanceToMove = directionToMove * distance * _velocity;
+		Vec3 distanceToMove = directionToMove * distance * velocity();
 
-		_position -= distanceToMove;
-		_target -= distanceToMove;
-
-		updateViewMatrix();
+		position(position() - directionToMove);
+		target(target() - directionToMove);
 	}
 
 	void EditorViewer::rotateX(sp_float angle)
 	{
-		angle *= _velocity;
-		const sp_float z = _position.z;
+		angle *= velocity();
+		const sp_float z = position().z;
 
 		Vec3 n;
-		normalize(_right, n);
+		normalize(right(), n);
 
-		rotate(Quat::createRotate(angle, n), _position, _position);
+		Vec3 newPosition;
+		rotate(Quat::createRotate(angle, n), position(), newPosition);
+		position(newPosition);
 
-		if (sign(_position.z) != sign(z))
-			_up = -_up;
-
-		updateViewMatrix();
+		if (sign(position().z) != sign(z))
+			up(-up());
 	}
 
 	void EditorViewer::rotateY(sp_float angle)
 	{
-		angle *= _velocity;		
-		rotate(Quat::createRotationAxisY(angle), _position, _position);
+		angle *= velocity();
 
-		updateViewMatrix();
+		Vec3 newPosition;
+		rotate(Quat::createRotationAxisY(angle), position(), newPosition);
+
+		position(newPosition);
 	}
 
 	void EditorViewer::rotateZ(sp_float angle)
 	{
-		angle *= _velocity;
-		rotate(Quat::createRotate(angle, _forward), _position, _position);
+		angle *= velocity();
 
-		updateViewMatrix();
+		Vec3 newPosition;
+		rotate(Quat::createRotate(angle, forward()), position(), newPosition);
+
+		position(newPosition);
 	}
 
 	sp_bool controlPressed = false;

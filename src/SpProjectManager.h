@@ -42,7 +42,7 @@ namespace NAMESPACE_FRONTEND
 			project->game()->renderingApi(SP_RENDERING_API_OPENGL, sp_mem_new(SpRenderingAPIOpenGL));
 
 			SpScene* scene = project->game()->addScenes("Scene 1");
-			scene->addGameObject(SP_GAME_OBJECT_TYPE_CAMERA, "Camera 1");
+			scene->addCamera("Camera 1", 8);
 
 			_current = project;
 

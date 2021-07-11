@@ -25,7 +25,7 @@ namespace NAMESPACE_FRONTEND
 			const sp_uint linesId = api->typeLinesId();
 			const sp_int uintId = api->typeUIntId();
 			const sp_float lineSize = 0.1f;
-			SpCamera* camera = scene()->cameras()->get(scene()->activeCameraIndex());
+			SpCamera* camera = scene()->camerasManager()->get(scene()->activeCameraIndex());
 			Vec3 lineCenter = camera->position();
 			Vec3 target = camera->target();
 
@@ -68,8 +68,8 @@ namespace NAMESPACE_FRONTEND
 			viewport.framebuffer()->use();
 			linesShader
 				->enable()
-				->setUniform(0, camera->getProjectionMatrix())
-				->setUniform(1, camera->getViewMatrix());
+				->setUniform(0, camera->projectionMatrix())
+				->setUniform(1, camera->viewMatrix());
 
 			linesBuffer
 				->use()
@@ -241,18 +241,14 @@ namespace NAMESPACE_FRONTEND
 
 				if (ImGui::BeginMenu("Cameras", viewport.scene != nullptr))
 				{
-					sp_size* cameraIndexes = ALLOC_ARRAY(sp_size, viewport.scene->gameObjectsLength());
-					sp_size cameraIndexesLength;
+					SpCameraManager* cameraManager = viewport.scene->camerasManager();
 
-					viewport.scene->gameObjectByType(SP_GAME_OBJECT_TYPE_CAMERA, cameraIndexes, cameraIndexesLength);
-
-					for (sp_uint i = 0; i < cameraIndexesLength; i++)
+					for (sp_uint i = 0; i < cameraManager->length(); i++)
 					{
-						const sp_size cameraIndex = cameraIndexes[i];
-						const sp_bool cameraSelected = activeCameraIndex() == cameraIndex;
+						const sp_bool cameraSelected = activeCameraIndex() == i;
 
-						if (ImGui::MenuItem(viewport.scene->gameObject(cameraIndex)->name(), nullptr, cameraSelected, !cameraSelected))
-							viewport.activeCameraIndex = cameraIndex;
+						if (ImGui::MenuItem(cameraManager->name(i), nullptr, cameraSelected, !cameraSelected))
+							viewport.activeCameraIndex = i;
 					}
 
 					ImGui::EndMenu();
