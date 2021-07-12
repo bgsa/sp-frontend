@@ -9,7 +9,8 @@ uniform samplerBuffer transformMatrix;
 in vec3 Position;
 in vec3 Normal;
 
-flat out vec3 normalCoord;
+out vec3 viewPosition;
+out vec3 normalCoord;
 out vec3 eyeCoord;
 out vec4 fragmentColor;
 
@@ -130,7 +131,12 @@ void main()
 	
 	normalCoord = mat3(transform) * Normal;
 	eyeCoord = vec3(transform * vec4(Position, 1));
+	
+	vec4 tempPosition = viewMatrix * transform * vec4(Position, 1.0);
+	viewPosition = vec3(tempPosition);
 
-	gl_Position = projectionMatrix * viewMatrix * transform * vec4(Position, 1.0);
+	//gl_Position = projectionMatrix * viewMatrix * transform * vec4(Position, 1.0);
+	gl_Position = projectionMatrix * tempPosition;
+	
 	fragmentColor = vec4(0.5, 0.5, 1.0, 1.0);
 }

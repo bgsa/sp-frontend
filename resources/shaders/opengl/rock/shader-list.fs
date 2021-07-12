@@ -7,17 +7,17 @@ uniform vec3  LightColor;
 uniform float ShininessFactor;
 
 flat in vec3  normalCoord;
+in vec3  viewPosition;
 in vec3  eyeCoord;
 in vec4  fragmentColor;
 
 out vec4 FragOutput;
 
-vec4 PhongShading()
+vec4 PhongShading(vec3 faceNormal)
 {
-	vec3 normalizeNormal = normalize(normalCoord);
 	vec3 normalizeLightVec = normalize(LightPosition - eyeCoord); //vector viewer
 
-	float cosAngle = max(0.0, dot(normalizeNormal, normalizeLightVec)); // Diffuse Intensity
+	float cosAngle = max(0.0, dot(faceNormal, normalizeLightVec)); // Diffuse Intensity
 	
 	vec3 R = normalize(-normalizeLightVec + normalize(-eyeCoord)); //faster
 
@@ -31,5 +31,11 @@ vec4 PhongShading()
 
 void main()
 {
-	FragOutput = fragmentColor * PhongShading();
+    vec3 xTangent = dFdx( viewPosition );
+    vec3 yTangent = dFdy( viewPosition );
+    vec3 faceNormal = normalize( cross( xTangent, yTangent ) ); // flat shading
+	
+	//vec3 faceNormal = normalize(normalCoord);
+
+	FragOutput = fragmentColor * PhongShading(faceNormal);
 }
