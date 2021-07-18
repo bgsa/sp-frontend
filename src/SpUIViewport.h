@@ -15,7 +15,205 @@ namespace NAMESPACE_FRONTEND
 		SpUIColorPicker colorPicker;
 
 		SpShader* linesShader;
-		SpGpuBuffer* linesBuffer;
+		SpShader* manipulatorShader;
+		SpGpuBuffer* vertexesBuffer;
+		SpGpuBuffer* indexesBuffer;
+
+		sp_uint _selectedObjectIndex;
+
+		inline void drawManipulator(const Vec3& center)
+		{
+			SpRenderingAPI* api = SpGameInstance->renderingAPI();
+			const sp_uint usageType = api->bufferUsageTypeDynamicDraw();
+			const sp_uint typeFloatId = api->typeFloatId();
+			const sp_uint typeUintId = api->typeUIntId();
+			const sp_uint trianglesId = api->typeTriangleId();
+			SpCamera* camera = scene()->camerasManager()->get(scene()->activeCameraIndex());
+			const Vec3 cameraPosition = camera->position();
+
+			const sp_size cubeAttributesStride = sizeof(sp_float) * 7;
+			const sp_uint cubeIndexesLength = 3 * 54;
+
+			const sp_float distanceCameraToObject = distance(cameraPosition, center);
+			const sp_float manipulatorSize = distanceCameraToObject * 0.2f;
+			const sp_float thickness = manipulatorSize * 0.05f;
+			const sp_float twoThickness = thickness * 2.0f;
+
+			SpColorRGBA xAxisColor = SpColorRGBARed;
+			SpColorRGBA yAxisColor = SpColorRGBAGreen;
+			SpColorRGBA zAxisColor = SpColorRGBABlue;
+
+			sp_float cubeAttributes[3 * 91] = {
+				// x Axis
+				center.x, center.y - thickness, center.z + thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y - thickness, center.z + thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y + thickness, center.z + thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x, center.y + thickness, center.z + thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+
+				center.x, center.y - thickness, center.z - thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y - thickness, center.z - thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y + thickness, center.z - thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x, center.y + thickness, center.z - thickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+
+				center.x + manipulatorSize, center.y - twoThickness, center.z - twoThickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y + twoThickness, center.z - twoThickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y + twoThickness, center.z + twoThickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize, center.y - twoThickness, center.z + twoThickness, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+				center.x + manipulatorSize + twoThickness, center.y, center.z, xAxisColor.red, xAxisColor.green, xAxisColor.blue, xAxisColor.alpha,
+
+				// y Axis
+				center.x - thickness, center.y, center.z + thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x - thickness, center.y, center.z - thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x + thickness, center.y, center.z - thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x + thickness, center.y, center.z + thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+
+				center.x - thickness, center.y + manipulatorSize, center.z + thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x - thickness, center.y + manipulatorSize, center.z - thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x + thickness, center.y + manipulatorSize, center.z - thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x + thickness, center.y + manipulatorSize, center.z + thickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+
+				center.x - twoThickness, center.y + manipulatorSize, center.z + twoThickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x - twoThickness, center.y + manipulatorSize, center.z - twoThickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x + twoThickness, center.y + manipulatorSize, center.z - twoThickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x + twoThickness, center.y + manipulatorSize, center.z + twoThickness, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+				center.x, center.y + manipulatorSize + twoThickness, center.z, yAxisColor.red, yAxisColor.green, yAxisColor.blue, yAxisColor.alpha,
+
+				// z Axis
+				center.x + thickness, center.y - thickness, center.z, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x - thickness, center.y - thickness, center.z, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x - thickness, center.y + thickness, center.z, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x + thickness, center.y + thickness, center.z, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+
+				center.x + thickness, center.y - thickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x - thickness, center.y - thickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x - thickness, center.y + thickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x + thickness, center.y + thickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+
+				center.x + twoThickness, center.y - twoThickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x - twoThickness, center.y - twoThickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x - twoThickness, center.y + twoThickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x + twoThickness, center.y + twoThickness, center.z + manipulatorSize, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha,
+				center.x, center.y, center.z + manipulatorSize + twoThickness, zAxisColor.red, zAxisColor.green, zAxisColor.blue, zAxisColor.alpha
+			};
+
+			if (manipulatorShader == nullptr)
+			{
+				const sp_uint cubeIndexes[cubeIndexesLength] = {
+					// X axis
+					0, 1, 2, // front face
+					2, 3, 0, // front face
+					4, 7, 6, // back face
+					6, 5, 4, // back face
+					0, 3, 7, // left face
+					7, 4, 0, // left face
+					1, 5, 6, // right face
+					6, 2, 1, // right face
+					3, 2, 6, // top face
+					6, 7, 3, // top face
+					1, 0, 4, // bottom face
+					4, 5, 1, // bottom face
+
+					// X arrow
+					8, 9, 10,
+					10, 11, 8,
+					9, 8, 12,
+					10, 9, 12,
+					10, 11, 12,
+					8, 11, 12,
+
+					// Y axis
+					13, 14, 15, // bottom face
+					15, 16, 13, // bottom face
+					17, 18, 19, // top face
+					19, 20, 17, // top face
+					14, 15, 19, // front face
+					19, 18, 14, // front face
+					13, 16, 20, // back face
+					20, 17, 13, // back face
+					13, 14, 18, // left face
+					18, 17, 13, // left face
+					15, 16, 20, // right face
+					20, 19, 15, // right face
+
+					// Y arrow
+					21, 22, 23,
+					23, 24, 21,
+					21, 22, 25,
+					22, 23, 25,
+					23, 24, 25,
+					24, 21, 25,
+
+					// Z axis
+					26, 27, 28, // bottom face
+					28, 29, 26, // bottom face
+					30, 31, 32, // top face
+					32, 33, 30, // top face
+					27, 28, 32, // front face
+					32, 31, 27, // front face
+					26, 29, 33, // back face
+					33, 30, 26, // back face
+					26, 27, 31, // left face
+					31, 30, 26, // left face
+					28, 29, 33, // right face
+					33, 32, 28, // right face
+
+					// Z arrow
+					34, 35, 36,
+					36, 37, 34,
+					34, 35, 38,
+					35, 36, 38,
+					36, 37, 38,
+					37, 34, 38
+				};
+
+				manipulatorShader = scene()->shaders.find(2)->value();
+
+				vertexesBuffer = api
+					->createArrayBuffer()
+					->use()
+					->updateData(sizeof(cubeAttributes), cubeAttributes, usageType);
+
+				manipulatorShader
+					->enableVertexAttribute(0, 3, typeFloatId, false, cubeAttributesStride, 0)
+					->enableVertexAttribute(1, 4, typeFloatId, false, cubeAttributesStride, (void*)(sizeof(sp_float) * 3));
+
+				vertexesBuffer->disable();
+
+				const sp_uint usageTypeStatic = api->bufferUsageTypeStaticDraw();
+				indexesBuffer = api
+					->createElementArrayBuffer()
+					->use()
+					->updateData(sizeof(cubeIndexes), cubeIndexes, usageTypeStatic);
+
+				indexesBuffer->disable();
+			}
+
+			//api->disableDepthTest();
+			viewport.framebuffer()->use();
+			manipulatorShader
+				->enable()
+				->setUniform(0, camera->projectionMatrix())
+				->setUniform(1, camera->viewMatrix())
+				->setUniform(2, cameraPosition);
+
+			vertexesBuffer
+				->use()
+				->updateData(sizeof(cubeAttributes), cubeAttributes, usageType);
+
+			manipulatorShader
+				->enableVertexAttribute(0, 3, typeFloatId, false, cubeAttributesStride, 0)
+				->enableVertexAttribute(1, 4, typeFloatId, false, cubeAttributesStride, (void*)(sizeof(sp_float) * 3));
+
+			indexesBuffer->use();
+
+			manipulatorShader->drawElements(trianglesId, cubeIndexesLength, typeUintId, 0);
+
+			manipulatorShader->disable();
+
+			viewport.framebuffer()->disable();
+
+			//api->enableDepthTest();
+		}
 
 		inline void drawNavigation()
 		{
@@ -53,7 +251,7 @@ namespace NAMESPACE_FRONTEND
 			{
 				linesShader = scene()->shaders.find(1)->value();
 
-				linesBuffer = api
+				vertexesBuffer = api
 					->createArrayBuffer()
 					->use()
 					->updateData(sizeof(bufferData), bufferData, usageType);
@@ -61,7 +259,7 @@ namespace NAMESPACE_FRONTEND
 				linesShader->enableVertexAttribute(0, 3, typeFloatId, false, bufferStride, 0);
 				linesShader->enableVertexAttribute(1, 4, typeFloatId, false, bufferStride, (void*)(sizeof(sp_float) * 3));
 
-				linesBuffer->disable();
+				vertexesBuffer->disable();
 			}
 			
 			api->disableDepthTest();
@@ -71,7 +269,7 @@ namespace NAMESPACE_FRONTEND
 				->setUniform(0, camera->projectionMatrix())
 				->setUniform(1, camera->viewMatrix());
 
-			linesBuffer
+			vertexesBuffer
 				->use()
 				->updateData(sizeof(bufferData), bufferData, usageType);
 
@@ -91,6 +289,12 @@ namespace NAMESPACE_FRONTEND
 
 			drawNavigation();
 
+			if (_selectedObjectIndex != SP_UINT_MAX)
+			{
+				const Vec3 position = scene()->transform(_selectedObjectIndex)->position;
+				drawManipulator(position);
+			}
+
 			SpSize<sp_int> size = viewport.size();
 			ImGui::Image((void*)(intptr_t)viewport.framebuffer()->colorTexture(), ImVec2((sp_float)size.width, (sp_float)size.height), ImVec2(0, 1), ImVec2(1, 0));
 		}
@@ -100,6 +304,9 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline SpUIViewport()
 		{
 			linesShader = nullptr;
+			manipulatorShader = nullptr;
+
+			_selectedObjectIndex = SP_UINT_MAX;
 		}
 
 		/// <summary>
@@ -165,6 +372,16 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline void activeCameraIndex(const sp_uint cameraIndex)
 		{
 			viewport.activeCameraIndex = cameraIndex;
+		}
+
+		API_INTERFACE inline void selectObject(const sp_uint index)
+		{
+			_selectedObjectIndex = index;
+		}
+
+		API_INTERFACE inline void deselectObject()
+		{
+			_selectedObjectIndex = SP_UINT_MAX;
 		}
 
 		/// <summary>

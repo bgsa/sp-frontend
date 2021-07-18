@@ -97,7 +97,12 @@ namespace NAMESPACE_FRONTEND
 					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
 					{
 						if (ImGui::IsItemClicked())
+						{
 							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameGameObject, i);
+
+							for (SpVectorItem<SpUIViewport*>* item = SpUIManagerInstance->viewports.begin(); item != nullptr; item = item->next())
+								item->value()->selectObject(i);
+						}
 
 						ImGui::TreePop();
 					}
