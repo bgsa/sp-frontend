@@ -157,7 +157,7 @@ namespace NAMESPACE_FRONTEND
 			const sp_size columnIndex = address % barWidth;
 
 			sp_float minRowX = (sp_float)columnIndex;
-			sp_float maxRowX = std::min(minRowX + (sp_float)addressLength, (sp_float)barWidth);
+			sp_float maxRowX = sp_min(minRowX + (sp_float)addressLength, (sp_float)barWidth);
 			sp_float minRowY = (rowIndex * (ROW_HEIGHT + ROW_SPACING)) - currentScrollPosition;
 			sp_float maxRowY = minRowY + ROW_HEIGHT;
 
@@ -181,7 +181,7 @@ namespace NAMESPACE_FRONTEND
 				rowIndex++;
 
 				minRowX = ZERO_FLOAT;
-				maxRowX = std::min((sp_float)addressLength, (sp_float)barWidth);
+				maxRowX = sp_min((sp_float)addressLength, (sp_float)barWidth);
 
 				minRowY = (rowIndex * (ROW_HEIGHT + ROW_SPACING)) - currentScrollPosition;
 				maxRowY = minRowY + ROW_HEIGHT;

@@ -4,6 +4,7 @@
 #include "imgui/imgui.h"
 #include <string>
 #include <vector>
+#include "SpectrumFoundation.h"
 
 namespace imgui_addons
 {

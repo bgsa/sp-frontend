@@ -10,6 +10,9 @@ namespace NAMESPACE_FRONTEND
 
 	void SpUIViewport_onMouseEnter(SpIFrameComponent* window, const ImVec2& mousePosition);
 	void SpUIViewport_onMouseLeave(SpIFrameComponent* window, const ImVec2& mousePosition);
+	void SpUIViewport_onMouseMove(SpIFrameComponent* window, const ImVec2& previousPosition, const ImVec2& currentPosition);
+	void SpUIViewport_onMouseDown(SpIFrameComponent* window, const ImVec2& mousePosition);
+	void SpUIViewport_onMouseReleased(SpIFrameComponent* window, const ImVec2& mousePosition);
 
 	class SpUIViewport
 		: public SpIFrameComponent
@@ -66,6 +69,9 @@ namespace NAMESPACE_FRONTEND
 
 			this->onMouseEnter = &SpUIViewport_onMouseEnter;
 			this->onMouseLeave = &SpUIViewport_onMouseLeave;
+			this->onMouseMove = &SpUIViewport_onMouseMove;
+			this->onMouseLeftButtonDown = &SpUIViewport_onMouseDown;
+			this->onMouseLeftButtonReleased = &SpUIViewport_onMouseReleased;
 
 			colorPicker.init();
 			colorPicker.color(viewport.backgroundColor());

@@ -5,13 +5,27 @@
 namespace NAMESPACE_FRONTEND
 {
 
+	void SpUIViewport_onMouseDown(SpIFrameComponent* window, const ImVec2& mousePosition)
+	{
+		std::cout << "DOWN: " << mousePosition.x << " - " << mousePosition.y << std::endl;
+	}
+
+	void SpUIViewport_onMouseReleased(SpIFrameComponent* window, const ImVec2& mousePosition)
+	{
+		if (window->wasMouseDownStartedThisWindow())
+			std::cout << "RELEASED: " << mousePosition.x << " - " << mousePosition.y << std::endl;
+	}
+
+	void SpUIViewport_onMouseMove(SpIFrameComponent* window, const ImVec2& previousPosition, const ImVec2& currentPosition)
+	{
+		//std::cout << screenPos.x << " - " << screenPos.y << std::endl;
+	}
+
 	void SpUIViewport_onMouseEnter(SpIFrameComponent* window, const ImVec2& mousePosition)
 	{
-		std::cout << "ENTER" << std::endl;
 	}
 	void SpUIViewport_onMouseLeave(SpIFrameComponent* window, const ImVec2& mousePosition)
 	{
-		std::cout << "LEAVE" << std::endl;
 	}
 
 	void SpUIViewport::drawManipulator(const Vec3& center)

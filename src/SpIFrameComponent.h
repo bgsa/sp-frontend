@@ -19,14 +19,20 @@ namespace NAMESPACE_FRONTEND
 		ImVec2 previousMousePosition;
 		sp_bool wasMouseHovered;
 		sp_bool wasMouseLeftButtonDown;
+		sp_bool _wasMouseDownStartedThisWindow;
 
 	public:
 
 		void (*onMouseEnter)(SpIFrameComponent* window, const ImVec2& mousePosition);
 		void (*onMouseLeave)(SpIFrameComponent* window, const ImVec2& mousePosition);
+		void (*onMouseMove)(SpIFrameComponent* window, const ImVec2& previousPosition, const ImVec2& currentPosition);
 		void (*onMouseLeftButtonDown)(SpIFrameComponent* window, const ImVec2& mousePosition);
 		void (*onMouseLeftButtonReleased)(SpIFrameComponent* window, const ImVec2& mousePosition);
-
+		
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline SpIFrameComponent()
 		{
 			_visible = false;
@@ -36,9 +42,13 @@ namespace NAMESPACE_FRONTEND
 			previousMousePosition = ImVec2Zeros;
 			wasMouseHovered = false;
 			wasMouseLeftButtonDown = false;
+			_wasMouseDownStartedThisWindow = false;
 
 			onMouseEnter = nullptr;
 			onMouseLeave = nullptr;
+			onMouseMove = nullptr;
+			onMouseLeftButtonDown = nullptr;
+			onMouseLeftButtonReleased = nullptr;
 		}
 
 		/// <summary>
@@ -58,28 +68,73 @@ namespace NAMESPACE_FRONTEND
 			return false;
 		}
 
+		/// <summary>
+		/// Get the mouse position in window coordinates
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline ImVec2 screenPosition(const ImVec2 point) const
+		{
+			const sp_float x = sp_clamp(point.x - _windowPosition.x, 0.0f, (sp_float)_width);
+			const sp_float y = sp_clamp(point.y - _windowPosition.y, 0.0f, (sp_float)_height);
+
+			return ImVec2(x, y);
+		}
+
+		/// <summary>
+		/// Check the mouse down was started in this window
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_bool wasMouseDownStartedThisWindow() const
+		{
+			return _wasMouseDownStartedThisWindow;
+		}
+
+		/// <summary>
+		/// Render this window component
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE virtual void render() = 0;
 
+		/// <summary>
+		/// Get the size of this window (width, height)
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline SpSize<sp_int> size() const noexcept
 		{
 			return { _width, _height };
 		}
 
+		/// <summary>
+		/// Get the width of this window
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline sp_int width() const noexcept
 		{
 			return _width;
 		}
 
+		/// <summary>
+		/// Get the height of this window
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline sp_int height() const noexcept
 		{
 			return _height;
 		}
 
+		/// <summary>
+		/// Get the minimum width of this window
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline sp_float minWidth() const noexcept
 		{
 			return _minWidth;
 		}
 
+		/// <summary>
+		/// Get the maximum geight of this window
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline sp_float minHeight() const noexcept
 		{
 			return _minHeight;
@@ -138,27 +193,53 @@ namespace NAMESPACE_FRONTEND
 
 			ImGuiIO io = ImGui::GetIO();
 			const sp_bool mouseHovered = isMouseHovered();
+			const ImVec2 mouseScreenPos = screenPosition(io.MousePos);
 
 			if (mouseHovered && !wasMouseHovered)
 			{
+				previousMousePosition = io.MousePos;
+
 				if (onMouseEnter != nullptr)
-					onMouseEnter(this, io.MousePos);
+					onMouseEnter(this, mouseScreenPos);
 			}
 
 			if (!mouseHovered && wasMouseHovered)
 			{
 				if (onMouseLeave != nullptr)
-					onMouseLeave(this, io.MousePos);
+					onMouseLeave(this, mouseScreenPos);
 			}
 
-			if (mouseHovered && io.MouseDown[0] && onMouseLeftButtonDown != nullptr)
-				onMouseLeftButtonDown(this, io.MousePos);
+			if (mouseHovered && io.MouseDown[0] && !wasMouseLeftButtonDown && onMouseLeftButtonDown != nullptr)
+			{
+				_wasMouseDownStartedThisWindow = true;
+				onMouseLeftButtonDown(this, mouseScreenPos);
+			}
 
-			if (mouseHovered && wasMouseLeftButtonDown && io.MouseReleased[0] && onMouseLeftButtonReleased != nullptr)
-				onMouseLeftButtonReleased(this, io.MousePos);
+			if (wasMouseLeftButtonDown && io.MouseReleased[0] && onMouseLeftButtonReleased != nullptr)
+			{
+				if (mouseHovered)
+					onMouseLeftButtonReleased(this, mouseScreenPos);
+				else
+				{
+					const ImVec2 pos = screenPosition(previousMousePosition);
+					onMouseLeftButtonReleased(this, pos);
+				}
+
+				_wasMouseDownStartedThisWindow = false;
+			}
+
+			if (mouseHovered 
+				&& (previousMousePosition.x != io.MousePos.x || previousMousePosition.y != io.MousePos.y) 
+				&& onMouseMove != nullptr)
+			{
+				const ImVec2 previousScreenPos = screenPosition(previousMousePosition);
+				onMouseMove(this, previousScreenPos, mouseScreenPos);
+			}
+
+			if (mouseHovered)
+				previousMousePosition = io.MousePos;
 
 			wasMouseHovered = mouseHovered;
-			previousMousePosition = io.MousePos;
 			wasMouseLeftButtonDown = io.MouseDown[0];
 		}
 
@@ -191,10 +272,19 @@ namespace NAMESPACE_FRONTEND
 			return _isFocused;
 		}
 
+		/// <summary>
+		/// Show this window
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline void show() noexcept
 		{
 			_visible = true;
 		}
+
+		/// <summary>
+		/// Hide this window
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline void hide() noexcept
 		{
 			_visible = false;
