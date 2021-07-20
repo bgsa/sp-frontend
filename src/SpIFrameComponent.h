@@ -11,15 +11,51 @@ namespace NAMESPACE_FRONTEND
 	{
 	protected:
 		sp_bool _visible;
+		sp_bool _isFocused;
 		sp_int _width, _height;
 		sp_float _minWidth, _minHeight;
+		ImVec2 _windowPosition;
+
+		ImVec2 previousMousePosition;
+		sp_bool wasMouseHovered;
+		sp_bool wasMouseLeftButtonDown;
 
 	public:
+
+		void (*onMouseEnter)(SpIFrameComponent* window, const ImVec2& mousePosition);
+		void (*onMouseLeave)(SpIFrameComponent* window, const ImVec2& mousePosition);
+		void (*onMouseLeftButtonDown)(SpIFrameComponent* window, const ImVec2& mousePosition);
+		void (*onMouseLeftButtonReleased)(SpIFrameComponent* window, const ImVec2& mousePosition);
 
 		API_INTERFACE inline SpIFrameComponent()
 		{
 			_visible = false;
+			_isFocused = false;
 			_minWidth = _minHeight = ZERO_FLOAT;
+			
+			previousMousePosition = ImVec2Zeros;
+			wasMouseHovered = false;
+			wasMouseLeftButtonDown = false;
+
+			onMouseEnter = nullptr;
+			onMouseLeave = nullptr;
+		}
+
+		/// <summary>
+		/// Check the cursor is hover the window
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_bool isMouseHovered() const
+		{
+			if (isFocused())
+			{
+				ImGuiIO io = ImGui::GetIO();
+				if (io.MousePos.x >= _windowPosition.x && io.MousePos.x <= _windowPosition.x + _width &&
+					io.MousePos.y >= _windowPosition.y && io.MousePos.y <= _windowPosition.y + _height)
+					return true;
+			}
+
+			return false;
 		}
 
 		API_INTERFACE virtual void render() = 0;
@@ -90,12 +126,40 @@ namespace NAMESPACE_FRONTEND
 				resize((sp_int)currentSize.x, (sp_int)currentSize.y);
 			}
 
+			_isFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_None);
+			_windowPosition = ImGui::GetWindowPos();
+
 			return isOpened;
 		}
 
 		API_INTERFACE inline void end()
 		{
 			ImGui::End();
+
+			ImGuiIO io = ImGui::GetIO();
+			const sp_bool mouseHovered = isMouseHovered();
+
+			if (mouseHovered && !wasMouseHovered)
+			{
+				if (onMouseEnter != nullptr)
+					onMouseEnter(this, io.MousePos);
+			}
+
+			if (!mouseHovered && wasMouseHovered)
+			{
+				if (onMouseLeave != nullptr)
+					onMouseLeave(this, io.MousePos);
+			}
+
+			if (mouseHovered && io.MouseDown[0] && onMouseLeftButtonDown != nullptr)
+				onMouseLeftButtonDown(this, io.MousePos);
+
+			if (mouseHovered && wasMouseLeftButtonDown && io.MouseReleased[0] && onMouseLeftButtonReleased != nullptr)
+				onMouseLeftButtonReleased(this, io.MousePos);
+
+			wasMouseHovered = mouseHovered;
+			previousMousePosition = io.MousePos;
+			wasMouseLeftButtonDown = io.MouseDown[0];
 		}
 
 		API_INTERFACE inline virtual void resize(const sp_int width, const sp_int height) noexcept
@@ -109,14 +173,22 @@ namespace NAMESPACE_FRONTEND
 				: height;
 		}
 
+		/// <summary>
+		/// Check the window is visible/hidden
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline sp_bool isVisible() const noexcept
 		{
 			return _visible;
 		}
 
+		/// <summary>
+		/// Check the window is focused/active
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline sp_bool isFocused() const
 		{
-			return ImGui::IsWindowFocused();
+			return _isFocused;
 		}
 
 		API_INTERFACE inline void show() noexcept

@@ -235,6 +235,7 @@
     <ClCompile Include="src\SpUIManager.cpp" />
     <ClCompile Include="src\SpUIMenuBarComponent.cpp" />
     <ClCompile Include="src\SpUINotificationManager.cpp" />
+    <ClCompile Include="src\SpUIViewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
