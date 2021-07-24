@@ -204,6 +204,7 @@
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIColorPicker.h" />
     <ClInclude Include="src\SpUIFonts.h" />
+    <ClInclude Include="src\SpUIGameObjectManipulator.h" />
     <ClInclude Include="src\SpUIIcons.h" />
     <ClInclude Include="src\SpUIImageButton.h" />
     <ClInclude Include="src\SpUIManager.h" />

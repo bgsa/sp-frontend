@@ -15,6 +15,8 @@ namespace NAMESPACE_FRONTEND
 		sp_int _width, _height;
 		sp_float _minWidth, _minHeight;
 		ImVec2 _windowPosition;
+		ImVec2 _contentRegionSize;
+		sp_float _headerHeight;
 
 		ImVec2 previousMousePosition;
 		sp_bool wasMouseHovered;
@@ -38,7 +40,8 @@ namespace NAMESPACE_FRONTEND
 			_visible = false;
 			_isFocused = false;
 			_minWidth = _minHeight = ZERO_FLOAT;
-			
+			_headerHeight = ZERO_FLOAT;
+
 			previousMousePosition = ImVec2Zeros;
 			wasMouseHovered = false;
 			wasMouseLeftButtonDown = false;
@@ -61,7 +64,7 @@ namespace NAMESPACE_FRONTEND
 			{
 				ImGuiIO io = ImGui::GetIO();
 				if (io.MousePos.x >= _windowPosition.x && io.MousePos.x <= _windowPosition.x + _width &&
-					io.MousePos.y >= _windowPosition.y && io.MousePos.y <= _windowPosition.y + _height)
+					io.MousePos.y >= _windowPosition.y + _headerHeight && io.MousePos.y <= _windowPosition.y + _height)
 					return true;
 			}
 
@@ -75,7 +78,7 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline ImVec2 screenPosition(const ImVec2 point) const
 		{
 			const sp_float x = sp_clamp(point.x - _windowPosition.x, 0.0f, (sp_float)_width);
-			const sp_float y = sp_clamp(point.y - _windowPosition.y, 0.0f, (sp_float)_height);
+			const sp_float y = sp_clamp(point.y - _windowPosition.y - _headerHeight, 0.0f, ((sp_float)_height) - _headerHeight);
 
 			return ImVec2(x, y);
 		}
@@ -87,6 +90,24 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline sp_bool wasMouseDownStartedThisWindow() const
 		{
 			return _wasMouseDownStartedThisWindow;
+		}
+
+		/// <summary>
+		/// Get the height of window header
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_float headerHeight() const
+		{
+			return _headerHeight;
+		}
+
+		/// <summary>
+		/// Get the content region available
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline ImVec2 contentRegionSize() const
+		{
+			return _contentRegionSize;
 		}
 
 		/// <summary>
@@ -183,6 +204,9 @@ namespace NAMESPACE_FRONTEND
 
 			_isFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_None);
 			_windowPosition = ImGui::GetWindowPos();
+
+			_contentRegionSize = ImGui::GetContentRegionAvail();
+			_headerHeight = _height - _contentRegionSize.y;
 
 			return isOpened;
 		}

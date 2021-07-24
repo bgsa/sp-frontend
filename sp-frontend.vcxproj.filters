@@ -245,9 +245,6 @@
     <ClInclude Include="src\ProjectExplorerFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PropertiesFrame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\SpectrumFronend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -429,6 +426,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SpPropertiesFrameComponentGameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpUIGameObjectManipulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

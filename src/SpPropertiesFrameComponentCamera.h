@@ -74,10 +74,10 @@ namespace NAMESPACE_FRONTEND
 			ImGui::InputFloat("Z##forward", (sp_float*)&forward.z, 0.0f, 0.0f, 4, ImGuiInputTextFlags_ReadOnly);
 			ImGui::PopItemWidth();
 
-			sp_float fieldOfView = camera->fieldOfView();
+			sp_float fieldOfView = degree(camera->fieldOfView());
 			ImGui::Text("Field of View:"); ImGui::SameLine();
-			ImGui::SliderFloat("##", &fieldOfView, SP_CAMERA_MIN_FIELD_OF_VIEW, SP_CAMERA_MAX_FIELD_OF_VIEW, "%.2f", 1.0f);
-			camera->fieldOfView(fieldOfView);
+			ImGui::SliderFloat("##", &fieldOfView, degree(SP_CAMERA_MIN_FIELD_OF_VIEW), degree(SP_CAMERA_MAX_FIELD_OF_VIEW), "%.2f", 1.0f);
+			camera->fieldOfView(radians(fieldOfView));
 
 			sp_float velocity = camera->velocity();
 			ImGui::Text("Velocity:"); ImGui::SameLine();

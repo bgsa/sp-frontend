@@ -4,6 +4,7 @@
 #include "SpIFrameComponent.h"
 #include "SpViewport.h"
 #include "SpUIColorPicker.h"
+#include "SpUIGameObjectManipulator.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -22,13 +23,9 @@ namespace NAMESPACE_FRONTEND
 		SpUIColorPicker colorPicker;
 
 		SpShader* linesShader;
-		SpShader* manipulatorShader;
 		SpGpuBuffer* vertexesBuffer;
 		SpGpuBuffer* indexesBuffer;
-
 		sp_uint _selectedObjectIndex;
-
-		void drawManipulator(const Vec3& center);
 
 		void drawNavigation();
 		
@@ -41,7 +38,7 @@ namespace NAMESPACE_FRONTEND
 			if (_selectedObjectIndex != SP_UINT_MAX)
 			{
 				const Vec3 position = scene()->transform(_selectedObjectIndex)->position;
-				drawManipulator(position);
+				gameObjectManipulator.render(viewport, position);
 			}
 
 			SpSize<sp_int> size = viewport.size();
@@ -49,12 +46,15 @@ namespace NAMESPACE_FRONTEND
 		}
 
 	public:
+		SpUIGameObjectManipulator gameObjectManipulator;
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <returns></returns>
 		API_INTERFACE inline SpUIViewport()
 		{
 			linesShader = nullptr;
-			manipulatorShader = nullptr;
-
 			_selectedObjectIndex = SP_UINT_MAX;
 		}
 
@@ -81,7 +81,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			SpIFrameComponent::resize(width, height);
 
-			SpRect<sp_int> area(0, 0, width, height);
+			SpRect<sp_int> area(0, 0, width, height - (sp_int)headerHeight());
 			viewport.resize(area);
 		}
 
@@ -107,6 +107,8 @@ namespace NAMESPACE_FRONTEND
 
 			viewport.scene = scene;
 			viewport.activeCameraIndex = scene->activeCameraIndex();
+
+			gameObjectManipulator.init(scene->shaders.find(2)->value());
 		}
 
 		/// <summary>
@@ -137,6 +139,11 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline void deselectObject()
 		{
 			_selectedObjectIndex = SP_UINT_MAX;
+		}
+
+		API_INTERFACE inline sp_uint selectedObject() const
+		{
+			return _selectedObjectIndex;
 		}
 
 		/// <summary>
