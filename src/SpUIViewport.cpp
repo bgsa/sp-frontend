@@ -5,6 +5,93 @@
 namespace NAMESPACE_FRONTEND
 {
 
+	void handleDragMove(SpUIViewport* uiViewport, const ImVec2& previousPosition, const ImVec2& currentPosition)
+	{
+		if (!uiViewport->_isDragging)
+			return;
+
+		const sp_float windingOrder = SpPhysicSettings::instance()->windingOrder();
+		const SpCamera* camera = uiViewport->scene()->camerasManager()->get(uiViewport->activeCameraIndex());
+		const SpSize<sp_float> viewport(uiViewport->contentRegionSize().x, uiViewport->contentRegionSize().y);
+		SpTransform* transform = uiViewport->scene()->transform(uiViewport->selectedObject());
+
+		Ray rayPrev, rayCurr;
+		camera->raycast(Vec2(previousPosition.x, previousPosition.y), viewport, rayPrev);
+		camera->raycast(Vec2(currentPosition.x, currentPosition.y), viewport, rayCurr);
+
+		switch (uiViewport->_draggingObject)
+		{
+		case 1: // X-AXIS
+		{
+			const Plane planeXZ(transform->position, Vec3Up);
+
+			Vec3 contactPrev, contactCurr;
+			rayPrev.intersection(planeXZ, contactPrev);
+			rayCurr.intersection(planeXZ, contactCurr);
+
+			const sp_float distanceX = contactCurr.x - contactPrev.x;
+
+			transform->position.x += distanceX;
+			break;
+		}
+		case 2: // Y-AXIS
+		{
+			const Plane planeXY(transform->position, Vec3Front * windingOrder);
+
+			Vec3 contactPrev, contactCurr;
+			rayPrev.intersection(planeXY, contactPrev);
+			rayCurr.intersection(planeXY, contactCurr);
+
+			const sp_float distanceY = contactCurr.y - contactPrev.y;
+
+			transform->position.y += distanceY;
+			break;
+		}
+		case 3: // Z-AXIS
+		{
+			const Plane planeXZ(transform->position, Vec3Up);
+
+			Vec3 contactPrev, contactCurr;
+			rayPrev.intersection(planeXZ, contactPrev);
+			rayCurr.intersection(planeXZ, contactCurr);
+
+			const sp_float distanceZ = contactCurr.z - contactPrev.z;
+
+			transform->position.z += distanceZ;
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+	void handleCameraMove(SpUIViewport* uiViewport, const ImVec2& previousPosition, const ImVec2& currentPosition)
+	{
+		const ImGuiIO io = ImGui::GetIO();
+		
+		if (io.KeyCtrl) // check control key pressed
+		{
+			SpCamera* camera = uiViewport->scene()->camerasManager()->get(uiViewport->activeCameraIndex());
+
+			const sp_float angleIncrementX = (camera->fieldOfView() / uiViewport->contentRegionSize().x) * uiViewport->contentRegionAspectRatio();
+			const sp_float angleIncrementY = (camera->fieldOfView() / uiViewport->contentRegionSize().y);
+
+			const sp_float angleX = (currentPosition.x - previousPosition.x + 0.5f) * angleIncrementX;
+			const sp_float angleY = (currentPosition.y - previousPosition.y + 0.5f) * angleIncrementY;
+
+			const sp_float windingOrder = SpPhysicSettings::instance()->windingOrder();
+			const Quat xAxis = Quat::createRotate(angleX * windingOrder, camera->up());
+			const Quat yAxis = Quat::createRotate(angleY * windingOrder, camera->right());
+
+			Vec3 newTarget, newTarget1;
+			diff(camera->target(), camera->position(), newTarget);
+			rotate(xAxis, newTarget, newTarget1);
+			rotate(yAxis, newTarget1, newTarget);
+			
+			camera->target(newTarget + camera->position());
+		}
+	}
+
 	void SpUIViewport_onMouseDown(SpIFrameComponent* window, const ImVec2& mousePosition)
 	{
 		SpUIViewport* uiViewport = (SpUIViewport*)window;
@@ -60,62 +147,9 @@ namespace NAMESPACE_FRONTEND
 	{
 		SpUIViewport* uiViewport = (SpUIViewport*)window;
 
-		if (!uiViewport->_isDragging)
-			return;
+		handleDragMove(uiViewport, previousPosition, currentPosition);
 
-		const sp_float windingOrder = SpPhysicSettings::instance()->windingOrder();
-		const SpCamera* camera = uiViewport->scene()->camerasManager()->get(uiViewport->activeCameraIndex());
-		const SpSize<sp_float> viewport(uiViewport->contentRegionSize().x, uiViewport->contentRegionSize().y);
-		SpTransform* transform = uiViewport->scene()->transform(uiViewport->selectedObject());
-		
-		Ray rayPrev, rayCurr;
-		camera->raycast(Vec2(previousPosition.x, previousPosition.y), viewport, rayPrev);
-		camera->raycast(Vec2(currentPosition.x, currentPosition.y), viewport, rayCurr);
-		
-		switch (uiViewport->_draggingObject)
-		{
-		case 1: // X-AXIS
-		{
-			const Plane planeXZ(transform->position, Vec3Up);
-			
-			Vec3 contactPrev, contactCurr;
-			rayPrev.intersection(planeXZ, contactPrev);
-			rayCurr.intersection(planeXZ, contactCurr);
- 
-			const sp_float distanceX = contactCurr.x - contactPrev.x;
-
-			transform->position.x += distanceX;
-			break;
-		}
-		case 2: // Y-AXIS
-		{
-			const Plane planeXY(transform->position, Vec3Front * windingOrder);
-
-			Vec3 contactPrev, contactCurr;
-			rayPrev.intersection(planeXY, contactPrev);
-			rayCurr.intersection(planeXY, contactCurr);
-
-			const sp_float distanceY = contactCurr.y - contactPrev.y;
-
-			transform->position.y += distanceY;
-			break;
-		}
-		case 3: // Z-AXIS
-		{
-			const Plane planeXZ(transform->position, Vec3Up);
-
-			Vec3 contactPrev, contactCurr;
-			rayPrev.intersection(planeXZ, contactPrev);
-			rayCurr.intersection(planeXZ, contactCurr);
-
-			const sp_float distanceZ = contactCurr.z - contactPrev.z;
-
-			transform->position.z += distanceZ;
-			break;
-		}
-		default:
-			break;
-		}
+		handleCameraMove(uiViewport, previousPosition, currentPosition);
 	}
 
 	void SpUIViewport_onMouseEnter(SpIFrameComponent* window, const ImVec2& mousePosition)
@@ -250,6 +284,42 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		colorPicker.render();
+
+		if (isFocused())
+		{
+			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
+				deselectObject();
+
+			SpCamera* camera = scene()->camerasManager()->get(scene()->activeCameraIndex());
+
+			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)))
+			{
+				const Vec3 translation = camera->right() * camera->velocity();
+				camera->position(camera->position() - translation);
+				camera->target(camera->target() - translation);
+			}
+
+			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightArrow)))
+			{
+				const Vec3 translation = camera->right() * camera->velocity();
+				camera->position(camera->position() + translation);
+				camera->target(camera->target() + translation);
+			}
+
+			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)))
+			{
+				const Vec3 translation = camera->direction() * camera->velocity();
+				camera->position(camera->position() + translation);
+				camera->target(camera->target() + translation);
+			}
+
+			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_DownArrow)))
+			{
+				const Vec3 translation = camera->direction() * camera->velocity();
+				camera->position(camera->position() - translation);
+				camera->target(camera->target() - translation);
+			}
+		}
 
 		end();
 		ImGui::PopStyleVar();
