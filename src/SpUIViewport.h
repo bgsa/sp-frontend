@@ -43,10 +43,15 @@ namespace NAMESPACE_FRONTEND
 
 			SpSize<sp_int> size = viewport.size();
 			ImGui::Image((void*)(intptr_t)viewport.framebuffer()->colorTexture(), ImVec2((sp_float)size.width, (sp_float)size.height), ImVec2(0, 1), ImVec2(1, 0));
+		
+			if (_isDragging)
+				ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 		}
 
 	public:
 		SpUIGameObjectManipulator gameObjectManipulator;
+		sp_bool _isDragging;
+		sp_int _draggingObject;
 
 		/// <summary>
 		/// Default constructor
@@ -56,6 +61,8 @@ namespace NAMESPACE_FRONTEND
 		{
 			linesShader = nullptr;
 			_selectedObjectIndex = SP_UINT_MAX;
+			_draggingObject = 0;
+			_isDragging = true;
 		}
 
 		/// <summary>

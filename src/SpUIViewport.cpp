@@ -7,53 +7,115 @@ namespace NAMESPACE_FRONTEND
 
 	void SpUIViewport_onMouseDown(SpIFrameComponent* window, const ImVec2& mousePosition)
 	{
-		std::cout << "DOWN: " << mousePosition.x << " - " << mousePosition.y << std::endl;
-
 		SpUIViewport* uiViewport = (SpUIViewport*)window;
 
 		if (uiViewport->selectedObject() == SP_UINT_MAX)
 			return;
 
-		SpCamera* camera = uiViewport->scene()->camerasManager()->get(uiViewport->activeCameraIndex());
+		const SpCamera* camera = uiViewport->scene()->camerasManager()->get(uiViewport->activeCameraIndex());
+		const SpSize<sp_float> viewport(uiViewport->contentRegionSize().x, uiViewport->contentRegionSize().y);
 
-		Vec2 screenCenter(uiViewport->contentRegionSize().x * 0.5f, uiViewport->contentRegionSize().y * 0.5f);
+		Ray ray;
+		camera->raycast(Vec2(mousePosition.x, mousePosition.y), viewport, ray);
 
-		const sp_float fov = degree(camera->fieldOfView());
-		sp_float angleIncrementX = (fov / uiViewport->contentRegionSize().x) * 0.5f;
-		sp_float angleIncrementY = (fov / uiViewport->contentRegionSize().y) * 0.5f;
-		
-		const sp_float angleX = radians((mousePosition.x - screenCenter.x) * angleIncrementX);
-		const sp_float angleY = radians((mousePosition.y - screenCenter.y) * angleIncrementY);
-
-		const Quat xAxis = Quat::createRotate(-angleX, camera->up());
-		const Quat yAxis = Quat::createRotate(-angleY, camera->right());
-
-		Vec3 ray1 = camera->direction();
-		Vec3 ray2, ray3;
-		rotate(xAxis, ray1, ray2);
-		rotate(yAxis, ray2, ray3);
-		normalize(ray3);
-
-		Ray r = Ray(camera->position(), ray3);
-		AABB aabb = uiViewport->gameObjectManipulator.xAxisAABB();
 		Vec3 contacts[2];
 		sp_float distanceToFirstContact, distanceToSecondContact;
 
-		if (r.intersection(aabb, contacts, distanceToFirstContact, distanceToSecondContact))
+		AABB aabb = uiViewport->gameObjectManipulator.xAxisAABB();
+		if (ray.intersection(aabb, contacts, distanceToFirstContact, distanceToSecondContact))
 		{
-			int a = 1;
+			uiViewport->_isDragging = true;
+			uiViewport->_draggingObject = 1;
+			return;
+		}
+		
+		aabb = uiViewport->gameObjectManipulator.yAxisAABB();
+		if (ray.intersection(aabb, contacts, distanceToFirstContact, distanceToSecondContact))
+		{
+			uiViewport->_isDragging = true;
+			uiViewport->_draggingObject = 2;
+			return;
+		}
+
+		aabb = uiViewport->gameObjectManipulator.zAxisAABB();
+		if (ray.intersection(aabb, contacts, distanceToFirstContact, distanceToSecondContact))
+		{
+			uiViewport->_isDragging = true;
+			uiViewport->_draggingObject = 3;
+			return;
 		}
 	}
 
 	void SpUIViewport_onMouseReleased(SpIFrameComponent* window, const ImVec2& mousePosition)
 	{
-		if (window->wasMouseDownStartedThisWindow())
-			std::cout << "RELEASED: " << mousePosition.x << " - " << mousePosition.y << std::endl;
+		// if (window->wasMouseDownStartedThisWindow())
+		
+		SpUIViewport* uiViewport = (SpUIViewport*)window;
+
+		uiViewport->_draggingObject = 0;
+		uiViewport->_isDragging = false;
 	}
 
 	void SpUIViewport_onMouseMove(SpIFrameComponent* window, const ImVec2& previousPosition, const ImVec2& currentPosition)
 	{
-		std::cout << currentPosition.x << " - " << currentPosition.y << std::endl;
+		SpUIViewport* uiViewport = (SpUIViewport*)window;
+
+		if (!uiViewport->_isDragging)
+			return;
+
+		const sp_float windingOrder = SpPhysicSettings::instance()->windingOrder();
+		const SpCamera* camera = uiViewport->scene()->camerasManager()->get(uiViewport->activeCameraIndex());
+		const SpSize<sp_float> viewport(uiViewport->contentRegionSize().x, uiViewport->contentRegionSize().y);
+		SpTransform* transform = uiViewport->scene()->transform(uiViewport->selectedObject());
+		
+		Ray rayPrev, rayCurr;
+		camera->raycast(Vec2(previousPosition.x, previousPosition.y), viewport, rayPrev);
+		camera->raycast(Vec2(currentPosition.x, currentPosition.y), viewport, rayCurr);
+		
+		switch (uiViewport->_draggingObject)
+		{
+		case 1: // X-AXIS
+		{
+			const Plane planeXZ(transform->position, Vec3Up);
+			
+			Vec3 contactPrev, contactCurr;
+			rayPrev.intersection(planeXZ, contactPrev);
+			rayCurr.intersection(planeXZ, contactCurr);
+ 
+			const sp_float distanceX = contactCurr.x - contactPrev.x;
+
+			transform->position.x += distanceX;
+			break;
+		}
+		case 2: // Y-AXIS
+		{
+			const Plane planeXY(transform->position, Vec3Front * windingOrder);
+
+			Vec3 contactPrev, contactCurr;
+			rayPrev.intersection(planeXY, contactPrev);
+			rayCurr.intersection(planeXY, contactCurr);
+
+			const sp_float distanceY = contactCurr.y - contactPrev.y;
+
+			transform->position.y += distanceY;
+			break;
+		}
+		case 3: // Z-AXIS
+		{
+			const Plane planeXZ(transform->position, Vec3Up);
+
+			Vec3 contactPrev, contactCurr;
+			rayPrev.intersection(planeXZ, contactPrev);
+			rayCurr.intersection(planeXZ, contactCurr);
+
+			const sp_float distanceZ = contactCurr.z - contactPrev.z;
+
+			transform->position.z += distanceZ;
+			break;
+		}
+		default:
+			break;
+		}
 	}
 
 	void SpUIViewport_onMouseEnter(SpIFrameComponent* window, const ImVec2& mousePosition)

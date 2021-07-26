@@ -49,6 +49,30 @@ namespace NAMESPACE_FRONTEND
 			);
 		}
 
+		/// <summary>
+		/// Get the y axis AABB
+		/// </summary>
+		/// <returns>AABB</returns>
+		API_INTERFACE inline AABB yAxisAABB() const
+		{
+			return AABB(
+				Vec3(position.x - thickness, position.y, position.z - thickness),
+				Vec3(position.x + thickness, position.y + manipulatorSize, position.z + thickness)
+			);
+		}
+
+		/// <summary>
+		/// Get the z axis AABB
+		/// </summary>
+		/// <returns>AABB</returns>
+		API_INTERFACE inline AABB zAxisAABB() const
+		{
+			return AABB(
+				Vec3(position.x - thickness, position.y - thickness, position.z),
+				Vec3(position.x + thickness, position.y + thickness, position.z + manipulatorSize)
+			);
+		}
+
 		API_INTERFACE inline void init(SpShader* shader)
 		{
 			if (manipulatorShader != nullptr)

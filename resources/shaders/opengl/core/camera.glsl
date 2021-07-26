@@ -1,5 +1,5 @@
-#define SP_CAMERA_PROJECTION_INDEX (15)
-#define SP_CAMERA_VIEW_INDEX       (19)
+#define SP_CAMERA_PROJECTION_INDEX (16)
+#define SP_CAMERA_VIEW_INDEX       (20)
 
 mat4 Mat4CameraProjection(uint cameraIndex)
 {

@@ -77,7 +77,9 @@ namespace NAMESPACE_FRONTEND
 			sp_float fieldOfView = degree(camera->fieldOfView());
 			ImGui::Text("Field of View:"); ImGui::SameLine();
 			ImGui::SliderFloat("##", &fieldOfView, degree(SP_CAMERA_MIN_FIELD_OF_VIEW), degree(SP_CAMERA_MAX_FIELD_OF_VIEW), "%.2f", 1.0f);
-			camera->fieldOfView(radians(fieldOfView));
+			fieldOfView = radians(fieldOfView);
+			if (!isCloseEnough(camera->fieldOfView(), fieldOfView))
+				camera->fieldOfView(fieldOfView);
 
 			sp_float velocity = camera->velocity();
 			ImGui::Text("Velocity:"); ImGui::SameLine();

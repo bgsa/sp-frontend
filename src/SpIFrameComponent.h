@@ -314,6 +314,15 @@ namespace NAMESPACE_FRONTEND
 			_visible = false;
 		}
 
+		/// <summary>
+		/// Get the aspect ratio of content region
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_float contentRegionAspectRatio() const
+		{
+			return (sp_float)(_contentRegionSize.x / _contentRegionSize.y);
+		}
+
 	};
 }
 
