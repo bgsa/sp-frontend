@@ -3,8 +3,10 @@
 
 layout(location = 0) uniform samplerBuffer cameras;
 layout(location = 1) uniform samplerBuffer transforms;
-layout(location = 2) uniform unsigned int  cameraIndex;
-layout(location = 3) uniform unsigned int  transformIndex;
+layout(location = 2) uniform samplerBuffer lights;
+layout(location = 3) uniform int  lightsLength;
+layout(location = 4) uniform unsigned int  cameraIndex;
+layout(location = 5) uniform unsigned int  transformIndex;
 
 layout(location = 0) in vec3 Position;
 layout(location = 1) in vec3 Normal;

@@ -19,7 +19,7 @@ namespace NAMESPACE_FRONTEND
 		SpWorldManagerInstance->current()->renderer->resize((sp_float)width(), (sp_float)width());
 
 		// init lights
-		SpLightManager::instance()->addLight(SP_RGB_WHITE, Vec3(10.0f, 10.0f, 0.0f));
+		SpLightManager::instance()->addLight(SpColorRGBWhite, Vec3(10.0f, 10.0f, 0.0f));
 
 		const sp_uint rockLength = SpWorldManagerInstance->current()->objectsLengthAllocated() - 1u;
 		const sp_uint worldObjectsLength = 1u;
