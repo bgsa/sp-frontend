@@ -20,12 +20,11 @@ struct SpLightSource
 	vec3  color;
 };
 
-SpLightSource LightLoad(int lightIndex)
+void LightLoad(int lightIndex, out SpLightSource light)
 {
 	int textureIndex  = (lightIndex * SP_LIGHT_ROW_LENGTH);
 	vec4 tex = texelFetch(lights, textureIndex);
 
-	SpLightSource light;	
 	light.type      = floatBitsToInt(tex.x);
 	light.isEnabled = bool(floatBitsToInt(tex.y));
 	light.isStatic  = bool(floatBitsToInt(tex.z));
@@ -40,6 +39,4 @@ SpLightSource LightLoad(int lightIndex)
 	light.spotlightType = int(tex.w);
 	
 	light.color = texelFetch(lights, textureIndex + 3).xyz;
-	
-	return light;
 }

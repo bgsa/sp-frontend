@@ -5,16 +5,20 @@ precision mediump float;
 layout(location = 0) uniform samplerBuffer cameras;
 layout(location = 1) uniform samplerBuffer transforms;
 layout(location = 2) uniform samplerBuffer lights;
-layout(location = 3) uniform int  lightsLength;
-layout(location = 4) uniform unsigned int  cameraIndex;
-layout(location = 5) uniform unsigned int  transformIndex;
+layout(location = 3) uniform samplerBuffer materials;
+layout(location = 4) uniform int  lightsLength;
+layout(location = 5) uniform unsigned int  cameraIndex;
+layout(location = 6) uniform unsigned int  transformIndex;
+layout(location = 7) uniform unsigned int  renderableObjectIndex;
 
+flat in  int  instanceID;
 flat in  vec3 normalCoord;
      in  vec3 eyeCoord;
 
      out vec4 FragOutput;
 
 #include "../core/lighting.glsl"
+#include "../core/material.glsl"
 
 vec4 PhongShading()
 {
@@ -22,10 +26,14 @@ vec4 PhongShading()
 	vec3 diffuseLightColor  = vec3(0.0, 0.0, 0.0);
 	vec3 specularLightColor = vec3(0.0, 0.0, 0.0);
 	vec3 fragmentNormal = normalize(normalCoord);
+	
+	SpMaterial material;
+	MaterialLoad(renderableObjectIndex, material);
 
 	for(int i = 0; i < lightsLength; i++)
 	{
-		SpLightSource light = LightLoad(i);
+		SpLightSource light;
+		LightLoad(i, light);
 		
 		if (light.isEnabled)
 		{		
@@ -57,7 +65,7 @@ vec4 PhongShading()
 	specularLightColor = specularIntensity * LightColor;
 	*/
 	
-	return vec4(ambientLightColor + diffuseLightColor, 1.0);
+	return material.color * vec4(material.ambient * ambientLightColor + material.diffuse * diffuseLightColor, 1.0);
 }
 
 void main()
