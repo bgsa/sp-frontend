@@ -131,6 +131,26 @@ namespace NAMESPACE_FRONTEND
 				ImGui::TreePop();
 			}
 
+			if (ImGui::TreeNode("Lighting"))
+			{
+				SpLightingManager* lightManager = scene->lightingManager();
+
+				for (sp_size i = 0; i < lightManager->length(); i++)
+				{
+					sp_char* name = lightManager->name(i);
+
+					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+					{
+						if (ImGui::IsItemClicked())
+							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameLighting, i);
+
+						ImGui::TreePop();
+					}
+				}
+
+				ImGui::TreePop();
+			}
+
 			if (ImGui::TreeNode("Meshes"))
 			{
 				for (sp_size i = 0; i < scene->meshManager()->length(); i++)

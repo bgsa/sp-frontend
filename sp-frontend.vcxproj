@@ -201,6 +201,7 @@
     <ClInclude Include="src\SpProjectManager.h" />
     <ClInclude Include="src\SpPropertiesFrameComponent.h" />
     <ClInclude Include="src\SpPropertiesFrameComponentGameObject.h" />
+    <ClInclude Include="src\SpPropertiesFrameComponentLighting.h" />
     <ClInclude Include="src\SpToolbarFrame.h" />
     <ClInclude Include="src\SpUIColorPicker.h" />
     <ClInclude Include="src\SpUIFonts.h" />
