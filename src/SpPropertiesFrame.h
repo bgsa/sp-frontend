@@ -16,7 +16,7 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpScene* _scene;
-		SpPropertiesFrameComponent* propertiesComponent;
+		SpPropertiesFrameComponent* _propertiesComponent;
 		sp_uint _selectedIndex;
 
 		inline void renderVec3Property(const sp_char* name,  const Vec3& value)
@@ -121,7 +121,7 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline SpPropertiesFrame()
 		{
-			propertiesComponent = nullptr;
+			_propertiesComponent = nullptr;
 			_selectedIndex = SP_UINT_MAX;
 		}
 
@@ -132,11 +132,28 @@ namespace NAMESPACE_FRONTEND
 			show();
 		}
 
+		API_INTERFACE inline SpPropertiesFrameComponent* propertiesComponent() const
+		{
+			return _propertiesComponent;
+		}
+
+		API_INTERFACE inline sp_uint selectedIndex() const
+		{
+			return _selectedIndex;
+		}
+
 		API_INTERFACE inline void select(SpScene* scene, SpPropertiesFrameComponent* component, const sp_uint index)
 		{
 			_scene = scene;
-			propertiesComponent = component;
+			_propertiesComponent = component;
 			_selectedIndex = index;
+		}
+
+		API_INTERFACE inline void deselect()
+		{
+			_scene = nullptr;
+			_propertiesComponent = nullptr;
+			_selectedIndex = SP_UINT_MAX;
 		}
 
 		API_INTERFACE void render() override;

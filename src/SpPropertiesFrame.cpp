@@ -31,8 +31,8 @@ namespace NAMESPACE_FRONTEND
 		if (ImGui::GetMouseCursor() == ImGuiMouseCursor_ResizeNWSE)
 			ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
 
-		if (_scene != nullptr && propertiesComponent != nullptr && _selectedIndex != SP_UINT_MAX)
-			propertiesComponent->render(_scene, _selectedIndex);
+		if (_scene != nullptr && _propertiesComponent != nullptr && _selectedIndex != SP_UINT_MAX)
+			_propertiesComponent->render(_scene, _selectedIndex);
 
 		end();
 		ImGui::PopStyleColor();

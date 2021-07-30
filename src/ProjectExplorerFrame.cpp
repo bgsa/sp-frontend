@@ -90,7 +90,11 @@ namespace NAMESPACE_FRONTEND
 			{
 				sp_char* name = lightManager->name(i);
 
-				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				const sp_bool lightClicked = ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf);
+
+				renderLightContextMenu(scene, i);
+
+				if (lightClicked)
 				{
 					if (ImGui::IsItemClicked())
 						SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameLighting, i);
@@ -118,6 +122,26 @@ namespace NAMESPACE_FRONTEND
 
 				const sp_uint index = scene->lightingManager()->add();
 				scene->lightingManager()->name(index, frameIdStr, 6 + frameIdStrLength);
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+
+	void ProjectExplorerFrame::renderLightContextMenu(SpScene* scene, const sp_uint index)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete", NULL, false, true))
+			{
+				scene->lightingManager()->remove(index);
+
+				// check light properties
+				if (SpUIManagerInstance->propertiesFrame.propertiesComponent() == &SpUIManagerInstance->propertiesFrameLighting
+					&& SpUIManagerInstance->propertiesFrame.selectedIndex() == index)
+				{
+					SpUIManagerInstance->propertiesFrame.deselect();
+				}
 			}
 
 			ImGui::EndPopup();

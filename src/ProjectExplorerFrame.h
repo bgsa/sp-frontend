@@ -60,6 +60,7 @@ namespace NAMESPACE_FRONTEND
 
 		void renderLightingNode(SpScene* scene);
 		void renderLightingContextMenu(SpScene* scene);
+		void renderLightContextMenu(SpScene* scene, const sp_uint index);
 
 	public:
 
