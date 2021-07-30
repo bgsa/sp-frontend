@@ -195,11 +195,17 @@ namespace NAMESPACE_FRONTEND
 			if (gameObject->isRenderableObject())
 			{
 				const sp_size renderableObjectIndex = gameObject->renderableObjectIndex();
-				SpMaterial* material = scene->renderableObjectManager()->material(renderableObjectIndex);
+				SpRenderableObject* renderableObject = scene->renderableObjectManager()->get(renderableObjectIndex);
 
+				sp_bool visibility = renderableObject->isVisible();
+				ImGui::Checkbox("Visible", &visibility);
+				if (visibility != renderableObject->isVisible())
+					renderableObject->visible(visibility);
+				
 				ImGui::SetNextTreeNodeOpen(true);
 				if (ImGui::TreeNode("Material"))
 				{
+					SpMaterial* material = scene->renderableObjectManager()->material(renderableObjectIndex);
 					renderMaterialColor(material);
 					renderMaterialAmbient(material);
 					renderMaterialDiffuse(material);
