@@ -5,6 +5,125 @@
 namespace NAMESPACE_FRONTEND
 {
 
+	void ProjectExplorerFrame::renderGameObjectsNode(SpScene* scene)
+	{
+		const sp_bool gameObjectNodeOpened = ImGui::TreeNode("Game Objects");
+
+		renderGameObjectsContextMenu(scene);
+
+		if (gameObjectNodeOpened)
+		{
+			for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
+			{
+				const SpGameObject* gameObject = scene->gameObject(i);
+				sp_char* name = gameObject->name();
+
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				{
+					if (ImGui::IsItemClicked())
+					{
+						SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameGameObject, i);
+
+						for (SpVectorItem<SpUIViewport*>* item = SpUIManagerInstance->viewports.begin(); item != nullptr; item = item->next())
+							item->value()->selectObject(i);
+					}
+
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
+	void ProjectExplorerFrame::renderCameraNode(SpScene* scene)
+	{
+		if (ImGui::TreeNode("Cameras"))
+		{
+			SpCameraManager* cameraManager = scene->camerasManager();
+
+			for (sp_size i = 0; i < cameraManager->length(); i++)
+			{
+				sp_char* name = cameraManager->name(i);
+
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				{
+					if (ImGui::IsItemClicked())
+						SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameCamera, i);
+
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
+	void ProjectExplorerFrame::renderMeshesNode(SpScene* scene)
+	{
+		if (ImGui::TreeNode("Meshes"))
+		{
+			for (sp_size i = 0; i < scene->meshManager()->length(); i++)
+			{
+				sp_char* name = scene->meshManager()->name(i);
+
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				{
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
+	void ProjectExplorerFrame::renderLightingNode(SpScene* scene)
+	{
+		const sp_bool lightingNodeOpened = ImGui::TreeNode("Lighting");
+		renderLightingContextMenu(scene);
+
+		if (lightingNodeOpened)
+		{
+			SpLightingManager* lightManager = scene->lightingManager();
+
+			for (sp_size i = 0; i < lightManager->length(); i++)
+			{
+				sp_char* name = lightManager->name(i);
+
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				{
+					if (ImGui::IsItemClicked())
+						SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameLighting, i);
+
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
+	void ProjectExplorerFrame::renderLightingContextMenu(SpScene* scene)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Add", NULL, false, true))
+			{
+				const sp_size frameId = SpPhysicSettings::instance()->frameId();
+				sp_char frameIdStr[20];
+				sp_uint frameIdStrLength;
+				std::memcpy(frameIdStr, "Light ", 6);
+				convert(frameId, &frameIdStr[6], frameIdStrLength);
+				frameIdStr[6 + frameIdStrLength] = END_OF_STRING;
+
+				const sp_uint index = scene->lightingManager()->add();
+				scene->lightingManager()->name(index, frameIdStr, 6 + frameIdStrLength);
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+
 	void ProjectExplorerFrame::renderGameObjectsContextMenu(SpScene* scene)
 	{
 		if (ImGui::BeginPopupContextItem())
@@ -26,6 +145,24 @@ namespace NAMESPACE_FRONTEND
 			}
 
 			ImGui::EndPopup();
+		}
+	}
+
+	void ProjectExplorerFrame::renderShadersNode(SpScene* scene)
+	{
+		if (ImGui::TreeNode("Shaders"))
+		{
+			for (SpVectorItem<SpShader*>* item = scene->shaders.begin(); item != nullptr; item = item->next())
+			{
+				const sp_char* name = item->value()->name();
+
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				{
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::TreePop();
 		}
 	}
 
@@ -81,105 +218,21 @@ namespace NAMESPACE_FRONTEND
 	{
 		SpScene* scene = sceneItem->value();
 
-		if (ImGui::TreeNode(scene->name()))
+		const sp_bool sceneNodeOpened = ImGui::TreeNode(scene->name());
+
+		renderSceneContextMenu(sceneItem, canDeleteScene);
+
+		if (sceneNodeOpened)
 		{
-			renderSceneContextMenu(sceneItem, canDeleteScene);
+			renderGameObjectsNode(scene);
 
-			if (ImGui::TreeNode("Game Objects"))
-			{
-				renderGameObjectsContextMenu(scene);
+			renderCameraNode(scene);
 
-				for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
-				{
-					const SpGameObject* gameObject = scene->gameObject(i);
-					sp_char* name = gameObject->name();
+			renderLightingNode(scene);
 
-					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-					{
-						if (ImGui::IsItemClicked())
-						{
-							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameGameObject, i);
+			renderMeshesNode(scene);
 
-							for (SpVectorItem<SpUIViewport*>* item = SpUIManagerInstance->viewports.begin(); item != nullptr; item = item->next())
-								item->value()->selectObject(i);
-						}
-
-						ImGui::TreePop();
-					}
-				}
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("Cameras"))
-			{
-				SpCameraManager* cameraManager = scene->camerasManager();
-
-				for (sp_size i = 0; i < cameraManager->length(); i++)
-				{
-					sp_char* name = cameraManager->name(i);
-
-					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-					{
-						if (ImGui::IsItemClicked())
-							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameCamera, i);
-
-						ImGui::TreePop();
-					}
-				}
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("Lighting"))
-			{
-				SpLightingManager* lightManager = scene->lightingManager();
-
-				for (sp_size i = 0; i < lightManager->length(); i++)
-				{
-					sp_char* name = lightManager->name(i);
-
-					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-					{
-						if (ImGui::IsItemClicked())
-							SpUIManagerInstance->propertiesFrame.select(scene, &SpUIManagerInstance->propertiesFrameLighting, i);
-
-						ImGui::TreePop();
-					}
-				}
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("Meshes"))
-			{
-				for (sp_size i = 0; i < scene->meshManager()->length(); i++)
-				{
-					sp_char* name = scene->meshManager()->name(i);
-
-					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-					{
-						ImGui::TreePop();
-					}
-				}
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("Shaders"))
-			{
-				for (SpVectorItem<SpShader*>* item = scene->shaders.begin(); item != nullptr; item = item->next())
-				{
-					const sp_char* name = item->value()->name();
-
-					if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
-					{
-						ImGui::TreePop();
-					}
-				}
-
-				ImGui::TreePop();
-			}
+			renderShadersNode(scene);
 
 			if (ImGui::TreeNode("Scripts"))
 			{

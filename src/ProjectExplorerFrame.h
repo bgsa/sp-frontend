@@ -29,6 +29,7 @@ namespace NAMESPACE_FRONTEND
 			}
 		}
 
+		void renderSceneNode(SpVectorItem<SpScene*>* sceneItem, const sp_bool canDeleteScene);
 		void renderSceneContextMenu(SpVectorItem<SpScene*>* sceneItem, const sp_bool canDeleteScene)
 		{
 			if (ImGui::BeginPopupContextItem())
@@ -48,9 +49,17 @@ namespace NAMESPACE_FRONTEND
 			}
 		}
 
+		void renderGameObjectsNode(SpScene* scene);
 		void renderGameObjectsContextMenu(SpScene* scene);
 
-		void renderSceneNode(SpVectorItem<SpScene*>* sceneItem, const sp_bool canDeleteScene);
+		void renderCameraNode(SpScene* scene);
+
+		void renderMeshesNode(SpScene* scene);
+
+		void renderShadersNode(SpScene* scene);
+
+		void renderLightingNode(SpScene* scene);
+		void renderLightingContextMenu(SpScene* scene);
 
 	public:
 
