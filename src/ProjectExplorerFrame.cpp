@@ -5,6 +5,29 @@
 namespace NAMESPACE_FRONTEND
 {
 
+	void ProjectExplorerFrame::renderGameObjectContextMenu(SpScene* scene, const sp_uint index)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete", NULL, false, true))
+			{
+				scene->removeGameObject(index);
+
+				// check game object selected
+				if (SpUIManagerInstance->propertiesFrame.propertiesComponent() == &SpUIManagerInstance->propertiesFrameGameObject
+					&& SpUIManagerInstance->propertiesFrame.selectedIndex() == index)
+				{
+					SpUIManagerInstance->propertiesFrame.deselect();
+
+					for (SpVectorItem<SpUIViewport*>* item = SpUIManagerInstance->viewports.begin(); item != nullptr; item = item->next())
+						item->value()->deselectObject();
+				}
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+
 	void ProjectExplorerFrame::renderGameObjectsNode(SpScene* scene)
 	{
 		const sp_bool gameObjectNodeOpened = ImGui::TreeNode("Game Objects");
@@ -16,9 +39,13 @@ namespace NAMESPACE_FRONTEND
 			for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
 			{
 				const SpGameObject* gameObject = scene->gameObject(i);
-				sp_char* name = gameObject->name();
+				const sp_char* name = scene->gameObjectManager()->name(i);
 
-				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				const sp_bool gameObjectNodeClicked = ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf);
+
+				renderGameObjectContextMenu(scene, i);
+
+				if (gameObjectNodeClicked)
 				{
 					if (ImGui::IsItemClicked())
 					{
@@ -136,11 +163,14 @@ namespace NAMESPACE_FRONTEND
 			{
 				scene->lightingManager()->remove(index);
 
-				// check light properties
+				// check light properties selected
 				if (SpUIManagerInstance->propertiesFrame.propertiesComponent() == &SpUIManagerInstance->propertiesFrameLighting
 					&& SpUIManagerInstance->propertiesFrame.selectedIndex() == index)
 				{
 					SpUIManagerInstance->propertiesFrame.deselect();
+
+					for (SpVectorItem<SpUIViewport*>* item = SpUIManagerInstance->viewports.begin(); item != nullptr; item = item->next())
+						item->value()->deselectObject();
 				}
 			}
 

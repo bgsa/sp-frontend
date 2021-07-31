@@ -137,7 +137,7 @@ namespace NAMESPACE_FRONTEND
 			colorPicker.init();
 
 			SpGameObject* gameObject = scene->gameObject(index);
-			sp_char* name = gameObject->name();
+			const sp_char* name = scene->gameObjectManager()->name(index);
 			ImGui::Text(name);
 
 			SpTransform* transform = scene->transform(index);

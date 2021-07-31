@@ -50,6 +50,7 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		void renderGameObjectsNode(SpScene* scene);
+		void renderGameObjectContextMenu(SpScene* scene, const sp_uint index);
 		void renderGameObjectsContextMenu(SpScene* scene);
 
 		void renderCameraNode(SpScene* scene);
