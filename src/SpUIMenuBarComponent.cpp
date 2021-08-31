@@ -37,8 +37,37 @@ namespace NAMESPACE_FRONTEND
 				if (ImGui::MenuItem("Save", "CTRL+S", false, SpProjectManagerInstance->isLoaded()))
 					SpProjectManagerInstance->save();
 
-				if (ImGui::MenuItem("Load", "", false))
+				if (ImGui::MenuItem("Load", NULL, false))
 					showLoadProject = true;
+
+				if (ImGui::BeginMenu("Recents"))
+				{
+					const sp_int latestLength = SpGameEngineSettingsInstance->lastestProjectsLength();
+					sp_char* latest = SpGameEngineSettingsInstance->lastestProjects();
+
+					for (sp_int i = 0; i < latestLength; i++)
+					{
+						const sp_char* filename = &latest[i * SP_DIRECTORY_MAX_LENGTH];
+						const sp_size filenameLength = std::strlen(filename);
+
+						sp_char index[3];
+						sp_size indexLength;
+						convert(i + 1, index, indexLength);
+
+						sp_char name[512];
+						std::memcpy(name, index, indexLength);
+						std::memcpy(&name[indexLength], ".  ", 3);
+						std::memcpy(&name[indexLength + 3], filename, filenameLength);
+						name[indexLength + filenameLength + 3] = END_OF_STRING;
+
+						const sp_bool enabled = fileExists(name);
+
+						if (ImGui::MenuItem(name, NULL, false, enabled))
+							SpProjectManagerInstance->load(filename);
+					}
+
+					ImGui::EndMenu();
+				}
 
 				if (ImGui::MenuItem("Quit", NULL))
 					window->close();

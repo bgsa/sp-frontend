@@ -5,7 +5,7 @@ precision mediump float;
 layout(location = 0) uniform samplerBuffer cameras;
 layout(location = 1) uniform samplerBuffer transforms;
 layout(location = 2) uniform samplerBuffer lights;
-layout(location = 3) uniform samplerBuffer materials;
+layout(location = 3) uniform samplerBuffer baseMaterialsBuffer;
 layout(location = 4) uniform int  lightsLength;
 layout(location = 5) uniform unsigned int  cameraIndex;
 layout(location = 6) uniform unsigned int  transformIndex;
@@ -27,8 +27,8 @@ vec4 PhongShading()
 	vec3 specularLightColor = vec3(0.0, 0.0, 0.0);
 	vec3 fragmentNormal = normalize(normalCoord);
 	
-	SpMaterial material;
-	MaterialLoad(renderableObjectIndex, material);
+	SpBaseMaterial baseMaterial;
+	MaterialLoad(renderableObjectIndex, baseMaterial);
 
 	for(int i = 0; i < lightsLength; i++)
 	{
@@ -65,7 +65,7 @@ vec4 PhongShading()
 	specularLightColor = specularIntensity * LightColor;
 	*/
 	
-	return material.color * vec4(material.ambient * ambientLightColor + material.diffuse * diffuseLightColor, 1.0);
+	return baseMaterial.color * vec4(baseMaterial.ambient * ambientLightColor + baseMaterial.diffuse * diffuseLightColor, 1.0);
 }
 
 void main()

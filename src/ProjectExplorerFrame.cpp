@@ -63,6 +63,32 @@ namespace NAMESPACE_FRONTEND
 		}
 	}
 
+	void ProjectExplorerFrame::renderMaterialContextMenu(SpScene* scene)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Add", NULL, false, true))
+			{
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+
+	void ProjectExplorerFrame::renderMaterialsNode(SpScene* scene)
+	{
+		const sp_bool materialsNodeOpened = ImGui::TreeNode("Materials");
+
+		renderMaterialContextMenu(scene);
+
+		if (materialsNodeOpened)
+		{
+
+			ImGui::TreePop();
+		}
+	}
+	
+
 	void ProjectExplorerFrame::renderCameraNode(SpScene* scene)
 	{
 		if (ImGui::TreeNode("Cameras"))
@@ -220,6 +246,29 @@ namespace NAMESPACE_FRONTEND
 		}
 	}
 
+	void ProjectExplorerFrame::renderAssetsNode()
+	{
+		if (SpProjectManagerInstance->current() == nullptr)
+			return;
+
+		const sp_bool assetsNodeOpened = ImGui::TreeNode("Assets");
+
+		if (assetsNodeOpened)
+		{
+			sp_char folder[SP_DIRECTORY_MAX_LENGTH];
+			sp_size folderLength = std::strlen(SpProjectManagerInstance->current()->folder());
+			std::memcpy(folder, SpProjectManagerInstance->current()->folder(), folderLength);
+			folder[folderLength] = END_OF_STRING;
+			directoryAddPath(folder, folderLength, "Assets", 6, folder);
+			folderLength += 7;
+
+			renderFolderNode(folder, folderLength);
+			renderFilesNode(folder, folderLength);
+
+			ImGui::TreePop();
+		}
+	}
+
 	void ProjectExplorerFrame::renderGUI()
 	{
 		if (!isVisible())
@@ -256,10 +305,7 @@ namespace NAMESPACE_FRONTEND
 				ImGui::TreePop(); // close Scenes Node
 			}
 
-			if (ImGui::TreeNode("Resources"))
-			{
-				ImGui::TreePop();
-			}
+			renderAssetsNode();
 		}
 
 		ImGui::End();
@@ -279,6 +325,8 @@ namespace NAMESPACE_FRONTEND
 		if (sceneNodeOpened)
 		{
 			renderGameObjectsNode(scene);
+
+			renderMaterialsNode(scene);
 
 			renderCameraNode(scene);
 

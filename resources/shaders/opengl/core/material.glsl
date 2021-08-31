@@ -1,15 +1,15 @@
 #define SP_MATERIAL_ROW_LENGTH (4)
 
-struct SpMaterial
+struct SpBaseMaterial
 {
-	vec4 color;
+	vec4  color;
 	float shininessFactor;
 	vec3  ambient;
 	vec3  diffuse;
 	vec3  specular;
 };
 
-void MaterialLoad(uint materialIndex, out SpMaterial material)
+void MaterialLoad(uint materialIndex, out SpBaseMaterial material)
 {
 	int  index  = (instanceID + int(materialIndex)) * SP_MATERIAL_ROW_LENGTH;
 	bool isEven  = (materialIndex % 2u) == 0u;
@@ -19,10 +19,10 @@ void MaterialLoad(uint materialIndex, out SpMaterial material)
 		int offset = int(materialIndex >> 1u);
 		int textureIndex = index - offset;
 		
-		vec4 tex1 = texelFetch(materials, textureIndex    );
-		vec4 tex2 = texelFetch(materials, textureIndex + 1);
-		vec4 tex3 = texelFetch(materials, textureIndex + 2);
-		vec4 tex4 = texelFetch(materials, textureIndex + 3);
+		vec4 tex1 = texelFetch(baseMaterialsBuffer, textureIndex    );
+		vec4 tex2 = texelFetch(baseMaterialsBuffer, textureIndex + 1);
+		vec4 tex3 = texelFetch(baseMaterialsBuffer, textureIndex + 2);
+		vec4 tex4 = texelFetch(baseMaterialsBuffer, textureIndex + 3);
 
 		material.color = tex1;
 		material.shininessFactor = tex2.x;
@@ -35,10 +35,10 @@ void MaterialLoad(uint materialIndex, out SpMaterial material)
 		int offset = int(materialIndex >> 1u) + 1;
 		int textureIndex = index - offset;
 		
-		vec4 tex1 = texelFetch(materials, textureIndex    );
-		vec4 tex2 = texelFetch(materials, textureIndex + 1);
-		vec4 tex3 = texelFetch(materials, textureIndex + 2);
-		vec4 tex4 = texelFetch(materials, textureIndex + 3);
+		vec4 tex1 = texelFetch(baseMaterialsBuffer, textureIndex    );
+		vec4 tex2 = texelFetch(baseMaterialsBuffer, textureIndex + 1);
+		vec4 tex3 = texelFetch(baseMaterialsBuffer, textureIndex + 2);
+		vec4 tex4 = texelFetch(baseMaterialsBuffer, textureIndex + 3);
 
 		material.color = vec4(tex1.z, tex1.w, tex2.x, tex2.y);
 		material.shininessFactor = tex2.z;

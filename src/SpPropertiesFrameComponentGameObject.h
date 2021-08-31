@@ -16,7 +16,7 @@ namespace NAMESPACE_FRONTEND
 	private:
 		SpUIColorPicker colorPicker;
 
-		inline void renderMaterialColor(SpMaterial* material)
+		inline void renderMaterialColor(SpBaseMaterial* material)
 		{
 			ImGui::Text("Color: "); ImGui::SameLine();
 
@@ -40,7 +40,7 @@ namespace NAMESPACE_FRONTEND
 			colorPicker.render();
 		}
 		
-		inline void renderMaterialAmbient(SpMaterial* material)
+		inline void renderMaterialAmbient(SpBaseMaterial* material)
 		{
 			ImGui::Text("Ambient: ");
 			ImGui::PushItemWidth(80.0f);
@@ -70,7 +70,7 @@ namespace NAMESPACE_FRONTEND
 				material->ambient.blue = 0.0f;
 		}
 
-		inline void renderMaterialDiffuse(SpMaterial* material)
+		inline void renderMaterialDiffuse(SpBaseMaterial* material)
 		{
 			ImGui::Text("Diffuse: ");
 			ImGui::PushItemWidth(80.0f);
@@ -100,7 +100,7 @@ namespace NAMESPACE_FRONTEND
 				material->diffuse.blue = 0.0f;
 		}
 
-		inline void renderMaterialSpecular(SpMaterial* material)
+		inline void renderMaterialSpecular(SpBaseMaterial* material)
 		{
 			ImGui::Text("Specular: ");
 			ImGui::PushItemWidth(80.0f);
@@ -205,7 +205,7 @@ namespace NAMESPACE_FRONTEND
 				ImGui::SetNextTreeNodeOpen(true);
 				if (ImGui::TreeNode("Material"))
 				{
-					SpMaterial* material = scene->renderableObjectManager()->material(renderableObjectIndex);
+					SpBaseMaterial* material = scene->renderableObjectManager()->material(renderableObjectIndex);
 					renderMaterialColor(material);
 					renderMaterialAmbient(material);
 					renderMaterialDiffuse(material);

@@ -8,6 +8,8 @@
 #include "SpShader.h"
 #include "SpGame.h"
 #include "SpGameObjectFactoryPlane.h"
+#include "SpAssetManager.h"
+#include "FileSystem.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -53,6 +55,9 @@ namespace NAMESPACE_FRONTEND
 		void renderGameObjectContextMenu(SpScene* scene, const sp_uint index);
 		void renderGameObjectsContextMenu(SpScene* scene);
 
+		void renderMaterialContextMenu(SpScene* scene);
+		void renderMaterialsNode(SpScene* scene);
+
 		void renderCameraNode(SpScene* scene);
 
 		void renderMeshesNode(SpScene* scene);
@@ -62,6 +67,69 @@ namespace NAMESPACE_FRONTEND
 		void renderLightingNode(SpScene* scene);
 		void renderLightingContextMenu(SpScene* scene);
 		void renderLightContextMenu(SpScene* scene, const sp_uint index);
+
+		void renderAssetsNode();
+
+		inline void renderFolderNode(const sp_char* folder, const sp_size folderLength)
+		{
+			const sp_size subdirLength = subdirectoriesLength(folder, folderLength);
+
+			if (subdirLength == 0)
+				return;
+
+			sp_char* subdirs = ALLOC_ARRAY(sp_char, subdirLength * SP_DIRECTORY_MAX_LENGTH);
+			subdirectories(folder, folderLength, subdirs);
+
+			for (sp_size i = 0; i < subdirLength; i++)
+			{
+				sp_char name[SP_DIRECTORY_MAX_LENGTH];
+				const sp_size nameLength = std::strlen(&subdirs[i * SP_DIRECTORY_MAX_LENGTH]);
+				std::memcpy(name, &subdirs[i * SP_DIRECTORY_MAX_LENGTH], nameLength);
+				name[nameLength] = END_OF_STRING;
+
+				const sp_bool folderNodeOpened = ImGui::TreeNode(name);
+
+				if (folderNodeOpened)
+				{
+					sp_char subFolder[SP_DIRECTORY_MAX_LENGTH];
+					directoryAddPath(folder, folderLength, name, nameLength, subFolder);
+
+					renderFolderNode(subFolder, folderLength + nameLength + 1);
+					renderFilesNode(subFolder, folderLength + nameLength + 1);
+
+					ImGui::TreePop();
+				}
+			}
+
+			ALLOC_RELEASE(subdirs);
+		}
+
+		inline void renderFilesNode(const sp_char* folder, const sp_size folderLength)
+		{
+			const sp_size fsLen = filesLength(folder, folderLength);
+
+			if (fsLen == 0)
+				return;
+
+			sp_char* fs = ALLOC_ARRAY(sp_char, fsLen * SP_DIRECTORY_MAX_LENGTH);
+			files(folder, folderLength, fs);
+
+			for (sp_size i = 0; i < fsLen; i++)
+			{
+				sp_char name[SP_DIRECTORY_MAX_LENGTH];
+				const sp_size nameLength = std::strlen(&fs[i * SP_DIRECTORY_MAX_LENGTH]);
+				std::memcpy(name, &fs[i * SP_DIRECTORY_MAX_LENGTH], nameLength);
+				name[nameLength] = END_OF_STRING;
+
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
+				{
+					//if (ImGui::IsItemClicked())
+					ImGui::TreePop();
+				}
+			}
+
+			ALLOC_RELEASE(fs);
+		}
 
 	public:
 

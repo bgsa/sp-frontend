@@ -6,8 +6,7 @@
 #include "FileSystem.h"
 #include "nlohmann/json.hpp"
 #include "SpRenderingAPIOpenGL.h"
-
-#define SP_FILENAME_PROJECT_SUFFIX ".spp"
+#include "SpGameEngineSettings.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -19,6 +18,146 @@ namespace NAMESPACE_FRONTEND
 		SpProjectManager() 
 		{
 			_current = nullptr;
+		}
+
+		inline void creteProjectStructure(const sp_char* folder, const sp_size folderLength)
+		{
+			sp_size length = folderLength;
+			createDirectory(folder, length);
+
+			sp_char temp[512];
+			std::memcpy(temp, folder, length + 1);
+
+			if (!endsWith(temp, SP_DIRECTORY_SEPARATOR_STR))
+				temp[length++] = SP_DIRECTORY_SEPARATOR;
+
+			std::memcpy(&temp[length], "Assets", 6);
+			temp[length + 6] = END_OF_STRING;
+			createDirectory(temp, length + 6);
+
+			temp[length + 6] = SP_DIRECTORY_SEPARATOR;
+			std::memcpy(&temp[length + 7], "Textures", 8);
+			temp[length + 7 + 8] = END_OF_STRING;
+			createDirectory(temp, length + 7 + 8);
+
+			temp[length + 6] = SP_DIRECTORY_SEPARATOR;
+			std::memcpy(&temp[length + 7], "Materials", 9);
+			temp[length + 7 + 9] = END_OF_STRING;
+			createDirectory(temp, length + 7 + 9);
+		}
+
+		inline void loadCameras(nlohmann::json& sceneJson, SpPhyiscs::SpScene* scene)
+		{
+			if (sceneJson.find("cameras") != sceneJson.end() && sceneJson["cameras"].is_array())
+			{
+				const sp_size camerasLength = sceneJson["cameras"].size();
+
+				for (sp_size i = 0; i < camerasLength; i++)
+				{
+					nlohmann::json cameraJson = sceneJson["cameras"][i];
+
+					const std::string cameraName = cameraJson["name"].get<std::string>();
+					const sp_uint cameraIndex = scene->addCamera(cameraName.c_str(), cameraName.length());
+					SpCamera* camera = scene->camerasManager()->get(cameraIndex);
+
+					Vec3 cameraPosition;
+					nlohmann::json positionJson = cameraJson["position"];
+					cameraPosition.x = positionJson["x"].get<sp_float>();
+					cameraPosition.y = positionJson["y"].get<sp_float>();
+					cameraPosition.z = positionJson["z"].get<sp_float>();
+
+					Vec3 cameraTarget;
+					nlohmann::json targetJson = cameraJson["target"];
+					cameraTarget.x = targetJson["x"].get<sp_float>();
+					cameraTarget.y = targetJson["y"].get<sp_float>();
+					cameraTarget.z = targetJson["z"].get<sp_float>();
+
+					const sp_float aspectRatio = cameraJson["aspect-ratio"].get<sp_float>();
+					const sp_bool yInverted = cameraJson["y-inverted"].get<sp_bool>();
+
+					camera->init(cameraPosition, cameraTarget, Vec3Up, aspectRatio, yInverted);
+					camera->fieldOfView(cameraJson["fov"].get<sp_float>());
+					camera->velocity(cameraJson["velocity"].get<sp_float>());
+				}
+			}
+		}
+
+		inline void loadScenes(nlohmann::json& j)
+		{
+			SpGame* game = _current->game();
+
+			if (j.find("scenes") != j.end() && j["scenes"].is_array())
+			{
+				const sp_size scenesLength = j["scenes"].size();
+
+				for (sp_size i = 0; i < scenesLength; i++)
+				{
+					nlohmann::json sceneJson = j["scenes"][i];
+
+					const std::string name = sceneJson["name"].get<std::string>();
+					SpScene* scene = game->addScenes(name.c_str());
+
+					loadCameras(sceneJson, scene);
+				}
+			}
+		}
+
+		inline void saveCameras(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
+		{
+			nlohmann::ordered_json jsonCameras = nlohmann::json::array();
+			for (sp_size i = 0; i < scene->camerasManager()->length(); i++)
+			{
+				SpCamera* camera = scene->camerasManager()->get(i);
+				const sp_char* cameraName = scene->camerasManager()->name(i);
+
+				nlohmann::ordered_json jsonCamera;
+				jsonCamera["name"] = cameraName;
+				jsonCamera["aspect-ratio"] = camera->aspectRatio();
+				jsonCamera["fov"] = camera->fieldOfView();
+				jsonCamera["y-inverted"] = camera->isYAxisInverted();
+				jsonCamera["velocity"] = camera->velocity();
+				jsonCamera["position"] = nlohmann::ordered_json
+				{
+					{ "x", camera->position().x },
+					{ "y", camera->position().y },
+					{ "z", camera->position().z }
+				};
+				jsonCamera["target"] = nlohmann::ordered_json
+				{
+					{ "x", camera->target().x },
+					{ "y", camera->target().y },
+					{ "z", camera->target().z }
+				};
+
+				jsonCameras.push_back(jsonCamera);
+			}
+			jsonScene["cameras"] = jsonCameras;
+		}
+
+		inline void saveScenes(nlohmann::ordered_json& json)
+		{
+			nlohmann::json scenesJson = nlohmann::json::array();
+
+			for (SpVectorItem<SpScene*>* item = _current->game()->scenes()->begin(); item != nullptr; item = item->next())
+			{
+				SpScene* scene = item->value();
+
+				nlohmann::ordered_json jsonScene = nlohmann::ordered_json
+				{
+					{ "name", scene->name() },
+					{ "game-objects-length", scene->gameObjectsLength() },
+					{ "cameras-length", scene->camerasManager()->length() },
+					{ "lighting-length", scene->lightingManager()->length() },
+					{ "meshes-length", scene->meshManager()->length() },
+					{ "renderable-objects-length", scene->renderableObjectManager()->length() },
+					{ "transform-length", scene->transformManager()->length() }
+				};
+
+				saveCameras(scene, jsonScene);
+
+				scenesJson.push_back(jsonScene);
+			}
+			json["scenes"] = scenesJson;
 		}
 
 	public:
@@ -33,11 +172,23 @@ namespace NAMESPACE_FRONTEND
 			return _current != nullptr;
 		}
 
-		API_INTERFACE inline SpProject* newProject(const sp_char* name, const sp_int gameType)
+		API_INTERFACE inline SpProject* newProject(const sp_char* name, const sp_int gameType, const sp_char* folder)
 		{
 			SpProject* project = sp_mem_new(SpProject)();
 			project->name(name);
 			project->type(gameType);
+
+			const sp_size folderLength = std::strlen(folder);
+			const sp_size nameLength = std::strlen(name);
+
+			sp_char projectFolder[512];
+			directoryAddPath(folder, folderLength, name, nameLength, projectFolder);
+
+			const sp_size projectFolderLength = folderLength + nameLength;
+
+			project->folder(projectFolder, projectFolderLength);
+
+			creteProjectStructure(projectFolder, projectFolderLength);
 
 			project->game()->renderingApi(SP_RENDERING_API_OPENGL, sp_mem_new(SpRenderingAPIOpenGL));
 
@@ -45,6 +196,15 @@ namespace NAMESPACE_FRONTEND
 			scene->addCamera("Camera 1", 8);
 
 			_current = project;
+
+			sp_char fullFilename[512];
+			sp_size fullFilenameLength;
+			project->filename(fullFilename, fullFilenameLength);
+
+			SpGameEngineSettingsInstance->addLastProject(fullFilename, fullFilenameLength);
+			SpGameEngineSettingsInstance->save();
+
+			save();
 
 			return project;
 		}
@@ -62,13 +222,13 @@ namespace NAMESPACE_FRONTEND
 		{
 			unload();
 
-			SP_FILE file;
-			SpString* content = file.readTextFile(filename);
-			file.close();
+			const sp_size contentLength = fileSize(filename);
+			sp_char* content = ALLOC_ARRAY(sp_char, contentLength);
+			readTextFile(filename, content, contentLength);
 
-			nlohmann::json j = nlohmann::json::parse(content->data());
+			nlohmann::json j = nlohmann::json::parse(content);
 
-			sp_mem_delete(content, SpString);
+			ALLOC_RELEASE(content);
 
 			SpProject* project = sp_mem_new(SpProject)();
 
@@ -86,12 +246,18 @@ namespace NAMESPACE_FRONTEND
 
 			sp_char folder[256];
 			SpDirectory::directoryFromFile(filename, folder);
+			const sp_size folderLength = std::strlen(folder);
 
-			project->folder(folder);
+			project->folder(folder, folderLength);
+
+			SpGame* game = project->game();
+			game->renderingApi(SP_RENDERING_API_OPENGL, sp_mem_new(SpRenderingAPIOpenGL));
+			
+			_current = project;
+
+			loadScenes(j);
 
 			project->loadLibraries();
-
-			_current = project;
 		}
 
 		API_INTERFACE inline void save()
@@ -99,43 +265,26 @@ namespace NAMESPACE_FRONTEND
 			if (_current == nullptr)
 				return;
 
-			nlohmann::json json;
+			nlohmann::ordered_json json;
 			json["name"] = _current->name();
 			json["type"] = _current->game()->gameType();
 
-			for (SpVectorItem<SpWorld*>* item = SpWorldManagerInstance->worlds()->begin(); item != nullptr; item = item->next())
-			{
-				SpWorld* world = item->value();
-
-				nlohmann::json jsonWorld = nlohmann::json
-				{
-					{ "name", world->name },
-					{ "objects-length", world->objectsLength() }
-				};
-
-				json["worlds"].push_back(jsonWorld);
-			}
+			saveScenes(json);
 
 			std::string jsonAsString = json.dump(4);
 
 			sp_char fullname[512];
-			std::strcpy(fullname, _current->folder());
-			std::strcat(fullname, _current->name());
+			directoryAddPath(
+				_current->folder(), std::strlen(_current->folder()), 
+				_current->name(), std::strlen(_current->name()), 
+				fullname);
+		
 			std::strcat(fullname, SP_FILENAME_PROJECT_SUFFIX);
 
 			SP_FILE file;
 			file.open(fullname, std::ios_base::out);
 			file.write(jsonAsString.c_str());
 			file.close();
-
-			sp_char str[512];
-			SpDirectory::buildPath(_current->folder(), "lib", str);
-			SpDirectory dir(str);
-			dir.create();
-
-			SpDirectory::buildPath(_current->folder(), "src", str);
-			dir = str;
-			dir.create();
 		}
 
 		API_INTERFACE static void init();

@@ -7,6 +7,9 @@
 #include "SpGame3D.h"
 #include "SpDynamicLibrary.h"
 #include "SpVector.h"
+#include "FileSystem.h"
+
+#define SP_FILENAME_PROJECT_SUFFIX ".spp"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -79,14 +82,35 @@ namespace NAMESPACE_FRONTEND
 		/// </summary>
 		/// <param name="newFolder">New Folder</param>
 		/// <returns>void</returns>
-		API_INTERFACE inline void folder(const sp_char* newFolder)
+		API_INTERFACE inline void folder(const sp_char* newFolder, const sp_size newFolderLength)
 		{
 			if (_folder != nullptr)
 				sp_mem_release(_folder);
 
-			_folder = (sp_char*) sp_mem_alloc((std::strlen(newFolder) + 1u) * sizeof(sp_char));
+			_folder = sp_mem_new_array(sp_char, (newFolderLength + 1u));
 
-			std::strcpy(_folder, newFolder);
+			std::memcpy(_folder, newFolder, newFolderLength);
+			_folder[newFolderLength] = END_OF_STRING;
+		}
+
+		/// <summary>
+		/// Get the full filename of current project
+		/// </summary>
+		/// <param name="output">Output string</param>
+		/// <param name="outputLength">Output string length</param>
+		/// <returns>output parameters</returns>
+		API_INTERFACE inline void filename(sp_char* output, sp_size& outputLength)
+		{
+			const sp_size nameLength = std::strlen(_name);
+			const sp_size folderLength = std::strlen(_folder);
+			outputLength = folderLength + nameLength + 1;
+
+			directoryAddPath(_folder, folderLength, _name, nameLength, output);
+
+			std::memcpy(&output[outputLength], SP_FILENAME_PROJECT_SUFFIX, 4);
+			outputLength += 4;
+
+			output[outputLength] = END_OF_STRING;
 		}
 
 		/// <summary>

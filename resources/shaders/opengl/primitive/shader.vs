@@ -4,7 +4,7 @@
 layout(location = 0) uniform samplerBuffer cameras;
 layout(location = 1) uniform samplerBuffer transforms;
 layout(location = 2) uniform samplerBuffer lights;
-layout(location = 3) uniform samplerBuffer materials;
+layout(location = 3) uniform samplerBuffer baseMaterialsBuffer;
 layout(location = 4) uniform int  lightsLength;
 layout(location = 5) uniform unsigned int  cameraIndex;
 layout(location = 6) uniform unsigned int  transformIndex;

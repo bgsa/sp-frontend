@@ -55,6 +55,12 @@ namespace NAMESPACE_FRONTEND
 		if (file_dialog.showFileDialog("Project Folder##popup", imgui_addons::ImGuiFileBrowser::DialogMode::SELECT, ImVec2(600, 300)))
 			std::strcpy(folder, file_dialog.selected_path.c_str());
 
+#ifdef WINDOWS
+		//sp_char tempFolder[512];
+		strReplace(folder, '/', SP_DIRECTORY_SEPARATOR, folder);
+		//std::memcpy(folder,)
+#endif
+
 		ImGui::Indent(((sp_int)frameSize.x >> 1) + 20.0f);
 		ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -63,12 +69,35 @@ namespace NAMESPACE_FRONTEND
 			if (SpProjectManagerInstance->current() != nullptr)
 				SpProjectManagerInstance->unload();
 
+			if (strIsNullOrEmpty(folder))
+			{
+				SpUINotificationManagerInstance->addNotification("Folder should not be empty!\0", NotificationType::VALIDATION);
+				goto validation_exception;
+			}
+
+			if (!directoryExists(folder))
+			{
+				SpUINotificationManagerInstance->addNotification("Folder does not exists!\0", NotificationType::VALIDATION);
+				goto validation_exception;
+			}
+
+			const sp_size folderLength = std::strlen(folder);
+			const sp_size nameLength = std::strlen(name);
+
+			sp_char projectFolder[512];
+			directoryAddPath(folder, folderLength, name, nameLength, projectFolder);
+
+			if (directoryExists(projectFolder))
+			{
+				SpUINotificationManagerInstance->addNotification("Project folder already exists!\0", NotificationType::VALIDATION);
+				goto validation_exception;
+			}
+		
 			sp_int gameType = 2;
 			if (game3DSelected)
 				gameType = 3;
 
-			SpProjectManagerInstance->newProject(name, gameType);
-			SpProjectManagerInstance->current()->folder(folder);
+			SpProjectManagerInstance->newProject(name, gameType, folder);
 
 			SpScene* firstScene = SpProjectManagerInstance->current()->game()->scenes()->begin()->value();
 
@@ -78,6 +107,7 @@ namespace NAMESPACE_FRONTEND
 			hide();
 		}
 
+	validation_exception:
 		ImGui::SameLine();
 
 		if (ImGui::Button("Cancel", ImVec2(100, 25)))

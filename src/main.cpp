@@ -9,8 +9,21 @@
 #include "SpApplicationArguments.h"
 #include "SpVariablesEnvironment.h"
 #include "SpMemoryProfiling.h"
+#include "SpGameEngineSettings.h"
 
 using namespace NAMESPACE_FRONTEND;
+
+void dispose()
+{
+	GpuContext::release();
+
+	SpGlobalProperties::dispose();
+	SpApplicationArguments::dispose();
+	SpGameEngineSettings::release();
+
+	SpStackMemoryAllocator::main()->dispose();
+	SpMemoryProfiling::release();
+}
 
 sp_int main(sp_int parametersLength, sp_char** parameters)
 {
@@ -23,6 +36,7 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 
 	setVariableEnvirontment("CUDA_CACHE_DISABLE", "1"); // disable cuda cache of kernels built
 
+	SpGameEngineSettings::init();
 	SpApplicationArguments::init(parametersLength, parameters);
 	SpGlobalProperties::init();
 	SpPhysicSettings::instance()->enableProfiling();
@@ -48,13 +62,7 @@ sp_int main(sp_int parametersLength, sp_char** parameters)
 	app.dispose();
 	window.dispose();
 
-	GpuContext::release();
-
-	SpGlobalProperties::dispose();
-	SpApplicationArguments::dispose();
-
-	SpStackMemoryAllocator::main()->dispose();
-	SpMemoryProfiling::release();
+	dispose();
 
 	return 0;
 }

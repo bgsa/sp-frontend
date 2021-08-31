@@ -571,7 +571,7 @@ namespace imgui_addons
             {
                 //It's possible for both to be true at once (user selected directory but input bar has some text. In this case we chose to open the directory instead of opening the file.
                 //Also note that we don't need to access the selected file through "selected_idx" since the if a file is selected, input bar will get populated with that name.
-                if(selected_idx >= 0 && is_dir)
+                if(selected_idx >= 0 && selected_idx != SP_UINT_MAX && is_dir)
                     show_error |= !(onDirClick(selected_idx));
                 else if(strlen(input_fn) > 0)
                 {
@@ -1070,7 +1070,7 @@ namespace imgui_addons
         bool match = false;
 
         //If there is an item selected, check if the selected file name (the input filename, in other words) matches the selection.
-        if(selected_idx >= 0)
+        if(selected_idx >= 0 && selected_idx != SP_UINT_MAX)
         {
             if(dialog_mode == DialogMode::SELECT)
                 match = (filtered_dirs[selected_idx]->name == selected_fn);
