@@ -8,7 +8,6 @@
 #include "SpShader.h"
 #include "SpGame.h"
 #include "SpGameObjectFactoryPlane.h"
-#include "SpAssetManager.h"
 #include "FileSystem.h"
 
 namespace NAMESPACE_FRONTEND
