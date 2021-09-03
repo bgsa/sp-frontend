@@ -134,6 +134,108 @@ namespace NAMESPACE_FRONTEND
 			jsonScene["cameras"] = jsonCameras;
 		}
 
+		inline void saveTransforms(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
+		{
+			nlohmann::ordered_json jsonTransforms = nlohmann::json::array();
+			for (sp_size i = 0; i < scene->transformManager()->length(); i++)
+			{
+				SpTransform* transform = scene->transform(i);
+
+				nlohmann::ordered_json jsonTransform;
+				jsonTransform["position"] = nlohmann::ordered_json
+				{
+					{ "x", transform->position.x },
+					{ "y", transform->position.y },
+					{ "z", transform->position.z }
+				};
+				jsonTransform["orientation"] = nlohmann::ordered_json
+				{
+					{ "w", transform->orientation.w },
+					{ "x", transform->orientation.x },
+					{ "y", transform->orientation.y },
+					{ "z", transform->orientation.z }
+				};
+				jsonTransform["scale"] = nlohmann::ordered_json
+				{
+					{ "x", transform->scaleVector.x },
+					{ "y", transform->scaleVector.y },
+					{ "z", transform->scaleVector.z }
+				};
+
+				jsonTransforms.push_back(jsonTransform);
+			}
+			jsonScene["transforms"] = jsonTransforms;
+		}
+
+		inline void saveGameObjects(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
+		{
+			nlohmann::ordered_json jsonGameObjects = nlohmann::json::array();
+			for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
+			{
+				SpGameObject* gameObject = scene->gameObject(i);
+
+				nlohmann::ordered_json jsonGameObject;
+				jsonGameObject["type"] = gameObject->type();
+				jsonGameObject["renderable-index"] = gameObject->renderableObjectIndex();
+
+				jsonGameObjects.push_back(jsonGameObject);
+			}
+			jsonScene["game-objects"] = jsonGameObjects;
+		}
+
+		inline void saveRenderableObjects(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
+		{
+			nlohmann::ordered_json jsonRenderables = nlohmann::json::array();
+			for (sp_size i = 0; i < scene->renderableObjectManager()->length(); i++)
+			{
+				SpRenderableObject* renderable = scene->renderableObjectManager()->get(i);
+
+				nlohmann::ordered_json jsonRenderable;
+				jsonRenderable["type"] = renderable->type();
+				jsonRenderable["visible"] = renderable->isVisible();
+				jsonRenderable["game-object-index"] = renderable->gameObject();
+				jsonRenderable["mesh-data"] = renderable->meshData();
+
+				jsonRenderables.push_back(jsonRenderable);
+			}
+			jsonScene["renderable-objects"] = jsonRenderables;
+		}
+
+		inline void saveLightings(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
+		{
+			nlohmann::ordered_json jsonLighings = nlohmann::json::array();
+			for (sp_size i = 0; i < scene->lightingManager()->length(); i++)
+			{
+				SpLightSource* light = scene->lightingManager()->get(i);
+
+				nlohmann::ordered_json jsonLight;
+				jsonLight["type"] = light->type();
+				jsonLight["enabled"] = light->isEnabled();
+				jsonLight["static"] = light->isStatic();
+				jsonLight["factor"] = light->factor();
+				jsonLight["color"] = nlohmann::ordered_json{
+					{ "r", light->color().red },
+					{ "g", light->color().green },
+					{ "b", light->color().blue }
+				};
+				jsonLight["position"] = nlohmann::ordered_json{
+					{ "x", light->position().x },
+					{ "y", light->position().y },
+					{ "z", light->position().z }
+				};
+				jsonLight["direction"] = nlohmann::ordered_json{
+					{ "x", light->direction().x },
+					{ "y", light->direction().y },
+					{ "z", light->direction().z }
+				};
+				jsonLight["spot-type"] = light->spotlightType();
+				jsonLight["spot-angle"] = light->spotlightAngle();
+
+				jsonLighings.push_back(jsonLight);
+			}
+			jsonScene["lightings"] = jsonLighings;
+		}
+
 		inline void saveScenes(nlohmann::ordered_json& json)
 		{
 			nlohmann::json scenesJson = nlohmann::json::array();
@@ -154,6 +256,10 @@ namespace NAMESPACE_FRONTEND
 				};
 
 				saveCameras(scene, jsonScene);
+				saveTransforms(scene, jsonScene);
+				saveGameObjects(scene, jsonScene);
+				saveRenderableObjects(scene, jsonScene);
+				saveLightings(scene, jsonScene);
 
 				scenesJson.push_back(jsonScene);
 			}
