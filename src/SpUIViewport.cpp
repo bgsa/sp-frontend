@@ -7,7 +7,7 @@ namespace NAMESPACE_FRONTEND
 
 	void handleDragMove(SpUIViewport* uiViewport, const ImVec2& previousPosition, const ImVec2& currentPosition)
 	{
-		if (!uiViewport->_isDragging)
+		if (!uiViewport->_isDragging || uiViewport->scene() == nullptr || !uiViewport->scene()->hasActiveCamera())
 			return;
 
 		const sp_float windingOrder = SpPhysicSettings::instance()->windingOrder();
@@ -290,34 +290,37 @@ namespace NAMESPACE_FRONTEND
 			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
 				deselectObject();
 
-			SpCamera* camera = scene()->camerasManager()->get(scene()->activeCameraIndex());
-
-			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)))
+			if (scene() != nullptr && scene()->hasActiveCamera())
 			{
-				const Vec3 translation = camera->right() * camera->velocity();
-				camera->position(camera->position() - translation);
-				camera->target(camera->target() - translation);
-			}
+				SpCamera* camera = scene()->camerasManager()->get(scene()->activeCameraIndex());
 
-			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightArrow)))
-			{
-				const Vec3 translation = camera->right() * camera->velocity();
-				camera->position(camera->position() + translation);
-				camera->target(camera->target() + translation);
-			}
+				if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)))
+				{
+					const Vec3 translation = camera->right() * camera->velocity();
+					camera->position(camera->position() - translation);
+					camera->target(camera->target() - translation);
+				}
 
-			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)))
-			{
-				const Vec3 translation = camera->direction() * camera->velocity();
-				camera->position(camera->position() + translation);
-				camera->target(camera->target() + translation);
-			}
+				if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightArrow)))
+				{
+					const Vec3 translation = camera->right() * camera->velocity();
+					camera->position(camera->position() + translation);
+					camera->target(camera->target() + translation);
+				}
 
-			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_DownArrow)))
-			{
-				const Vec3 translation = camera->direction() * camera->velocity();
-				camera->position(camera->position() - translation);
-				camera->target(camera->target() - translation);
+				if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)))
+				{
+					const Vec3 translation = camera->direction() * camera->velocity();
+					camera->position(camera->position() + translation);
+					camera->target(camera->target() + translation);
+				}
+
+				if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_DownArrow)))
+				{
+					const Vec3 translation = camera->direction() * camera->velocity();
+					camera->position(camera->position() - translation);
+					camera->target(camera->target() - translation);
+				}
 			}
 		}
 

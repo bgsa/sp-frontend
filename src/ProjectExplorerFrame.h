@@ -57,6 +57,7 @@ namespace NAMESPACE_FRONTEND
 		void renderMaterialContextMenu(SpScene* scene);
 		void renderMaterialsNode(SpScene* scene);
 
+		void renderCameraContextMenu(SpScene* scene);
 		void renderCameraNode(SpScene* scene);
 
 		void renderMeshesNode(SpScene* scene);

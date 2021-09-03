@@ -88,10 +88,49 @@ namespace NAMESPACE_FRONTEND
 		}
 	}
 	
+	void ProjectExplorerFrame::renderCameraContextMenu(SpScene* scene)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			SpCameraManager* cameraManager = scene->camerasManager();
+
+			if (ImGui::MenuItem("Add", NULL, false, true))
+			{
+				sp_char name[SP_CAMERA_NAME_MAX_LENGTH];
+				std::memcpy(name, "Camera ", 7);
+
+				for (sp_uint i = 0; i < SP_UINT_MAX; i++)
+				{
+					sp_char indexAsString[10];
+					sp_size indexLength;
+					convert((i + 1), indexAsString, indexLength);
+
+					std::memcpy(&name[7], indexAsString, indexLength);
+					sp_size nameLength = 7 + indexLength;
+					name[nameLength] = END_OF_STRING;
+
+					sp_uint cameraIndex = cameraManager->find(name);
+
+					if (cameraIndex == SP_UINT_MAX)
+					{
+						cameraIndex = scene->camerasManager()->add();
+						cameraManager->name(cameraIndex, name, nameLength);
+						break;
+					}
+				}
+			}
+
+			ImGui::EndPopup();
+		}
+	}
 
 	void ProjectExplorerFrame::renderCameraNode(SpScene* scene)
 	{
-		if (ImGui::TreeNode("Cameras"))
+		const sp_bool cameraNodeOpened = ImGui::TreeNode("Cameras");
+
+		renderCameraContextMenu(scene);
+
+		if (cameraNodeOpened)
 		{
 			SpCameraManager* cameraManager = scene->camerasManager();
 
@@ -292,10 +331,12 @@ namespace NAMESPACE_FRONTEND
 		SpProject* project = SpProjectManagerInstance->current();
 		if (project != nullptr)
 		{
-			if (ImGui::TreeNode("Scenes"))
-			{
-				renderScenesContextMenu();
+			const sp_bool scenesNodeOpened = ImGui::TreeNode("Scenes");
 
+			renderScenesContextMenu();
+
+			if (scenesNodeOpened)
+			{
 				SpVector<SpScene*>* scenes = project->game()->scenes();
 				const sp_bool canDeleteScene = scenes->length() > ONE_UINT;
 
