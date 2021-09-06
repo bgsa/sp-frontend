@@ -480,6 +480,9 @@ namespace NAMESPACE_FRONTEND
 		{
 			unload();
 
+			if (!fileExists(filename))
+				return;
+
 			const sp_size contentLength = fileSize(filename);
 			sp_char* content = ALLOC_ARRAY(sp_char, contentLength);
 			readTextFile(filename, content, contentLength);

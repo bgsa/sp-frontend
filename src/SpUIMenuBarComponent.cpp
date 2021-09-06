@@ -58,9 +58,16 @@ namespace NAMESPACE_FRONTEND
 						std::memcpy(name, index, indexLength);
 						std::memcpy(&name[indexLength], ".  ", 3);
 						std::memcpy(&name[indexLength + 3], filename, filenameLength);
-						name[indexLength + filenameLength + 3] = END_OF_STRING;
+						sp_uint nameLength = indexLength + filenameLength + 3;
+						name[nameLength] = END_OF_STRING;
 
-						const sp_bool enabled = fileExists(name);
+						sp_bool enabled = true;
+						if (!fileExists(filename))
+						{
+							enabled = false;
+							std::memcpy(&name[nameLength], " (not found)", 12);
+							name[nameLength + 12] = END_OF_STRING;
+						}
 
 						if (ImGui::MenuItem(name, NULL, false, enabled))
 							SpProjectManagerInstance->load(filename);
