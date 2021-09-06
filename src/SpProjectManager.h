@@ -82,6 +82,153 @@ namespace NAMESPACE_FRONTEND
 			}
 		}
 
+		inline void loadLightings(nlohmann::json& sceneJson, SpPhyiscs::SpScene* scene)
+		{
+			if (sceneJson.find("lightings") != sceneJson.end() && sceneJson["lightings"].is_array())
+			{
+				const sp_size lightingsLength = sceneJson["lightings"].size();
+				const sp_uint lightIndex = scene->lightingManager()->add(lightingsLength);
+
+				for (sp_size i = 0; i < lightingsLength; i++)
+				{
+					nlohmann::json lightingsJson = sceneJson["lightings"][i];
+
+					SpLightSource* light = scene->lightingManager()->get(lightIndex + i);
+
+					const std::string name = lightingsJson["name"].get<std::string>();
+					scene->lightingManager()->name(lightIndex + i, name.c_str(), name.length());
+
+					const sp_int type = lightingsJson["type"].get<sp_int>();
+					light->type(type);
+
+					const sp_bool enabled = lightingsJson["enabled"].get<sp_bool>();
+					light->lightSwitch(enabled);
+
+					const sp_bool isStatic = lightingsJson["static"].get<sp_bool>();
+					light->staticLight(isStatic);
+
+					const sp_float factor = lightingsJson["factor"].get<sp_float>();
+					light->factor(factor);
+
+					const sp_int spotType = lightingsJson["spot-type"].get<sp_int>();
+					light->spotlightType(spotType);
+
+					const sp_float spotAngle = lightingsJson["spot-angle"].get<sp_float>();
+					light->spotlightAngle(spotAngle);
+
+					const sp_float colorR = lightingsJson["color"]["r"].get<sp_float>();
+					const sp_float colorG = lightingsJson["color"]["g"].get<sp_float>();
+					const sp_float colorB = lightingsJson["color"]["b"].get<sp_float>();
+					light->color(SpColorRGB(colorR, colorG, colorB));
+
+					const sp_float posX = lightingsJson["position"]["x"].get<sp_float>();
+					const sp_float posY = lightingsJson["position"]["y"].get<sp_float>();
+					const sp_float posZ = lightingsJson["position"]["z"].get<sp_float>();
+					light->position(Vec3(posX, posY, posZ));
+
+					const sp_float dirX = lightingsJson["direction"]["x"].get<sp_float>();
+					const sp_float dirY = lightingsJson["direction"]["y"].get<sp_float>();
+					const sp_float dirZ = lightingsJson["direction"]["z"].get<sp_float>();
+					light->direction(Vec3(dirX, dirY, dirZ));
+				}
+			}
+		}
+
+		inline void loadTransforms(nlohmann::json& sceneJson, SpPhyiscs::SpScene* scene)
+		{
+			if (sceneJson.find("transforms") != sceneJson.end() && sceneJson["transforms"].is_array())
+			{
+				const sp_uint transformsLength = (sp_uint)sceneJson["transforms"].size();
+				const sp_uint transformIndex = scene->transformManager()->add(transformsLength);
+
+				for (sp_size i = 0; i < transformsLength; i++)
+				{
+					nlohmann::json transformJson = sceneJson["transforms"][i];
+
+					SpTransform* transform = scene->transformManager()->get(transformIndex + i);
+
+					nlohmann::json positionJson = transformJson["position"];
+					transform->position.x = positionJson["x"].get<sp_float>();
+					transform->position.y = positionJson["y"].get<sp_float>();
+					transform->position.z = positionJson["z"].get<sp_float>();
+
+					nlohmann::json scaleJson = transformJson["scale"];
+					transform->scaleVector.x = scaleJson["x"].get<sp_float>();
+					transform->scaleVector.y = scaleJson["y"].get<sp_float>();
+					transform->scaleVector.z = scaleJson["z"].get<sp_float>();
+
+					nlohmann::json orientationJson = transformJson["orientation"];
+					transform->orientation.w = orientationJson["w"].get<sp_float>();
+					transform->orientation.x = orientationJson["x"].get<sp_float>();
+					transform->orientation.y = orientationJson["y"].get<sp_float>();
+					transform->orientation.z = orientationJson["z"].get<sp_float>();
+				}
+			}
+		}
+
+		inline void loadRenderables(nlohmann::json& sceneJson, SpPhyiscs::SpScene* scene)
+		{
+			if (sceneJson.find("renderable-objects") != sceneJson.end() && sceneJson["renderable-objects"].is_array())
+			{
+				const sp_uint length = (sp_uint)sceneJson["renderable-objects"].size();
+				const sp_uint objIndex = scene->renderableObjectManager()->add(length);
+
+				for (sp_size i = 0; i < length; i++)
+				{
+					nlohmann::json renderableJson = sceneJson["renderable-objects"][i];
+
+					SpRenderableObject* renderable = scene->renderableObjectManager()->get(objIndex + i);
+
+					const sp_uint type = renderableJson["type"].get<sp_uint>();
+					renderable->type(type);
+
+					const sp_uint visible = renderableJson["visible"].get<sp_bool>();
+					renderable->type(visible);
+
+					const sp_uint shaderId = renderableJson["shader"].get<sp_uint>();
+					renderable->shader(shaderId);
+
+					const sp_uint gameObjectId = renderableJson["game-object"].get<sp_uint>();
+					renderable->gameObject(gameObjectId);
+
+					const sp_uint meshDataId = renderableJson["mesh-data"].get<sp_uint>();
+					renderable->meshData(meshDataId);
+
+					SpGameObjectFactory* gameObjectFactory = scene->gameObjectsTypeList.find(type)->factory();
+					for (sp_uint i = 0; i < gameObjectFactory->buffersLength(); i++)
+					{
+						SpGpuBuffer* buffer = gameObjectFactory->buffer(i);
+						renderable->addBuffer(buffer);
+					}
+				}
+			}
+		}
+
+		inline void loadGameObjects(nlohmann::json& sceneJson, SpPhyiscs::SpScene* scene)
+		{
+			if (sceneJson.find("game-objects") != sceneJson.end() && sceneJson["game-objects"].is_array())
+			{
+				const sp_uint length = (sp_uint)sceneJson["game-objects"].size();
+				const sp_uint objIndex = scene->gameObjectManager()->add(length);
+
+				for (sp_size i = 0; i < length; i++)
+				{
+					nlohmann::json gameObjJson = sceneJson["game-objects"][i];
+
+					SpGameObject* gameObject = scene->gameObject(objIndex + i);
+
+					const std::string name = gameObjJson["name"].get<std::string>();
+					scene->gameObjectManager()->name(objIndex + i, name.c_str(), name.length());
+
+					const sp_uint type = gameObjJson["type"].get<sp_uint>();
+					gameObject->type(type);
+
+					const sp_uint renderable = gameObjJson["renderable"].get<sp_uint>();
+					gameObject->renderableObjectIndex(renderable);
+				}
+			}
+		}
+
 		inline void loadScenes(nlohmann::json& j)
 		{
 			SpGame* game = _current->game();
@@ -98,6 +245,10 @@ namespace NAMESPACE_FRONTEND
 					SpScene* scene = game->addScenes(name.c_str());
 
 					loadCameras(sceneJson, scene);
+					loadLightings(sceneJson, scene);
+					loadTransforms(sceneJson, scene);
+					loadRenderables(sceneJson, scene);
+					loadGameObjects(sceneJson, scene);
 				}
 			}
 		}
@@ -174,9 +325,12 @@ namespace NAMESPACE_FRONTEND
 			{
 				SpGameObject* gameObject = scene->gameObject(i);
 
+				const sp_char* name = scene->gameObjectManager()->name(i);
+
 				nlohmann::ordered_json jsonGameObject;
+				jsonGameObject["name"] = name;
 				jsonGameObject["type"] = gameObject->type();
-				jsonGameObject["renderable-index"] = gameObject->renderableObjectIndex();
+				jsonGameObject["renderable"] = gameObject->renderableObjectIndex();
 
 				jsonGameObjects.push_back(jsonGameObject);
 			}
@@ -193,8 +347,9 @@ namespace NAMESPACE_FRONTEND
 				nlohmann::ordered_json jsonRenderable;
 				jsonRenderable["type"] = renderable->type();
 				jsonRenderable["visible"] = renderable->isVisible();
-				jsonRenderable["game-object-index"] = renderable->gameObject();
+				jsonRenderable["game-object"] = renderable->gameObject();
 				jsonRenderable["mesh-data"] = renderable->meshData();
+				jsonRenderable["shader"] = renderable->shader();
 
 				jsonRenderables.push_back(jsonRenderable);
 			}
@@ -209,6 +364,7 @@ namespace NAMESPACE_FRONTEND
 				SpLightSource* light = scene->lightingManager()->get(i);
 
 				nlohmann::ordered_json jsonLight;
+				jsonLight["name"] = scene->lightingManager()->name(i);
 				jsonLight["type"] = light->type();
 				jsonLight["enabled"] = light->isEnabled();
 				jsonLight["static"] = light->isStatic();
@@ -246,20 +402,14 @@ namespace NAMESPACE_FRONTEND
 
 				nlohmann::ordered_json jsonScene = nlohmann::ordered_json
 				{
-					{ "name", scene->name() },
-					{ "game-objects-length", scene->gameObjectsLength() },
-					{ "cameras-length", scene->camerasManager()->length() },
-					{ "lighting-length", scene->lightingManager()->length() },
-					{ "meshes-length", scene->meshManager()->length() },
-					{ "renderable-objects-length", scene->renderableObjectManager()->length() },
-					{ "transform-length", scene->transformManager()->length() }
+					{ "name", scene->name() }
 				};
 
 				saveCameras(scene, jsonScene);
+				saveLightings(scene, jsonScene);
 				saveTransforms(scene, jsonScene);
 				saveGameObjects(scene, jsonScene);
 				saveRenderableObjects(scene, jsonScene);
-				saveLightings(scene, jsonScene);
 
 				scenesJson.push_back(jsonScene);
 			}
@@ -300,6 +450,8 @@ namespace NAMESPACE_FRONTEND
 
 			SpScene* scene = project->game()->addScenes("Scene 1");
 			scene->addCamera("Camera 1", 8);
+			scene->lightingManager()->addDefaultAmbientLight();
+			scene->lightingManager()->addDefaultDiffuseLight();
 
 			_current = project;
 
