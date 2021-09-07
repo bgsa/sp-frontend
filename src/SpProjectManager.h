@@ -229,6 +229,17 @@ namespace NAMESPACE_FRONTEND
 			}
 		}
 
+		inline void loadScene(nlohmann::json& sceneJson, SpScene* scene)
+		{
+			loadCameras(sceneJson, scene);
+			loadLightings(sceneJson, scene);
+			loadTransforms(sceneJson, scene);
+			loadRenderables(sceneJson, scene);
+			loadGameObjects(sceneJson, scene);
+
+			scene->isLoaded(true);
+		}
+
 		inline void loadScenes(nlohmann::json& j)
 		{
 			SpGame* game = _current->game();
@@ -242,13 +253,12 @@ namespace NAMESPACE_FRONTEND
 					nlohmann::json sceneJson = j["scenes"][i];
 
 					const std::string name = sceneJson["name"].get<std::string>();
+					const sp_bool isLoaded = sceneJson["loaded"].get<sp_bool>();
+
 					SpScene* scene = game->addScenes(name.c_str());
 
-					loadCameras(sceneJson, scene);
-					loadLightings(sceneJson, scene);
-					loadTransforms(sceneJson, scene);
-					loadRenderables(sceneJson, scene);
-					loadGameObjects(sceneJson, scene);
+					if (isLoaded)
+						loadScene(sceneJson, scene);
 				}
 			}
 		}
@@ -402,7 +412,8 @@ namespace NAMESPACE_FRONTEND
 
 				nlohmann::ordered_json jsonScene = nlohmann::ordered_json
 				{
-					{ "name", scene->name() }
+					{ "name", scene->name() },
+					{ "loaded", scene->isLoaded() }
 				};
 
 				saveCameras(scene, jsonScene);
@@ -516,9 +527,9 @@ namespace NAMESPACE_FRONTEND
 			
 			_current = project;
 
-			loadScenes(j);
-
 			project->loadLibraries();
+
+			loadScenes(j);
 		}
 
 		API_INTERFACE inline void save()

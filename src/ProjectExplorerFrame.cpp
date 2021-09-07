@@ -157,7 +157,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			for (sp_size i = 0; i < scene->meshManager()->length(); i++)
 			{
-				sp_char* name = scene->meshManager()->name(i);
+				const sp_char* name = scene->meshManager()->name(i);
 
 				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf))
 				{
