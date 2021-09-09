@@ -1,9 +1,10 @@
+#define SP_CAMERA_SIZE             (24)
 #define SP_CAMERA_PROJECTION_INDEX (16)
 #define SP_CAMERA_VIEW_INDEX       (20)
 
 mat4 Mat4CameraProjection(uint cameraIndex)
 {
-	int index  = int(cameraIndex) + SP_CAMERA_PROJECTION_INDEX;
+	int index  = (int(cameraIndex) * SP_CAMERA_SIZE) + SP_CAMERA_PROJECTION_INDEX;
 	
 	mat4 projection;
 	projection[0] = texelFetch(cameras, index    );
@@ -16,7 +17,7 @@ mat4 Mat4CameraProjection(uint cameraIndex)
 
 mat4 Mat4CameraView(uint cameraIndex)
 {
-	int index  = int(cameraIndex) + SP_CAMERA_VIEW_INDEX;
+	int index  = (int(cameraIndex) * SP_CAMERA_SIZE) + SP_CAMERA_VIEW_INDEX;
 	
 	mat4 view;
 	view[0] = texelFetch(cameras, index    );
