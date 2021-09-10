@@ -314,7 +314,7 @@ namespace NAMESPACE_FRONTEND
 				SpUIManagerInstance->propertiesFrame.select(nullptr, &SpUIManagerInstance->propertiesFrameFolder, name);
 			}
 
-			renderAssetFolderNodeContextMenu(name, nameLength);
+			renderAssetFolderNodeContextMenu(fullname, fullnameLength);
 
 			if (folderNodeOpened)
 			{

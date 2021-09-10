@@ -9,6 +9,8 @@
 #include "SpGame.h"
 #include "SpGameObjectFactoryPlane.h"
 #include "FileSystem.h"
+#include "SpAssetMaterial.h"
+#include "SpAssetMaterialSerializerJson.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -97,6 +99,13 @@ namespace NAMESPACE_FRONTEND
 
 					if (ImGui::MenuItem("New Material", NULL, false, true))
 					{
+						SpAssetMaterialSerializerJson serializer;
+						SpAssetMaterial defaultMaterial;
+						nlohmann::ordered_json materialJson;
+
+						serializer.serialize(&defaultMaterial, materialJson);
+						std::string materialAsString = materialJson.dump(4);
+
 						const sp_size frameId = SpPhysicSettings::instance()->frameId();
 						sp_char materialName[100];
 						sp_uint materialNameLength = 9;
@@ -104,15 +113,14 @@ namespace NAMESPACE_FRONTEND
 						std::memcpy(materialName, "Material ", materialNameLength);
 						convert(frameId, &materialName[materialNameLength], frameIdStrLength);
 						materialNameLength += frameIdStrLength;
-						materialName[materialNameLength] = END_OF_STRING;
 						std::memcpy(&materialName[materialNameLength], ".spm", 4);
 						materialNameLength += 4;
+						materialName[materialNameLength] = END_OF_STRING;
 
-						// add file material spm
-						SP_FILE file;
-						file.open(materialName, std::ios_base::out);
-						//file.write(content);
-						file.close();
+						sp_char fullname[SP_DIRECTORY_MAX_LENGTH];
+						directoryAddPath(folder, folderLength, materialName, materialNameLength, fullname);
+
+						writeTextFile(fullname, materialAsString.c_str(), materialAsString.length());
 					}
 
 					ImGui::EndMenu();
