@@ -285,6 +285,50 @@ namespace NAMESPACE_FRONTEND
 		}
 	}
 
+	void ProjectExplorerFrame::renderAssetFolderNode(const sp_char* folder, const sp_size folderLength)
+	{
+		const sp_size subdirLength = subdirectoriesLength(folder, folderLength);
+
+		if (subdirLength == 0)
+			return;
+
+		sp_char* subdirs = ALLOC_ARRAY(sp_char, subdirLength * SP_DIRECTORY_MAX_LENGTH);
+		subdirectories(folder, folderLength, subdirs);
+
+		for (sp_size i = 0; i < subdirLength; i++)
+		{
+			sp_char name[SP_DIRECTORY_MAX_LENGTH];
+			const sp_size nameLength = std::strlen(&subdirs[i * SP_DIRECTORY_MAX_LENGTH]);
+			std::memcpy(name, &subdirs[i * SP_DIRECTORY_MAX_LENGTH], nameLength);
+			name[nameLength] = END_OF_STRING;
+
+			const sp_bool folderNodeOpened = ImGui::TreeNode(name);
+
+			sp_char fullname[SP_DIRECTORY_MAX_LENGTH];
+			const sp_size fullnameLength = folderLength + nameLength + 1;
+			directoryAddPath(folder, folderLength, name, nameLength, fullname);
+
+			if (ImGui::IsItemClicked())
+			{
+				SpUIManagerInstance->propertiesFrameFolder.setName(fullname, fullnameLength);
+				SpUIManagerInstance->propertiesFrame.select(nullptr, &SpUIManagerInstance->propertiesFrameFolder, name);
+			}
+
+			renderAssetFolderNodeContextMenu(name, nameLength);
+
+			if (folderNodeOpened)
+			{
+
+				renderAssetFolderNode(fullname, fullnameLength);
+				renderFilesNode(fullname, fullnameLength);
+
+				ImGui::TreePop();
+			}
+		}
+
+		ALLOC_RELEASE(subdirs);
+	}
+
 	void ProjectExplorerFrame::renderAssetsNode()
 	{
 		if (SpProjectManagerInstance->current() == nullptr)
@@ -292,16 +336,18 @@ namespace NAMESPACE_FRONTEND
 
 		const sp_bool assetsNodeOpened = ImGui::TreeNode("Assets");
 
+		sp_char folder[SP_DIRECTORY_MAX_LENGTH];
+		sp_size folderLength = std::strlen(SpProjectManagerInstance->current()->folder());
+		std::memcpy(folder, SpProjectManagerInstance->current()->folder(), folderLength);
+		folder[folderLength] = END_OF_STRING;
+		directoryAddPath(folder, folderLength, "Assets", 6, folder);
+		folderLength += 7;
+
+		renderAssetFolderNodeContextMenu(folder, folderLength);
+
 		if (assetsNodeOpened)
 		{
-			sp_char folder[SP_DIRECTORY_MAX_LENGTH];
-			sp_size folderLength = std::strlen(SpProjectManagerInstance->current()->folder());
-			std::memcpy(folder, SpProjectManagerInstance->current()->folder(), folderLength);
-			folder[folderLength] = END_OF_STRING;
-			directoryAddPath(folder, folderLength, "Assets", 6, folder);
-			folderLength += 7;
-
-			renderFolderNode(folder, folderLength);
+			renderAssetFolderNode(folder, folderLength);
 			renderFilesNode(folder, folderLength);
 
 			ImGui::TreePop();

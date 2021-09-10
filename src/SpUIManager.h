@@ -22,6 +22,7 @@
 #include "SpPropertiesFrameComponentCamera.h"
 #include "SpPropertiesFrameComponentLighting.h"
 #include "SpPropertiesFrameComponentGameObject.h"
+#include "SpPropertiesFrameComponentFolder.h"
 
 namespace NAMESPACE_FRONTEND
 {	
@@ -66,6 +67,7 @@ namespace NAMESPACE_FRONTEND
 		SpPropertiesFrame propertiesFrame;
 		SpPropertiesFrameComponentCamera propertiesFrameCamera;
 		SpPropertiesFrameComponentLighting propertiesFrameLighting;
+		SpPropertiesFrameComponentFolder propertiesFrameFolder;
 		SpPropertiesFrameComponentGameObject propertiesFrameGameObject;
 		SpVector<SpFrame*> frames;
 		SpVector<SpUIViewport*> viewports;

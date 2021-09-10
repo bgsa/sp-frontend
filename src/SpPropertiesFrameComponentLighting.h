@@ -146,7 +146,7 @@ namespace NAMESPACE_FRONTEND
 
 	public:
 
-		API_INTERFACE inline void render(SpScene* scene, const sp_uint index) override
+		API_INTERFACE inline void render(SpScene* scene, const sp_uint index, void* value) override
 		{
 			SpLightSource* light = scene->lightingManager()->get(index);
 

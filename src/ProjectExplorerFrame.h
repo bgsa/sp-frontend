@@ -70,39 +70,59 @@ namespace NAMESPACE_FRONTEND
 
 		void renderAssetsNode();
 
-		inline void renderFolderNode(const sp_char* folder, const sp_size folderLength)
+		inline void renderAssetFolderNodeContextMenu(const sp_char* folder, const sp_size folderLength)
 		{
-			const sp_size subdirLength = subdirectoriesLength(folder, folderLength);
-
-			if (subdirLength == 0)
-				return;
-
-			sp_char* subdirs = ALLOC_ARRAY(sp_char, subdirLength * SP_DIRECTORY_MAX_LENGTH);
-			subdirectories(folder, folderLength, subdirs);
-
-			for (sp_size i = 0; i < subdirLength; i++)
+			if (ImGui::BeginPopupContextItem())
 			{
-				sp_char name[SP_DIRECTORY_MAX_LENGTH];
-				const sp_size nameLength = std::strlen(&subdirs[i * SP_DIRECTORY_MAX_LENGTH]);
-				std::memcpy(name, &subdirs[i * SP_DIRECTORY_MAX_LENGTH], nameLength);
-				name[nameLength] = END_OF_STRING;
-
-				const sp_bool folderNodeOpened = ImGui::TreeNode(name);
-
-				if (folderNodeOpened)
+				if (ImGui::BeginMenu("Add"))
 				{
-					sp_char subFolder[SP_DIRECTORY_MAX_LENGTH];
-					directoryAddPath(folder, folderLength, name, nameLength, subFolder);
+					if (ImGui::MenuItem("New Folder", NULL, false, true))
+					{
+						sp_char newFolderName[100];
+						sp_uint newFolderNameLength = 11;
+					
+						std::memcpy(newFolderName, "New Folder ", newFolderNameLength);
+					
+						const sp_size frameId = SpPhysicSettings::instance()->frameId();
+						sp_uint frameIdLength;
+						convert(frameId, &newFolderName[newFolderNameLength], frameIdLength);
+						newFolderNameLength += frameIdLength;
+						newFolderName[newFolderNameLength] = END_OF_STRING;
 
-					renderFolderNode(subFolder, folderLength + nameLength + 1);
-					renderFilesNode(subFolder, folderLength + nameLength + 1);
+						sp_char fullname[SP_DIRECTORY_MAX_LENGTH];
+						directoryAddPath(folder, folderLength, newFolderName, newFolderNameLength, fullname);
 
-					ImGui::TreePop();
+						createDirectory(fullname, folderLength + newFolderNameLength + 1);
+					}
+
+					if (ImGui::MenuItem("New Material", NULL, false, true))
+					{
+						const sp_size frameId = SpPhysicSettings::instance()->frameId();
+						sp_char materialName[100];
+						sp_uint materialNameLength = 9;
+						sp_uint frameIdStrLength;
+						std::memcpy(materialName, "Material ", materialNameLength);
+						convert(frameId, &materialName[materialNameLength], frameIdStrLength);
+						materialNameLength += frameIdStrLength;
+						materialName[materialNameLength] = END_OF_STRING;
+						std::memcpy(&materialName[materialNameLength], ".spm", 4);
+						materialNameLength += 4;
+
+						// add file material spm
+						SP_FILE file;
+						file.open(materialName, std::ios_base::out);
+						//file.write(content);
+						file.close();
+					}
+
+					ImGui::EndMenu();
 				}
-			}
 
-			ALLOC_RELEASE(subdirs);
+				ImGui::EndPopup();
+			}
 		}
+
+		inline void renderAssetFolderNode(const sp_char* folder, const sp_size folderLength);
 
 		inline void renderFilesNode(const sp_char* folder, const sp_size folderLength)
 		{

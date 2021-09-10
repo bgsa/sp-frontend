@@ -9,7 +9,7 @@ namespace NAMESPACE_FRONTEND
 	{
 	public:
 
-		API_INTERFACE virtual void render(SpScene* scene, const sp_uint index) = 0;
+		API_INTERFACE virtual void render(SpScene* scene, const sp_uint index, void* value) = 0;
 
 	};
 }

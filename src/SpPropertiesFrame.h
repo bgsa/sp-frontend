@@ -18,6 +18,7 @@ namespace NAMESPACE_FRONTEND
 		SpScene* _scene;
 		SpPropertiesFrameComponent* _propertiesComponent;
 		sp_uint _selectedIndex;
+		void* _selectedValue;
 
 		inline void renderVec3Property(const sp_char* name,  const Vec3& value)
 		{
@@ -123,6 +124,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			_propertiesComponent = nullptr;
 			_selectedIndex = SP_UINT_MAX;
+			_selectedValue = nullptr;
 		}
 
 		API_INTERFACE void init()
@@ -147,6 +149,15 @@ namespace NAMESPACE_FRONTEND
 			_scene = scene;
 			_propertiesComponent = component;
 			_selectedIndex = index;
+			_selectedValue = nullptr;
+		}
+
+		API_INTERFACE inline void select(SpScene* scene, SpPropertiesFrameComponent* component, void* value)
+		{
+			_scene = scene;
+			_propertiesComponent = component;
+			_selectedIndex = SP_UINT_MAX;
+			_selectedValue = value;
 		}
 
 		API_INTERFACE inline void deselect()

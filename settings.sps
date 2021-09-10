@@ -2,6 +2,9 @@
     "version": "1.0.0",
     "last-projects": [
         {
+            "name": "C:\\Users\\bruno\\Projects\\Proj1\\Proj1.spp"
+        },
+        {
             "name": "C:\\Users\\bruno\\Projects\\lllllo1\\lllllo1.spp"
         },
         {
