@@ -209,22 +209,26 @@ namespace NAMESPACE_FRONTEND
 			if (sceneJson.find("game-objects") != sceneJson.end() && sceneJson["game-objects"].is_array())
 			{
 				const sp_uint length = (sp_uint)sceneJson["game-objects"].size();
-				const sp_uint objIndex = scene->gameObjectManager()->add(length);
 
-				for (sp_size i = 0; i < length; i++)
+				if (length > 0)
 				{
-					nlohmann::json gameObjJson = sceneJson["game-objects"][i];
+					const sp_uint objIndex = scene->gameObjectManager()->add(length);
 
-					SpGameObject* gameObject = scene->gameObject(objIndex + i);
+					for (sp_size i = 0; i < length; i++)
+					{
+						nlohmann::json gameObjJson = sceneJson["game-objects"][i];
 
-					const std::string name = gameObjJson["name"].get<std::string>();
-					scene->gameObjectManager()->name(objIndex + i, name.c_str(), name.length());
+						SpGameObject* gameObject = scene->gameObject(objIndex + i);
 
-					const sp_uint type = gameObjJson["type"].get<sp_uint>();
-					gameObject->type(type);
+						const std::string name = gameObjJson["name"].get<std::string>();
+						scene->gameObjectManager()->name(objIndex + i, name.c_str(), name.length());
 
-					const sp_uint renderable = gameObjJson["renderable"].get<sp_uint>();
-					gameObject->renderableObjectIndex(renderable);
+						const sp_uint type = gameObjJson["type"].get<sp_uint>();
+						gameObject->type(type);
+
+						const sp_uint renderable = gameObjJson["renderable"].get<sp_uint>();
+						gameObject->renderableObjectIndex(renderable);
+					}
 				}
 			}
 		}

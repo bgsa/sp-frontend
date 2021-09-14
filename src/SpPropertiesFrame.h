@@ -146,22 +146,35 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void select(SpScene* scene, SpPropertiesFrameComponent* component, const sp_uint index)
 		{
+			if (_propertiesComponent != nullptr)
+				_propertiesComponent->hide();
+
 			_scene = scene;
 			_propertiesComponent = component;
 			_selectedIndex = index;
 			_selectedValue = nullptr;
+
+			_propertiesComponent->show();
 		}
 
 		API_INTERFACE inline void select(SpScene* scene, SpPropertiesFrameComponent* component, void* value)
 		{
+			if (_propertiesComponent != nullptr)
+				_propertiesComponent->hide();
+
 			_scene = scene;
 			_propertiesComponent = component;
 			_selectedIndex = SP_UINT_MAX;
 			_selectedValue = value;
+
+			_propertiesComponent->show();
 		}
 
 		API_INTERFACE inline void deselect()
 		{
+			if (_propertiesComponent != nullptr)
+				_propertiesComponent->hide();
+
 			_scene = nullptr;
 			_propertiesComponent = nullptr;
 			_selectedIndex = SP_UINT_MAX;

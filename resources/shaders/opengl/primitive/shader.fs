@@ -70,5 +70,6 @@ vec4 PhongShading()
 
 void main()
 {
-	FragOutput = PhongShading();
+	//FragOutput = PhongShading();
+	FragOutput = vec4(1.0, 0.0, 0.0, 1.0);
 }

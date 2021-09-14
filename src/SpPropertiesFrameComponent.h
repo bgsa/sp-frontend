@@ -11,6 +11,14 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE virtual void render(SpScene* scene, const sp_uint index, void* value) = 0;
 
+		API_INTERFACE virtual void show()
+		{
+		}
+
+		API_INTERFACE virtual void hide()
+		{
+		}
+
 	};
 }
 

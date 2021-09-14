@@ -7,6 +7,7 @@
 #include "SpImGui.h"
 #include "SpPropertiesFrameComponent.h"
 #include "SpUIColorPicker.h"
+#include "SpUIAssetMaterialPicker.h"
 
 namespace NAMESPACE_FRONTEND
 {
@@ -15,6 +16,7 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpUIColorPicker colorPicker;
+		SpUIAssetMaterialPicker materialPicker;
 
 		inline void renderMaterialColor(SpBaseMaterial* material)
 		{
@@ -130,11 +132,34 @@ namespace NAMESPACE_FRONTEND
 				material->specular.blue = 0.0f;
 		}
 
+		inline void renderMaterialAsset(SpScene* scene, SpBaseMaterial* material)
+		{
+			const ImVec2 imgSize = ImVec2(60, 60);
+
+			ImGui::Text("Asset: ");
+			ImGui::SameLine();
+			ImGui::Text("xxx.spm");
+
+			if (ImGui::ImageButton(0, imgSize))
+				materialPicker.show();
+		}
+
 	public:
+
+		API_INTERFACE inline void show() override
+		{
+			materialPicker.init();
+		}
+
+		API_INTERFACE inline void hide() override
+		{
+			materialPicker.hide();
+		}
 
 		API_INTERFACE inline void render(SpScene* scene, const sp_uint index, void* value) override
 		{
 			colorPicker.init();
+			materialPicker.render();
 
 			SpGameObject* gameObject = scene->gameObject(index);
 			const sp_char* name = scene->gameObjectManager()->name(index);
@@ -210,9 +235,11 @@ namespace NAMESPACE_FRONTEND
 					renderMaterialAmbient(material);
 					renderMaterialDiffuse(material);
 					renderMaterialSpecular(material);
-
+					
 					ImGui::Text("Shinines Factor: "); ImGui::SameLine();
 					ImGui::InputFloat("##material-shininess-factor", &material->shininessFactor, 0.0f, 0.0f, 2);
+
+					renderMaterialAsset(scene, material);
 
 					ImGui::TreePop();
 				}
