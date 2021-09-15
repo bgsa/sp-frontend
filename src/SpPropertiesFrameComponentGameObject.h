@@ -163,7 +163,7 @@ namespace NAMESPACE_FRONTEND
 
 			SpGameObject* gameObject = scene->gameObject(index);
 			const sp_char* name = scene->gameObjectManager()->name(index);
-			ImGui::Text(name);
+			ImGui::Text("%s" ,name);
 
 			SpTransform* transform = scene->transform(index);
 

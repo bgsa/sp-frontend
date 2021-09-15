@@ -24,7 +24,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			sp_char* text = ALLOC_ARRAY(sp_char, 20);
 
-			ImGui::Text(name);
+			ImGui::Text("%s", name);
 			ImGui::NextColumn();
 			ImGui::NextColumn();
 
@@ -32,21 +32,21 @@ namespace NAMESPACE_FRONTEND
 			ImGui::NextColumn();
 
 			SpString::convert(value.x, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ImGui::Text("y:");
 			ImGui::NextColumn();
 
 			SpString::convert(value.y, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ImGui::Text("z:");
 			ImGui::NextColumn();
 
 			SpString::convert(value.z, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ALLOC_RELEASE(text);
@@ -56,7 +56,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			sp_char* text = ALLOC_ARRAY(sp_char, 20);
 
-			ImGui::Text(name);
+			ImGui::Text("%s" ,name);
 			ImGui::NextColumn();
 			ImGui::NextColumn();
 
@@ -64,28 +64,28 @@ namespace NAMESPACE_FRONTEND
 			ImGui::NextColumn();
 
 			SpString::convert(q.w, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ImGui::Text("x:");
 			ImGui::NextColumn();
 
 			SpString::convert(q.x, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ImGui::Text("y:");
 			ImGui::NextColumn();
 
 			SpString::convert(q.y, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ImGui::Text("z:");
 			ImGui::NextColumn();
 
 			SpString::convert(q.z, text);
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ALLOC_RELEASE(text);
@@ -96,10 +96,10 @@ namespace NAMESPACE_FRONTEND
 			sp_char* text = ALLOC_ARRAY(sp_char, 20);
 			SpString::convert(value, text);
 
-			ImGui::Text(name);
+			ImGui::Text("%s" ,name);
 			ImGui::NextColumn();
 
-			ImGui::Text(text);
+			ImGui::Text("%s" ,text);
 			ImGui::NextColumn();
 
 			ALLOC_RELEASE(text);
@@ -107,7 +107,7 @@ namespace NAMESPACE_FRONTEND
 
 		inline void renderProperty(const sp_char* name, const sp_bool value)
 		{
-			ImGui::Text(name);
+			ImGui::Text("%s" ,name);
 			ImGui::NextColumn();
 
 			if (value)

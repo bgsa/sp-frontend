@@ -45,7 +45,7 @@ namespace NAMESPACE_FRONTEND
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 		ImGui::Text("Folder:");
-		ImGui::Text(folder);
+		ImGui::Text("%s", folder);
 
 		ImGui::PopItemWidth();
 

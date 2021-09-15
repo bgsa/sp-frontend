@@ -145,14 +145,14 @@ namespace NAMESPACE_FRONTEND
 			if (ImGui::IsItemHovered())
 			{
 				if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && onDoubleClick != nullptr)
-					onDoubleClick(this);
+					onDoubleClick(this, onDoubleClickParameter);
 
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 				{
 					select();
 
 					if (onSelect != nullptr)
-						onSelect(this);
+						onSelect(this, onSelectParameter);
 				}
 			}
 

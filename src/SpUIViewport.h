@@ -41,7 +41,7 @@ namespace NAMESPACE_FRONTEND
 				gameObjectManipulator.render(viewport, position);
 			}
 
-			SpSize<sp_int> size = viewport.size();
+			const SpSize<sp_int> size = viewport.size();
 			ImGui::Image((void*)(intptr_t)viewport.framebuffer()->colorTexture(), ImVec2((sp_float)size.width, (sp_float)size.height), ImVec2(0, 1), ImVec2(1, 0));
 		
 			if (_isDragging)
@@ -169,7 +169,7 @@ namespace NAMESPACE_FRONTEND
 				std::memcpy(&title[sceneNameLength], " - ", 3);
 
 				const sp_size temp = (sp_size)this;
-				sp_uint idLength;
+				sp_size idLength;
 				convert(temp, &title[sceneNameLength + 3], idLength);
 
 				title[sceneNameLength + idLength + 3] = END_OF_STRING;
@@ -179,7 +179,7 @@ namespace NAMESPACE_FRONTEND
 				std::memcpy(title, "(no scene) - ", sizeof(sp_char) * 13);
 
 				const sp_size temp = (sp_size)this;
-				sp_uint length;
+				sp_size length;
 				convert(temp, &title[13], length);
 
 				title[13 + length] = END_OF_STRING;

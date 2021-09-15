@@ -47,7 +47,7 @@ namespace NAMESPACE_FRONTEND
 			std::memcpy(value, "Frame: ", sizeof(sp_char) * 7);
 			SpString::convert(SpPhysicSettings::instance()->frameId(), &value[7]);
 
-			ImGui::Text(value);
+			ImGui::Text("%s", value);
 
 			ImGui::SameLine();
 
@@ -55,7 +55,7 @@ namespace NAMESPACE_FRONTEND
 			SpString::convert(localTimer.elapsedTime(), &value[5]);
 			value[10] = END_OF_STRING;
 
-			ImGui::Text(value);
+			ImGui::Text("%s", value);
 
 			statusBar.end();
 
@@ -85,7 +85,7 @@ namespace NAMESPACE_FRONTEND
 
 #ifdef OPENGL_ENABLED
 			ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->handler(), true);
-			errno = NULL; // Linux takes errno=2
+			errno = 0; // Linux takes errno=2
 			const sp_char* glsl_version = "#version 130";
 			ImGui_ImplOpenGL3_Init(glsl_version);
 #endif

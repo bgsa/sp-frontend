@@ -48,7 +48,7 @@ namespace NAMESPACE_FRONTEND
 					ImVec2(32.0f, 32.0f), iconUV1, iconUV2
 				);
 				ImGui::SameLine();
-				ImGui::Text(_message);
+				ImGui::Text("%s", _message);
 
 				ImVec2 buttonSize(100.0f, 25.0f);
 				ImGuiStyle style = ImGui::GetStyle();

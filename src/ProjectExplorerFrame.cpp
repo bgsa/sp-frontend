@@ -207,7 +207,7 @@ namespace NAMESPACE_FRONTEND
 			{
 				const sp_size frameId = SpPhysicSettings::instance()->frameId();
 				sp_char frameIdStr[20];
-				sp_uint frameIdStrLength;
+				sp_size frameIdStrLength;
 				std::memcpy(frameIdStr, "Light ", 6);
 				convert(frameId, &frameIdStr[6], frameIdStrLength);
 				frameIdStr[6 + frameIdStrLength] = END_OF_STRING;

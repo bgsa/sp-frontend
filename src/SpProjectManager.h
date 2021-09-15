@@ -408,7 +408,7 @@ namespace NAMESPACE_FRONTEND
 
 		inline void saveScenes(nlohmann::ordered_json& json)
 		{
-			nlohmann::json scenesJson = nlohmann::json::array();
+			nlohmann::json::array_t scenesJson = nlohmann::json::array();
 
 			for (SpVectorItem<SpScene*>* item = _current->game()->scenes()->begin(); item != nullptr; item = item->next())
 			{

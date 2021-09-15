@@ -34,7 +34,7 @@ namespace NAMESPACE_FRONTEND
 
 			ImGui::Text("Memory (Total): ");
 			ImGui::SameLine();
-			ImGui::Text(text);
+			ImGui::Text("%s", text);
 			ImGui::SameLine();
 			ImGui::Text("MB");
 
@@ -44,7 +44,7 @@ namespace NAMESPACE_FRONTEND
 			ImGui::SameLine();
 			ImGui::Text("Memory (Used): ");
 			ImGui::SameLine();
-			ImGui::Text(text);
+			ImGui::Text("%s", text);
 			ImGui::SameLine();
 			ImGui::Text("MB");
 
@@ -54,7 +54,7 @@ namespace NAMESPACE_FRONTEND
 			ImGui::SameLine();
 			ImGui::Text("Memory (Available): ");
 			ImGui::SameLine();
-			ImGui::Text(text);
+			ImGui::Text("%s", text);
 			ImGui::SameLine();
 			ImGui::Text("MB");
 

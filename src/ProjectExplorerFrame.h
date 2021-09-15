@@ -81,12 +81,12 @@ namespace NAMESPACE_FRONTEND
 					if (ImGui::MenuItem("New Folder", NULL, false, true))
 					{
 						sp_char newFolderName[100];
-						sp_uint newFolderNameLength = 11;
+						sp_size newFolderNameLength = 11;
 					
 						std::memcpy(newFolderName, "New Folder ", newFolderNameLength);
 					
 						const sp_size frameId = SpPhysicSettings::instance()->frameId();
-						sp_uint frameIdLength;
+						sp_size frameIdLength;
 						convert(frameId, &newFolderName[newFolderNameLength], frameIdLength);
 						newFolderNameLength += frameIdLength;
 						newFolderName[newFolderNameLength] = END_OF_STRING;
@@ -108,8 +108,8 @@ namespace NAMESPACE_FRONTEND
 
 						const sp_size frameId = SpPhysicSettings::instance()->frameId();
 						sp_char materialName[100];
-						sp_uint materialNameLength = 9;
-						sp_uint frameIdStrLength;
+						sp_size materialNameLength = 9;
+						sp_size frameIdStrLength;
 						std::memcpy(materialName, "Material ", materialNameLength);
 						convert(frameId, &materialName[materialNameLength], frameIdStrLength);
 						materialNameLength += frameIdStrLength;

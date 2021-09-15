@@ -43,7 +43,7 @@ namespace NAMESPACE_FRONTEND
 				if (provider != nullptr)
 				{
 					for (sp_uint i = 0; i < provider->messageLength(); i++)
-						ImGui::Text(provider->message(i));
+						ImGui::Text("%s", provider->message(i));
 
 					if (ImGui::BeginPopupContextWindow())
 					{

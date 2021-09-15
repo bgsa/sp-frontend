@@ -81,7 +81,7 @@ namespace NAMESPACE_FRONTEND
 
 			ImGui::PushFont(font);
 
-			ImGui::Text(newMessage);
+			ImGui::Text("%s", newMessage);
 
 			ImGui::PopFont();
 

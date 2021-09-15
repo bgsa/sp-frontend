@@ -162,10 +162,10 @@ namespace NAMESPACE_RENDERING
 
 			shader->disable();
 
-			glBindVertexArray(NULL);
-			glBindBuffer(GL_ARRAY_BUFFER, NULL); // Unbind
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL); // Unbind
-			glBindBuffer(GL_TEXTURE_BUFFER, NULL); // Unbind
+			glBindVertexArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // Unbind
+			glBindBuffer(GL_TEXTURE_BUFFER, 0); // Unbind
 		}
 
 		API_INTERFACE inline const sp_char* toString() override
