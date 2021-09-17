@@ -36,7 +36,7 @@ namespace NAMESPACE_FRONTEND
 
 		if (gameObjectNodeOpened)
 		{
-			for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
+			for (sp_uint i = 0; i < scene->gameObjectsLength(); i++)
 			{
 				const SpGameObject* gameObject = scene->gameObject(i);
 				const sp_char* name = scene->gameObjectManager()->name(i);
@@ -134,7 +134,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			SpCameraManager* cameraManager = scene->camerasManager();
 
-			for (sp_size i = 0; i < cameraManager->length(); i++)
+			for (sp_uint i = 0; i < cameraManager->length(); i++)
 			{
 				sp_char* name = cameraManager->name(i);
 
@@ -155,7 +155,7 @@ namespace NAMESPACE_FRONTEND
 	{
 		if (ImGui::TreeNode("Meshes"))
 		{
-			for (sp_size i = 0; i < scene->meshManager()->length(); i++)
+			for (sp_uint i = 0; i < scene->meshManager()->length(); i++)
 			{
 				const sp_char* name = scene->meshManager()->name(i);
 
@@ -178,7 +178,7 @@ namespace NAMESPACE_FRONTEND
 		{
 			SpLightingManager* lightManager = scene->lightingManager();
 
-			for (sp_size i = 0; i < lightManager->length(); i++)
+			for (sp_uint i = 0; i < lightManager->length(); i++)
 			{
 				sp_char* name = lightManager->name(i);
 
@@ -298,14 +298,14 @@ namespace NAMESPACE_FRONTEND
 		for (sp_size i = 0; i < subdirLength; i++)
 		{
 			sp_char name[SP_DIRECTORY_MAX_LENGTH];
-			const sp_size nameLength = std::strlen(&subdirs[i * SP_DIRECTORY_MAX_LENGTH]);
+			const sp_uint nameLength = (sp_uint)std::strlen(&subdirs[i * SP_DIRECTORY_MAX_LENGTH]);
 			std::memcpy(name, &subdirs[i * SP_DIRECTORY_MAX_LENGTH], nameLength);
 			name[nameLength] = END_OF_STRING;
 
 			const sp_bool folderNodeOpened = ImGui::TreeNode(name);
 
 			sp_char fullname[SP_DIRECTORY_MAX_LENGTH];
-			const sp_size fullnameLength = folderLength + nameLength + 1;
+			const sp_uint fullnameLength = (sp_uint)folderLength + nameLength + 1;
 			directoryAddPath(folder, folderLength, name, nameLength, fullname);
 
 			if (ImGui::IsItemClicked())

@@ -58,7 +58,7 @@ namespace NAMESPACE_FRONTEND
 						std::memcpy(name, index, indexLength);
 						std::memcpy(&name[indexLength], ".  ", 3);
 						std::memcpy(&name[indexLength + 3], filename, filenameLength);
-						sp_uint nameLength = indexLength + filenameLength + 3;
+						const sp_size nameLength = indexLength + filenameLength + 3;
 						name[nameLength] = END_OF_STRING;
 
 						sp_bool enabled = true;

@@ -219,7 +219,7 @@ namespace NAMESPACE_FRONTEND
 
 			if (gameObject->isRenderableObject())
 			{
-				const sp_size renderableObjectIndex = gameObject->renderableObjectIndex();
+				const sp_uint renderableObjectIndex = gameObject->renderableObjectIndex();
 				SpRenderableObject* renderableObject = scene->renderableObjectManager()->get(renderableObjectIndex);
 
 				sp_bool visibility = renderableObject->isVisible();

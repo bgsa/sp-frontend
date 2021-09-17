@@ -22,7 +22,7 @@ namespace NAMESPACE_FRONTEND
 
 		inline void creteProjectStructure(const sp_char* folder, const sp_size folderLength)
 		{
-			sp_size length = folderLength;
+			sp_uint length = (sp_uint) folderLength;
 			createDirectory(folder, length);
 
 			sp_char temp[512];
@@ -86,10 +86,10 @@ namespace NAMESPACE_FRONTEND
 		{
 			if (sceneJson.find("lightings") != sceneJson.end() && sceneJson["lightings"].is_array())
 			{
-				const sp_size lightingsLength = sceneJson["lightings"].size();
+				const sp_uint lightingsLength = (sp_uint)sceneJson["lightings"].size();
 				const sp_uint lightIndex = scene->lightingManager()->add(lightingsLength);
 
-				for (sp_size i = 0; i < lightingsLength; i++)
+				for (sp_uint i = 0; i < lightingsLength; i++)
 				{
 					nlohmann::json lightingsJson = sceneJson["lightings"][i];
 
@@ -141,7 +141,7 @@ namespace NAMESPACE_FRONTEND
 				const sp_uint transformsLength = (sp_uint)sceneJson["transforms"].size();
 				const sp_uint transformIndex = scene->transformManager()->add(transformsLength);
 
-				for (sp_size i = 0; i < transformsLength; i++)
+				for (sp_uint i = 0; i < transformsLength; i++)
 				{
 					nlohmann::json transformJson = sceneJson["transforms"][i];
 
@@ -173,7 +173,7 @@ namespace NAMESPACE_FRONTEND
 				const sp_uint length = (sp_uint)sceneJson["renderable-objects"].size();
 				const sp_uint objIndex = scene->renderableObjectManager()->add(length);
 
-				for (sp_size i = 0; i < length; i++)
+				for (sp_uint i = 0; i < length; i++)
 				{
 					nlohmann::json renderableJson = sceneJson["renderable-objects"][i];
 
@@ -214,7 +214,7 @@ namespace NAMESPACE_FRONTEND
 				{
 					const sp_uint objIndex = scene->gameObjectManager()->add(length);
 
-					for (sp_size i = 0; i < length; i++)
+					for (sp_uint i = 0; i < length; i++)
 					{
 						nlohmann::json gameObjJson = sceneJson["game-objects"][i];
 
@@ -270,7 +270,7 @@ namespace NAMESPACE_FRONTEND
 		inline void saveCameras(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
 		{
 			nlohmann::ordered_json jsonCameras = nlohmann::json::array();
-			for (sp_size i = 0; i < scene->camerasManager()->length(); i++)
+			for (sp_uint i = 0; i < scene->camerasManager()->length(); i++)
 			{
 				SpCamera* camera = scene->camerasManager()->get(i);
 				const sp_char* cameraName = scene->camerasManager()->name(i);
@@ -302,7 +302,7 @@ namespace NAMESPACE_FRONTEND
 		inline void saveTransforms(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
 		{
 			nlohmann::ordered_json jsonTransforms = nlohmann::json::array();
-			for (sp_size i = 0; i < scene->transformManager()->length(); i++)
+			for (sp_uint i = 0; i < scene->transformManager()->length(); i++)
 			{
 				SpTransform* transform = scene->transform(i);
 
@@ -335,7 +335,7 @@ namespace NAMESPACE_FRONTEND
 		inline void saveGameObjects(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
 		{
 			nlohmann::ordered_json jsonGameObjects = nlohmann::json::array();
-			for (sp_size i = 0; i < scene->gameObjectsLength(); i++)
+			for (sp_uint i = 0; i < scene->gameObjectsLength(); i++)
 			{
 				SpGameObject* gameObject = scene->gameObject(i);
 
@@ -354,7 +354,7 @@ namespace NAMESPACE_FRONTEND
 		inline void saveRenderableObjects(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
 		{
 			nlohmann::ordered_json jsonRenderables = nlohmann::json::array();
-			for (sp_size i = 0; i < scene->renderableObjectManager()->length(); i++)
+			for (sp_uint i = 0; i < scene->renderableObjectManager()->length(); i++)
 			{
 				SpRenderableObject* renderable = scene->renderableObjectManager()->get(i);
 
@@ -373,7 +373,7 @@ namespace NAMESPACE_FRONTEND
 		inline void saveLightings(SpPhyiscs::SpScene* scene, nlohmann::ordered_json& jsonScene)
 		{
 			nlohmann::ordered_json jsonLighings = nlohmann::json::array();
-			for (sp_size i = 0; i < scene->lightingManager()->length(); i++)
+			for (sp_uint i = 0; i < scene->lightingManager()->length(); i++)
 			{
 				SpLightSource* light = scene->lightingManager()->get(i);
 

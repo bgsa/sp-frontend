@@ -163,7 +163,7 @@ namespace NAMESPACE_FRONTEND
 
 			if (viewport.scene != nullptr)
 			{
-				sp_uint sceneNameLength = std::strlen(viewport.scene->name());
+				sp_uint sceneNameLength = (sp_uint) std::strlen(viewport.scene->name());
 
 				std::memcpy(title, viewport.scene->name(), sceneNameLength);
 				std::memcpy(&title[sceneNameLength], " - ", 3);

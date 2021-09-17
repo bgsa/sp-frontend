@@ -26,10 +26,10 @@ namespace NAMESPACE_FRONTEND
 
 		API_INTERFACE inline void render(SpScene* scene, const sp_uint index, void* value) override
 		{
-			const sp_size indexOf = strLastIndexOf(_name, _nameLength, SP_DIRECTORY_SEPARATOR);
+			const sp_uint indexOf = (sp_uint)strLastIndexOf(_name, _nameLength, SP_DIRECTORY_SEPARATOR);
 
 			sp_char name[SP_DIRECTORY_MAX_LENGTH];
-			sp_size nameLength = _nameLength - indexOf - 1;
+			sp_uint nameLength = _nameLength - indexOf - 1;
 			std::memcpy(name, &_name[indexOf + 1], nameLength);
 			name[nameLength] = END_OF_STRING;
 
@@ -42,7 +42,7 @@ namespace NAMESPACE_FRONTEND
 
 			if (std::strcmp(name, tempName) != 0)
 			{
-				const sp_size tempNameLength = std::strlen(tempName);
+				const sp_uint tempNameLength = (sp_uint)std::strlen(tempName);
 
 				if (tempNameLength > 0)
 				{
@@ -50,7 +50,7 @@ namespace NAMESPACE_FRONTEND
 					std::memcpy(newFolderName, _name, indexOf + 1);
 					std::memcpy(&newFolderName[indexOf + 1], tempName, tempNameLength);
 
-					const sp_size newFolderNameLength = indexOf + tempNameLength + 1;
+					const sp_uint newFolderNameLength = indexOf + tempNameLength + 1;
 					newFolderName[newFolderNameLength] = END_OF_STRING;
 
 					if (directoryRename(_name, newFolderName))

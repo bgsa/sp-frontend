@@ -94,7 +94,7 @@ namespace NAMESPACE_FRONTEND
 						sp_char fullname[SP_DIRECTORY_MAX_LENGTH];
 						directoryAddPath(folder, folderLength, newFolderName, newFolderNameLength, fullname);
 
-						createDirectory(fullname, folderLength + newFolderNameLength + 1);
+						createDirectory(fullname, (sp_uint)(folderLength + newFolderNameLength + 1));
 					}
 
 					if (ImGui::MenuItem("New Material", NULL, false, true))
