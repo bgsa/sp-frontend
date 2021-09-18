@@ -111,7 +111,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;MEMORY_PROFILING_ENABLED;OPENGL_ENABLED;OPENCL_ENABLED;GLFW_ENABLED;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;MEMORY_PROFILING_ENABLED;OPENGL_ENABLED;OPENCL_ENABLED;GLFW_ENABLED;MAJOR_COLUMN_ORDER;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\vendor\include;$(SolutionDir)sp-rendering\src;$(SolutionDir)sp-physics\src;$(SolutionDir)\sp-foundation\src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
