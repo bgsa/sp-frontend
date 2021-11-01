@@ -323,6 +323,15 @@ namespace NAMESPACE_FRONTEND
 			return (sp_float)(_contentRegionSize.x / _contentRegionSize.y);
 		}
 
+		/// <summary>
+		/// Release all allocated resources
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE virtual void dispose()
+		{
+
+		}
+
 	};
 }
 

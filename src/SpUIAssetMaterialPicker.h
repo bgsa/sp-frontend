@@ -15,6 +15,14 @@ namespace NAMESPACE_FRONTEND
 	{
 	private:
 		SpCloseButtonUIWindowBehaviour closeButton;
+		sp_uint _materialsLength;
+		SpUIThumbNail* _thumbNails;
+
+		inline void releaseThumbNails()
+		{
+			sp_mem_release(_thumbNails);
+			_thumbNails = nullptr;
+		}
 
 	public:
 
@@ -30,16 +38,28 @@ namespace NAMESPACE_FRONTEND
 		/// Initialize the material picker
 		/// </summary>
 		/// <returns></returns>
-		API_INTERFACE inline void init()
-		{
-
-		}
+		API_INTERFACE void init();
 
 		/// <summary>
 		/// Render the color picker
 		/// </summary>
 		/// <returns></returns>
 		API_INTERFACE void render() override;
+
+		/// <summary>
+		/// Release all allocated resources
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline void dispose() override
+		{
+			if (_thumbNails != nullptr)
+				releaseThumbNails();
+		}
+
+		~SpUIAssetMaterialPicker()
+		{
+			dispose();
+		}
 
 	};
 }

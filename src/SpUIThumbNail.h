@@ -64,6 +64,24 @@ namespace NAMESPACE_FRONTEND
 		}
 
 		/// <summary>
+		/// Get the width of ThumbNail
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_float width() const
+		{
+			return _size.x;
+		}
+
+		/// <summary>
+		/// Get the height of ThumbNail
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline sp_float height() const
+		{
+			return _size.y;
+		}
+
+		/// <summary>
 		/// Set the size of the thumbnail
 		/// </summary>
 		/// <param name="newSize"></param>
@@ -81,6 +99,15 @@ namespace NAMESPACE_FRONTEND
 		API_INTERFACE inline void margin(const ImVec2& newMargin)
 		{
 			_margin = newMargin;
+		}
+
+		/// <summary>
+		/// Get the margin of thumbnail
+		/// </summary>
+		/// <returns></returns>
+		API_INTERFACE inline ImVec2 margin() const
+		{
+			return _margin;
 		}
 
 		/// <summary>
